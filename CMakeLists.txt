@@ -14,20 +14,15 @@ if(CMAKE_BINARY_DIR MATCHES " ")
 endif()
 
 # Compile external dependencies
-add_subdirectory (external)
+add_subdirectory(thirdparty)
 
 include_directories(
-  external/glfw-3.0.3/include/
-  external/glew-1.9.0/include/
-  external/glad/include/
+  thirdparty/glfw-3.3.2/include/
+  thirdparty/glew-2.1.0/include/
   src/
 )
 
-set(ALL_LIBS
-  ${OPENGL_LIBRARY}
-  GLFW_303
-  GLEW_190
-)
+set(ALL_LIBS ${OPENGL_LIBRARY} glfw glew)
 
 add_definitions(
   -DTW_STATIC

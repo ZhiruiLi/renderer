@@ -1,58 +1,61 @@
-// Include standard headers
-#include <stdio.h>
-#include <stdlib.h>
-
-// Include GLEW
+// GLEW
 #include <GL/glew.h>
 
-// Include GLFW
+// GLFW
 #include <GLFW/glfw3.h>
-GLFWwindow *window;
 
-int main(void) {
-  // Initialise GLFW
-  if (!glfwInit()) {
-    fprintf(stderr, "Failed to initialize GLFW\n");
-    return -1;
-  }
+#include <iostream>
 
-  glfwWindowHint(GLFW_SAMPLES, 4);
+// Window dimensions
+const GLuint WIDTH = 300, HEIGHT = 200;
+
+// The MAIN function, from here we start the application and run the game loop
+int main() {
+  std::cout << "Starting GLFW context, OpenGL 3.3" << std::endl;
+  // Init GLFW
+  glfwInit();
+  // Set all the required options for GLFW
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+  glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // mac
 
-  // Open a window and create its OpenGL context
-  window = glfwCreateWindow(800, 600, "Test", NULL, NULL);
-  if (window == NULL) {
+  // Create a GLFWwindow object that we can use for GLFW's functions
+  GLFWwindow* window =
+      glfwCreateWindow(WIDTH, HEIGHT, "LearnOpenGL", nullptr, nullptr);
+  if (window == nullptr) {
+    std::cout << "Failed to create GLFW window" << std::endl;
     glfwTerminate();
     return -1;
   }
   glfwMakeContextCurrent(window);
-
-  // Initialize GLEW
+  // Set this to true so GLEW knows to use a modern approach to retrieving
+  // function pointers and extensions
+  glewExperimental = GL_TRUE;
+  // Initialize GLEW to setup the OpenGL Function pointers
   if (glewInit() != GLEW_OK) {
-    fprintf(stderr, "Failed to initialize GLEW\n");
+    std::cout << "Failed to initialize GLEW" << std::endl;
     return -1;
   }
 
-  // Ensure we can capture the escape key being pressed below
-  glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+  // Define the viewport dimensions
+  int width, height;
+  glfwGetFramebufferSize(window, &width, &height);
+  glViewport(0, 0, width, height);
 
-  // Dark blue background
-  glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-
-  do {
-    // Swap buffers
-    glfwSwapBuffers(window);
+  // Game loop
+  while (!glfwWindowShouldClose(window)) {
+    // Check if any events have been activiated (key pressed, mouse moved etc.)
+    // and call corresponding response functions
     glfwPollEvents();
+    // https://stackoverflow.com/questions/27678819/crazy-flashing-window-opengl-glfw
+    glClear(GL_COLOR_BUFFER_BIT);
+    // Swap the screen buffers
+    glfwSwapBuffers(window);
+  }
 
-  }  // Check if the ESC key was pressed or the window was closed
-  while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
-         glfwWindowShouldClose(window) == 0);
-
-  // Close OpenGL window and terminate GLFW
+  // Terminate GLFW, clearing any resources allocated by GLFW.
   glfwTerminate();
-
   return 0;
 }
