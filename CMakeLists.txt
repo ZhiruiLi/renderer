@@ -1,5 +1,9 @@
 cmake_minimum_required (VERSION 3.1)
 project (Renderer)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+add_definitions("-Wall" "-g")
 
 find_package(OpenGL REQUIRED)
 
@@ -19,8 +23,10 @@ add_subdirectory(thirdparty)
 include_directories(
   thirdparty/glfw-3.3.2/include/
   thirdparty/glew-2.1.0/include/
-  src/
 )
+
+include_directories(${PROJECT_SOURCE_DIR}/src)
+file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 
 set(ALL_LIBS ${OPENGL_LIBRARY} glfw glew)
 
@@ -32,5 +38,5 @@ add_definitions(
   -D_CRT_SECURE_NO_WARNINGS
 )
 
-add_executable(main src/main.cpp)
+add_executable(main ${SRC_FILES})
 target_link_libraries(main ${ALL_LIBS})
