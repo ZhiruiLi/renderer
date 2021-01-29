@@ -6,58 +6,53 @@
 #include <GL/glew.h>
 
 // Include GLFW
-#include <glfw3.h>
+#include <GLFW/glfw3.h>
 GLFWwindow *window;
 
-int main(void)
-{
-	// Initialise GLFW
-	if (!glfwInit())
-	{
-		fprintf(stderr, "Failed to initialize GLFW\n");
-		return -1;
-	}
+int main(void) {
+  // Initialise GLFW
+  if (!glfwInit()) {
+    fprintf(stderr, "Failed to initialize GLFW\n");
+    return -1;
+  }
 
-	glfwWindowHint(GLFW_SAMPLES, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+  glfwWindowHint(GLFW_SAMPLES, 4);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-	// Open a window and create its OpenGL context
-	window = glfwCreateWindow(800, 600, "Test", NULL, NULL);
-	if (window == NULL)
-	{
-		glfwTerminate();
-		return -1;
-	}
-	glfwMakeContextCurrent(window);
+  // Open a window and create its OpenGL context
+  window = glfwCreateWindow(800, 600, "Test", NULL, NULL);
+  if (window == NULL) {
+    glfwTerminate();
+    return -1;
+  }
+  glfwMakeContextCurrent(window);
 
-	// Initialize GLEW
-	if (glewInit() != GLEW_OK)
-	{
-		fprintf(stderr, "Failed to initialize GLEW\n");
-		return -1;
-	}
+  // Initialize GLEW
+  if (glewInit() != GLEW_OK) {
+    fprintf(stderr, "Failed to initialize GLEW\n");
+    return -1;
+  }
 
-	// Ensure we can capture the escape key being pressed below
-	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+  // Ensure we can capture the escape key being pressed below
+  glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
-	// Dark blue background
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+  // Dark blue background
+  glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-	do
-	{
-		// Swap buffers
-		glfwSwapBuffers(window);
-		glfwPollEvents();
+  do {
+    // Swap buffers
+    glfwSwapBuffers(window);
+    glfwPollEvents();
 
-	} // Check if the ESC key was pressed or the window was closed
-	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
-				 glfwWindowShouldClose(window) == 0);
+  }  // Check if the ESC key was pressed or the window was closed
+  while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
+         glfwWindowShouldClose(window) == 0);
 
-	// Close OpenGL window and terminate GLFW
-	glfwTerminate();
+  // Close OpenGL window and terminate GLFW
+  glfwTerminate();
 
-	return 0;
+  return 0;
 }

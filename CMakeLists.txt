@@ -18,7 +18,7 @@ endif()
 add_subdirectory (external)
 
 include_directories(
-  external/glfw-3.0.3/include/GLFW/
+  external/glfw-3.0.3/include/
   external/glew-1.9.0/include/
   external/glad/include/
   src/
