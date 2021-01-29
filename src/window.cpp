@@ -39,10 +39,9 @@ Window::Window(std::string_view title, int width, int height) {
   glfwMakeContextCurrent(glfw_window_);
   glfwSetKeyCallback(glfw_window_, handleKey);
 
-  // Set this to true so GLEW knows to use a modern approach to retrieving
-  // function pointers and extensions
+  // 使用实验性功能
   glewExperimental = GL_TRUE;
-  // Initialize GLEW to setup the OpenGL Function pointers
+  // 初始化 GLEW，必须在调用任何 OpenGL 函数之前进行
   if (glewInit() != GLEW_OK) {
     std::cout << "failed to initialize GLEW" << std::endl;
     throw std::runtime_error("failed to initialize GLEW");
