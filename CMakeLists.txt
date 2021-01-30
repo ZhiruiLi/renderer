@@ -1,42 +1,30 @@
-cmake_minimum_required (VERSION 3.1)
-project (Renderer)
+cmake_minimum_required(VERSION 3.14)
+project(renderer C CXX)
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-add_definitions("-Wall" "-g")
 
-find_package(OpenGL REQUIRED)
+#if (MSVC)
+#  # warning level 4 and all warnings as errors
+#  add_compile_options(/W4 /WX)
+#else()
+#  # lots of warnings and all warnings as errors
+#  add_compile_options(-Wall -Wextra -pedantic -Werror)
+#endif()
 
-if(CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR)
-    message(FATAL_ERROR "Please select another Build Directory ! (and give it a clever name, like bin_Visual2012_64bits/)")
+add_subdirectory(thirdparty/glfw-3.3.2)
+
+add_definitions(-DGL_SILENCE_DEPRECATION)
+
+file(GLOB SOURCES src/*.cc src/*.h)
+
+add_executable(renderer MACOSX_BUNDLE WIN32 ${SOURCES})
+
+if(APPLE)
+  list(APPEND EXTRA_LIBS "-framework OpenGL")
+elseif(WIN32)
+  list(APPEND EXTRA_LIBS "-lglu32 -lopengl32")
+  set(CMAKE_EXE_LINKER_FLAGS "-std=gnu99 -static -static-libgcc -static-libstdc++ -mwindows")
+else()
+  list(APPEND EXTRA_LIBS "-lGL -lGLU -lX11")
 endif()
-if(CMAKE_SOURCE_DIR MATCHES " ")
-  message("Your Source Directory contains spaces. If you experience problems when compiling, this can be the cause.")
-endif()
-if(CMAKE_BINARY_DIR MATCHES " ")
-  message("Your Build Directory contains spaces. If you experience problems when compiling, this can be the cause.")
-endif()
 
-# Compile external dependencies
-add_subdirectory(thirdparty)
-
-include_directories(
-  thirdparty/glfw-3.3.2/include/
-  thirdparty/glew-2.1.0/include/
-)
-
-include_directories(${PROJECT_SOURCE_DIR}/src)
-file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
-
-set(ALL_LIBS ${OPENGL_LIBRARY} glfw glew)
-
-add_definitions(
-  -DTW_STATIC
-  -DTW_NO_LIB_PRAGMA
-  -DTW_NO_DIRECT3D
-  -DGLEW_STATIC
-  -D_CRT_SECURE_NO_WARNINGS
-)
-
-add_executable(main ${SRC_FILES})
-target_link_libraries(main ${ALL_LIBS})
+target_link_libraries(renderer glfw ${EXTRA_LIBS})
