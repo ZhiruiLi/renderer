@@ -4,7 +4,7 @@
 
 namespace sren {
 
-void FrameBuffer::Draw(Vector2i pos, Color color) {
+void FrameBuffer::Draw(Vector2f pos, Color color) {
   int n = pos.y * width_ * 4 + pos.x * 4;
   data_[n] = color.r;
   data_[n + 1] = color.g;
@@ -12,7 +12,7 @@ void FrameBuffer::Draw(Vector2i pos, Color color) {
   data_[n + 3] = color.a;
 }
 
-int FrameBuffer::Resize(int width, int height) {
+void FrameBuffer::Resize(int width, int height) {
   width_ = width;
   height_ = height;
   data_ = std::make_unique<unsigned char[]>(DataSize());
