@@ -4,145 +4,139 @@
 #include <cassert>
 #include <cmath>
 #include <cstddef>
+#include <iostream>
 
 #include "math.h"
 
 namespace sren {
 
-struct Vector2f {
-  float x{};
-  float y{};
-  Vector2f() = default;
-  Vector2f(Vector2f const& v) : x{v.x}, y{v.y} {}
-  Vector2f(float vx, float vy) : x{vx}, y{vy} {}
-
-  void Set(float vx, float vy) {
-    x = vx;
-    y = vy;
-  }
-
-  void SetZero() {
-    x = 0.0f;
-    y = 0.0f;
-  }
-
-  float* GetPtr() { return &x; }
-
-  float const* GetPtr() const { return &x; }
+template <int N>
+struct Vector {
+  Vector() = default;
 
   float& operator[](int i) {
-    assert(i >= 0 && i <= 1);
-    return GetPtr()[i];
+    assert(i >= 0 && i < N);
+    return data[i];
   }
 
-  float const& operator[](int i) const {
-    assert(i >= 0 && i <= 1);
-    return GetPtr()[i];
+  float operator[](int i) const {
+    assert(i >= 0 && i < N);
+    return data[i];
   }
 
-  Vector2f& operator+=(Vector2f const& v) {
-    x += v.x;
-    y += v.y;
-    return *this;
-  }
-
-  Vector2f& operator-=(Vector2f const& v) {
-    x -= v.x;
-    y -= v.y;
-    return *this;
-  }
-
-  Vector2f& operator=(Vector2f const& inV) {
-    x = inV.x;
-    y = inV.y;
-    return *this;
-  }
-
-  Vector2f& operator*=(float t) {
-    x *= t;
-    y *= t;
-    return *this;
-  }
-
-  Vector2f& operator/=(float t) {
-    assert(!AlmostEqual(t, 0.0f));
-    x /= t;
-    y /= t;
-    return *this;
-  }
-
-  bool operator==(Vector2f const& v) {
-    return AlmostEqual(x, v.x) && AlmostEqual(y, v.y);
-  }
-
-  bool operator!=(Vector2f const& v) { return !(*this == v); }
-
-  Vector2f operator-() const { return Vector2f(-x, -y); }
-
-  Vector2f& Scale(Vector2f const inV) {
-    x *= inV.x;
-    y *= inV.y;
-    return *this;
-  }
-
-  friend Vector2f operator+(Vector2f const& l, Vector2f const& r) {
-    return Vector2f(l.x + r.x, l.y + r.y);
-  }
-
-  friend Vector2f operator-(Vector2f const& l, Vector2f const& r) {
-    return Vector2f(l.x - r.x, l.y - r.y);
-  }
-
-  friend Vector2f operator*(Vector2f const& l, Vector2f const& r) {
-    return Vector2f(l.x * r.x, l.y * r.y);
-  }
-
-  friend Vector2f operator*(Vector2f const& v, float f) {
-    return Vector2f(v.x * f, v.y * f);
-  }
-
-  friend Vector2f operator*(float f, Vector2f const& v) {
-    return Vector2f(v.x * f, v.y * f);
-  }
-
-  friend Vector2f operator/(Vector2f const& l, Vector2f const& r) {
-    return Vector2f(l.x / r.x, l.y / r.y);
-  }
-
-  friend Vector2f operator/(Vector2f const& v, float f) {
-    return Vector2f(v.x / f, v.y / f);
-  }
-
-  static const Vector2f infinity;
-  static const Vector2f zero;
-  static const Vector2f one;
-  static const Vector2f xAxis;
-  static const Vector2f yAxis;
+  float data[N] = {0};
 };
 
-inline Vector2f Inverse(Vector2f const& v) {
-  return Vector2f(1.0f / v.x, 1.0f / v.y);
+template <int N>
+Vector<N> operator==(Vector<N> const& lhs, Vector<N> const& rhs) {
+  Vector<N> ret = lhs;
+  for (int i = 0; i < N; i++) {
+    ret[i] += rhs[i];
+  }
+  return ret;
 }
 
-inline float Dot(Vector2f const& l, Vector2f const& r) {
-  return l.x * r.x + l.y * r.y;
+template <int N>
+float operator*(Vector<N> const& lhs, Vector<N> const& rhs) {
+  float ret = 0;
+  for (int i = 0; i < N; i++) {
+    ret += lhs[i] * rhs[i];
+  }
+  return ret;
 }
 
-inline Vector2f Abs(Vector2f const& v) {
-  return Vector2f(std::fabs(v.x), std::fabs(v.y));
+template <int N>
+Vector<N> operator+(Vector<N> const& lhs, Vector<N> const& rhs) {
+  Vector<N> ret = lhs;
+  for (int i = 0; i < N; i++) {
+    ret[i] += rhs[i];
+  }
+  return ret;
 }
 
-inline float SquareMagnitude(Vector2f const& v) { return Dot(v, v); }
-
-inline float Magnitude(Vector2f const& v) { return std::sqrtf(Dot(v, v)); }
-
-inline float Angle(Vector2f const& l, Vector2f const& r) {
-  return std::acos(std::min(1.0f, Dot(l, r) / (Magnitude(l) * Magnitude(r))));
+template <int N>
+Vector<N> operator-(Vector<N> const& lhs, Vector<N> const& rhs) {
+  Vector<N> ret = lhs;
+  for (int i = 0; i < N; i++) {
+    ret[i] -= rhs[i];
+  }
+  return ret;
 }
 
-inline Vector2f Normalize(const Vector2f& inV) { return inV / Magnitude(inV); }
+template <int N>
+Vector<N> operator*(float f, Vector<N> const& v) {
+  Vector<N> ret = v;
+  for (int i = 0; i < N; i++) {
+    ret[i] *= f;
+  }
+  return ret;
+}
 
-inline Vector2f NormalizeSafe(const Vector2f& v,
-                              const Vector2f& defaultV = Vector2f::zero);
+template <int N>
+Vector<N> operator*(Vector<N> const& v, float f) {
+  Vector<N> ret = v;
+  for (int i = 0; i < N; i++) {
+    ret[i] *= f;
+  }
+  return ret;
+}
+
+template <int N>
+Vector<N> operator/(Vector<N> const& v, float f) {
+  Vector<N> ret = v;
+  for (int i = 0; i < N; i++) {
+    ret[i] /= f;
+  }
+  return ret;
+}
+
+template <int N>
+std::ostream& operator<<(std::ostream& out, const Vector<N>& v) {
+  out << "(";
+  if (N > 0) {
+    out << v[0];
+  }
+  for (int i = 1; i < N; i++) {
+    out << ", " << v[i];
+  }
+  out << ")";
+  return out;
+}
+
+template <int N>
+inline float SquareMagnitude(Vector<N> const& v) {
+  return v * v;
+}
+
+template <int N>
+inline float Magnitude(Vector<N> const& v) {
+  return std::sqrtf(SquareMagnitude(v));
+}
+
+template <int N>
+inline Vector<N> Inverse(Vector<N> const& v) {
+  Vector<N> ret = v;
+  for (int i = 0; i < N; i++) {
+    ret[i] = 1.0f / ret[i];
+  }
+  return ret;
+}
+
+template <int N>
+inline Vector<N> Abs(Vector<N> const& v) {
+  Vector<N> ret = v;
+  for (int i = 0; i < N; i++) {
+    ret[i] = std::fabs(ret[i]);
+  }
+  return ret;
+}
+
+template <int N>
+inline float Angle(Vector<N> const& l, Vector<N> const& r) {
+  return std::acos(std::min(1.0f, l * r / (Magnitude(l) * Magnitude(r))));
+}
+
+template <int N>
+inline Vector<N> Normalize(Vector<N> const & v) { return v / Magnitude(v); }
 
 }  // namespace sren
