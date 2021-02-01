@@ -218,7 +218,7 @@ template <class T, std::size_t N>
 inline Vector<T, N> Abs(Vector<T, N> const& v) {
   Vector<T, N> ret = v;
   for (int i = 0; i < N; i++) {
-    ret[i] = std::fabs(ret[i]);
+    ret[i] = std::abs(ret[i]);
   }
   return ret;
 }

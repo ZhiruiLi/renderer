@@ -1,11 +1,14 @@
 #include "frame_buffer.h"
 
-#include <GLFW/glfw3.h>
+#include <algorithm>
+#include <cassert>
 
 namespace sren {
 
-void FrameBuffer::Draw(Vector2f pos, Color color) {
-  int n = pos.y * width_ * 4 + pos.x * 4;
+void FrameBuffer::Set(int x, int y, Color const &color) {
+  std::clamp(x, 0, width_ - 1);
+  std::clamp(y, 0, height_ - 1);
+  int n = y * width_ * 4 + x * 4;
   data_[n] = color.r;
   data_[n + 1] = color.g;
   data_[n + 2] = color.b;

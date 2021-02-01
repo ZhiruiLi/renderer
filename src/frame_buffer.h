@@ -3,7 +3,6 @@
 #include <array>
 
 #include "color.h"
-#include "vector.h"
 
 namespace sren {
 
@@ -12,7 +11,7 @@ class FrameBuffer {
   FrameBuffer() = default;
   ~FrameBuffer() = default;
 
-  void Draw(Vector2f pos, Color color);
+  void Set(int x, int y, Color const &color);
   void Clear();
   void Resize(int width, int height);
 
