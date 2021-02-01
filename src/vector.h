@@ -117,7 +117,7 @@ Vector<T, N> operator!=(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
 // 矢量加法
 template <class T, std::size_t N>
 Vector<T, N> operator+(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
-  Vector<T, N> ret = lhs;
+  auto ret = lhs;
   for (int i = 0; i < N; i++) {
     ret[i] += rhs[i];
   }
@@ -127,7 +127,7 @@ Vector<T, N> operator+(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
 // 矢量减法
 template <class T, std::size_t N>
 Vector<T, N> operator-(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
-  Vector<T, N> ret = lhs;
+  auto ret = lhs;
   for (int i = 0; i < N; i++) {
     ret[i] -= rhs[i];
   }
@@ -137,7 +137,7 @@ Vector<T, N> operator-(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
 // 矢量对常量乘法
 template <class T, std::size_t N>
 Vector<T, N> operator*(T f, Vector<T, N> const& v) {
-  Vector<T, N> ret = v;
+  auto ret = v;
   for (int i = 0; i < N; i++) {
     ret[i] *= f;
   }
@@ -147,7 +147,7 @@ Vector<T, N> operator*(T f, Vector<T, N> const& v) {
 // 矢量对常量乘法
 template <class T, std::size_t N>
 Vector<T, N> operator*(Vector<T, N> const& v, T f) {
-  Vector<T, N> ret = v;
+  auto ret = v;
   for (int i = 0; i < N; i++) {
     ret[i] *= f;
   }
@@ -157,7 +157,7 @@ Vector<T, N> operator*(Vector<T, N> const& v, T f) {
 // 矢量对常量的除法
 template <class T, std::size_t N>
 Vector<T, N> operator/(Vector<T, N> const& v, T f) {
-  Vector<T, N> ret = v;
+  auto ret = v;
   for (int i = 0; i < N; i++) {
     ret[i] /= f;
   }
@@ -207,7 +207,7 @@ inline T Magnitude(Vector<T, N> const& v) {
 
 template <class T, std::size_t N>
 inline Vector<T, N> Inverse(Vector<T, N> const& v) {
-  Vector<T, N> ret = v;
+  auto ret = v;
   for (int i = 0; i < N; i++) {
     ret[i] = 1.0f / ret[i];
   }
@@ -216,7 +216,7 @@ inline Vector<T, N> Inverse(Vector<T, N> const& v) {
 
 template <class T, std::size_t N>
 inline Vector<T, N> Abs(Vector<T, N> const& v) {
-  Vector<T, N> ret = v;
+  auto ret = v;
   for (int i = 0; i < N; i++) {
     ret[i] = std::abs(ret[i]);
   }
