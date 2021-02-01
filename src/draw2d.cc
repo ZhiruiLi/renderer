@@ -1,13 +1,12 @@
 #include "draw2d.h"
 
-#include "vector.h"
 namespace sren {
 
-void DrawPixel(Vector2f const &p, Color const &c, FrameBuffer *fb) {
+void DrawPixel(Point2D const &p, Color const &c, FrameBuffer *fb) {
   fb->Set(int(p.x), int(p.y), c);
 }
 
-void DrawLine(Vector2f p0, Vector2f p1, Color const &c, FrameBuffer *fb) {
+void DrawLine(Point2D p0, Point2D p1, Color const &c, FrameBuffer *fb) {
   bool steep = false;
   auto const diff = Abs(p0 - p1);
   if (diff.x < diff.y) {
@@ -38,7 +37,7 @@ void DrawLine(Vector2f p0, Vector2f p1, Color const &c, FrameBuffer *fb) {
 }
 
 // 画三角形
-void DrawTriangle(Vector2f t0, Vector2f t1, Vector2f t2, Color const &c,
+void DrawTriangle(Point2D t0, Point2D t1, Point2D t2, Color const &c,
                   FrameBuffer *fb) {
   if (AlmostEqual(t0.y, t1.y) && AlmostEqual(t0.y, t2.y)) {
     return;
@@ -59,8 +58,8 @@ void DrawTriangle(Vector2f t0, Vector2f t1, Vector2f t2, Color const &c,
     float const alpha = (float)i / total_height;
     float const beta =
         (float)(i - (second_half ? t1.y - t0.y : 0)) / segment_height;
-    Vector2f pa = t0 + (t2 - t0) * alpha;
-    Vector2f pb = second_half ? t1 + (t2 - t1) * beta : t0 + (t1 - t0) * beta;
+    auto pa = t0 + (t2 - t0) * alpha;
+    auto pb = second_half ? t1 + (t2 - t1) * beta : t0 + (t1 - t0) * beta;
     if (pa.x > pb.x) {
       std::swap(pa, pb);
     }

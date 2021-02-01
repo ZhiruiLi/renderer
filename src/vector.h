@@ -95,9 +95,9 @@ struct Vector<T, 4> {
   T w{};
 };
 
-using Vector2f = Vector<float, 2>;
-using Vector3f = Vector<float, 3>;
-using Vector4f = Vector<float, 4>;
+using Vector2D = Vector<float, 2>;
+using Vector3D = Vector<float, 3>;
+using Vector4D = Vector<float, 4>;
 
 // 矢量比较
 template <class T, std::size_t N>
