@@ -207,4 +207,13 @@ inline T Angle(Vector<T, N> const& l, Vector<T, N> const& r) {
 template <class T, std::size_t N>
 inline Vector<T, N> Normalize(Vector<T, N> const & v) { return v / Magnitude(v); }
 
+template <class T>
+Vector<T, 3> operator^(Vector<T, 3> const& lhs, Vector<T, 3> const& rhs) {
+  Vector<T, 3> v{};
+  v.x = lhs.y * rhs.z - lhs.z * rhs.y;
+  v.y = lhs.z * rhs.x - lhs.x * rhs.z;
+  v.z = lhs.x * rhs.y - lhs.y * rhs.x;
+  return v;
+}
+
 }  // namespace sren

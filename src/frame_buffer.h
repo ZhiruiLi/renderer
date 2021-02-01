@@ -3,7 +3,7 @@
 #include <array>
 
 #include "color.h"
-#include "vector2.h"
+#include "vector.h"
 
 namespace sren {
 
