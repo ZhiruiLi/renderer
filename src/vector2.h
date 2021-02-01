@@ -5,93 +5,163 @@
 #include <cmath>
 #include <cstddef>
 #include <iostream>
+#include <type_traits>
 
 #include "math.h"
 
 namespace sren {
 
-template <int N>
+template <class T, std::size_t N,
+          class = typename std::enable_if<!std::numeric_limits<T>::is_integer,
+                                          void>::type>
 struct Vector {
   Vector() = default;
 
-  float& operator[](int i) {
+  T& operator[](std::size_t i) {
     assert(i >= 0 && i < N);
     return data[i];
   }
 
-  float operator[](int i) const {
+  T operator[](std::size_t i) const {
     assert(i >= 0 && i < N);
     return data[i];
   }
 
-  float data[N] = {0};
+  T data[N] = {0};
 };
 
-template <int N>
-Vector<N> operator==(Vector<N> const& lhs, Vector<N> const& rhs) {
-  Vector<N> ret = lhs;
+template<class T>
+struct Vector<T, 2> {
+  Vector() = default;
+
+  Vector(float vx, float vy): x{vx}, y{vy} {}
+
+  T& operator[](std::size_t i) {
+    assert(i >= 0 && i < 2);
+    return ((T*)this)[i];
+  }
+
+  float operator[](std::size_t i) const {
+    assert(i >= 0 && i < 2);
+    return ((T*)this)[i];
+  }
+
+  T x{};
+  T y{};
+};
+
+template<class T>
+struct Vector<T, 3> {
+  Vector() = default;
+
+  Vector(float vx, float vy, float vz): x{vx}, y{vy}, z{vz} {}
+
+  T& operator[](std::size_t i) {
+    assert(i >= 0 && i < 3);
+    return ((T*)this)[i];
+  }
+
+  float operator[](std::size_t i) const {
+    assert(i >= 0 && i < 3);
+    return ((T*)this)[i];
+  }
+
+  T x{};
+  T y{};
+  T z{};
+};
+
+template<class T>
+struct Vector<T, 4> {
+  Vector() = default;
+
+  Vector(float vx, float vy, float vz, float vw): x{vx}, y{vy}, z{vz}, w{vw} {}
+
+  T& operator[](std::size_t i) {
+    assert(i >= 0 && i < 4);
+    return ((T*)this)[i];
+  }
+
+  float operator[](std::size_t i) const {
+    assert(i >= 0 && i < 4);
+    return ((T*)this)[i];
+  }
+
+  T x{};
+  T y{};
+  T z{};
+  T w{};
+};
+
+using Vector2f = Vector<float, 2>;
+using Vector3f = Vector<float, 3>;
+using Vector4f = Vector<float, 4>;
+
+template <class T, std::size_t N>
+Vector<T, N> operator==(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
+  Vector<T, N> ret = lhs;
   for (int i = 0; i < N; i++) {
     ret[i] += rhs[i];
   }
   return ret;
 }
 
-template <int N>
-float operator*(Vector<N> const& lhs, Vector<N> const& rhs) {
-  float ret = 0;
+template <class T, std::size_t N>
+T operator*(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
+  T ret = 0;
   for (int i = 0; i < N; i++) {
     ret += lhs[i] * rhs[i];
   }
   return ret;
 }
 
-template <int N>
-Vector<N> operator+(Vector<N> const& lhs, Vector<N> const& rhs) {
-  Vector<N> ret = lhs;
+template <class T, std::size_t N>
+Vector<T, N> operator+(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
+  Vector<T, N> ret = lhs;
   for (int i = 0; i < N; i++) {
     ret[i] += rhs[i];
   }
   return ret;
 }
 
-template <int N>
-Vector<N> operator-(Vector<N> const& lhs, Vector<N> const& rhs) {
-  Vector<N> ret = lhs;
+template <class T, std::size_t N>
+Vector<T, N> operator-(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
+  Vector<T, N> ret = lhs;
   for (int i = 0; i < N; i++) {
     ret[i] -= rhs[i];
   }
   return ret;
 }
 
-template <int N>
-Vector<N> operator*(float f, Vector<N> const& v) {
-  Vector<N> ret = v;
+template <class T, std::size_t N>
+Vector<T, N> operator*(T f, Vector<T, N> const& v) {
+  Vector<T, N> ret = v;
   for (int i = 0; i < N; i++) {
     ret[i] *= f;
   }
   return ret;
 }
 
-template <int N>
-Vector<N> operator*(Vector<N> const& v, float f) {
-  Vector<N> ret = v;
+template <class T, std::size_t N>
+Vector<T, N> operator*(Vector<T, N> const& v, T f) {
+  Vector<T, N> ret = v;
   for (int i = 0; i < N; i++) {
     ret[i] *= f;
   }
   return ret;
 }
 
-template <int N>
-Vector<N> operator/(Vector<N> const& v, float f) {
-  Vector<N> ret = v;
+template <class T, std::size_t N>
+Vector<T, N> operator/(Vector<T, N> const& v, T f) {
+  Vector<T, N> ret = v;
   for (int i = 0; i < N; i++) {
     ret[i] /= f;
   }
   return ret;
 }
 
-template <int N>
-std::ostream& operator<<(std::ostream& out, const Vector<N>& v) {
+template <class T, std::size_t N>
+std::ostream& operator<<(std::ostream& out, const Vector<T, N>& v) {
   out << "(";
   if (N > 0) {
     out << v[0];
@@ -103,40 +173,38 @@ std::ostream& operator<<(std::ostream& out, const Vector<N>& v) {
   return out;
 }
 
-template <int N>
-inline float SquareMagnitude(Vector<N> const& v) {
-  return v * v;
-}
+template <class T, std::size_t N>
+inline T SquareMagnitude(Vector<T, N> const& v) { return v * v; }
 
-template <int N>
-inline float Magnitude(Vector<N> const& v) {
+template <class T, std::size_t N>
+inline T Magnitude(Vector<T, N> const& v) {
   return std::sqrtf(SquareMagnitude(v));
 }
 
-template <int N>
-inline Vector<N> Inverse(Vector<N> const& v) {
-  Vector<N> ret = v;
+template <class T, std::size_t N>
+inline Vector<T, N> Inverse(Vector<T, N> const& v) {
+  Vector<T, N> ret = v;
   for (int i = 0; i < N; i++) {
     ret[i] = 1.0f / ret[i];
   }
   return ret;
 }
 
-template <int N>
-inline Vector<N> Abs(Vector<N> const& v) {
-  Vector<N> ret = v;
+template <class T, std::size_t N>
+inline Vector<T, N> Abs(Vector<T, N> const& v) {
+  Vector<T, N> ret = v;
   for (int i = 0; i < N; i++) {
     ret[i] = std::fabs(ret[i]);
   }
   return ret;
 }
 
-template <int N>
-inline float Angle(Vector<N> const& l, Vector<N> const& r) {
+template <class T, std::size_t N>
+inline T Angle(Vector<T, N> const& l, Vector<T, N> const& r) {
   return std::acos(std::min(1.0f, l * r / (Magnitude(l) * Magnitude(r))));
 }
 
-template <int N>
-inline Vector<N> Normalize(Vector<N> const & v) { return v / Magnitude(v); }
+template <class T, std::size_t N>
+inline Vector<T, N> Normalize(Vector<T, N> const & v) { return v / Magnitude(v); }
 
 }  // namespace sren
