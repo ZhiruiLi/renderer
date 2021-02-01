@@ -77,6 +77,8 @@ struct Vector<T, 4> {
 
   Vector(float vx, float vy, float vz, float vw): x{vx}, y{vy}, z{vz}, w{vw} {}
 
+  Vector(Vector<T, 3> const& v) : x{v.x}, y{v.y}, z{v.z}, w{1.0f} {}
+
   T& operator[](std::size_t i) {
     assert(i >= 0 && i < 4);
     return ((T*)this)[i];
@@ -97,24 +99,22 @@ using Vector2f = Vector<float, 2>;
 using Vector3f = Vector<float, 3>;
 using Vector4f = Vector<float, 4>;
 
+// 矢量比较
 template <class T, std::size_t N>
 Vector<T, N> operator==(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
-  Vector<T, N> ret = lhs;
   for (int i = 0; i < N; i++) {
-    ret[i] += rhs[i];
+    if (!AlmostEqual(lhs[i], rhs[i])) { return false; }
   }
-  return ret;
+  return true;
 }
 
+// 矢量比较
 template <class T, std::size_t N>
-T operator*(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
-  T ret = 0;
-  for (int i = 0; i < N; i++) {
-    ret += lhs[i] * rhs[i];
-  }
-  return ret;
+Vector<T, N> operator!=(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
+  return !(lhs == rhs);
 }
 
+// 矢量加法
 template <class T, std::size_t N>
 Vector<T, N> operator+(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
   Vector<T, N> ret = lhs;
@@ -124,6 +124,7 @@ Vector<T, N> operator+(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
   return ret;
 }
 
+// 矢量减法
 template <class T, std::size_t N>
 Vector<T, N> operator-(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
   Vector<T, N> ret = lhs;
@@ -133,6 +134,7 @@ Vector<T, N> operator-(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
   return ret;
 }
 
+// 矢量对常量乘法
 template <class T, std::size_t N>
 Vector<T, N> operator*(T f, Vector<T, N> const& v) {
   Vector<T, N> ret = v;
@@ -142,6 +144,7 @@ Vector<T, N> operator*(T f, Vector<T, N> const& v) {
   return ret;
 }
 
+// 矢量对常量乘法
 template <class T, std::size_t N>
 Vector<T, N> operator*(Vector<T, N> const& v, T f) {
   Vector<T, N> ret = v;
@@ -151,6 +154,7 @@ Vector<T, N> operator*(Vector<T, N> const& v, T f) {
   return ret;
 }
 
+// 矢量对常量的除法
 template <class T, std::size_t N>
 Vector<T, N> operator/(Vector<T, N> const& v, T f) {
   Vector<T, N> ret = v;
@@ -158,6 +162,26 @@ Vector<T, N> operator/(Vector<T, N> const& v, T f) {
     ret[i] /= f;
   }
   return ret;
+}
+
+// 矢量点乘
+template <class T, std::size_t N>
+T operator*(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
+  T ret = 0;
+  for (int i = 0; i < N; i++) {
+    ret += lhs[i] * rhs[i];
+  }
+  return ret;
+}
+
+// 三维矢量叉乘
+template <class T>
+Vector<T, 3> operator^(Vector<T, 3> const& lhs, Vector<T, 3> const& rhs) {
+  Vector<T, 3> v{};
+  v.x = lhs.y * rhs.z - lhs.z * rhs.y;
+  v.y = lhs.z * rhs.x - lhs.x * rhs.z;
+  v.z = lhs.x * rhs.y - lhs.y * rhs.x;
+  return v;
 }
 
 template <class T, std::size_t N>
@@ -206,14 +230,5 @@ inline T Angle(Vector<T, N> const& l, Vector<T, N> const& r) {
 
 template <class T, std::size_t N>
 inline Vector<T, N> Normalize(Vector<T, N> const & v) { return v / Magnitude(v); }
-
-template <class T>
-Vector<T, 3> operator^(Vector<T, 3> const& lhs, Vector<T, 3> const& rhs) {
-  Vector<T, 3> v{};
-  v.x = lhs.y * rhs.z - lhs.z * rhs.y;
-  v.y = lhs.z * rhs.x - lhs.x * rhs.z;
-  v.z = lhs.x * rhs.y - lhs.y * rhs.x;
-  return v;
-}
 
 }  // namespace sren
