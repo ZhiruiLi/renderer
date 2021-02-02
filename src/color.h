@@ -6,13 +6,13 @@ namespace sren {
 
 class Color {
  public:
-  int r{};
-  int g{};
-  int b{};
-  int a{};
+  float r{};
+  float g{};
+  float b{};
+  float a{};
   Color() = default;
-  Color(int _r, int _g, int _b) : r{_r}, g{_g}, b{_b}, a{255} {}
-  Color(int _r, int _g, int _b, int _a) : r{_r}, g{_g}, b{_b}, a{_a} {}
+  Color(float _r, float _g, float _b) : r{_r}, g{_g}, b{_b}, a{255} {}
+  Color(float _r, float _g, float _b, float _a) : r{_r}, g{_g}, b{_b}, a{_a} {}
 };
 
 }  // namespace sren
