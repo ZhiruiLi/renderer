@@ -27,14 +27,15 @@ struct Vector {
     return data[i];
   }
 
+ private:
   T data[N] = {0};
 };
 
-template<class T>
+template <class T>
 struct Vector<T, 2> {
   Vector() = default;
 
-  Vector(float vx, float vy): x{vx}, y{vy} {}
+  Vector(float vx, float vy) : x{vx}, y{vy} {}
 
   T& operator[](std::size_t i) {
     assert(i >= 0 && i < 2);
@@ -50,11 +51,11 @@ struct Vector<T, 2> {
   T y{};
 };
 
-template<class T>
+template <class T>
 struct Vector<T, 3> {
   Vector() = default;
 
-  Vector(float vx, float vy, float vz): x{vx}, y{vy}, z{vz} {}
+  Vector(float vx, float vy, float vz) : x{vx}, y{vy}, z{vz} {}
 
   T& operator[](std::size_t i) {
     assert(i >= 0 && i < 3);
@@ -71,11 +72,11 @@ struct Vector<T, 3> {
   T z{};
 };
 
-template<class T>
+template <class T>
 struct Vector<T, 4> {
   Vector() = default;
 
-  Vector(float vx, float vy, float vz, float vw): x{vx}, y{vy}, z{vz}, w{vw} {}
+  Vector(float vx, float vy, float vz, float vw) : x{vx}, y{vy}, z{vz}, w{vw} {}
 
   Vector(Vector<T, 3> const& v) : x{v.x}, y{v.y}, z{v.z}, w{1.0f} {}
 
@@ -103,7 +104,9 @@ using Vector4D = Vector<float, 4>;
 template <class T, std::size_t N>
 Vector<T, N> operator==(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
   for (int i = 0; i < N; i++) {
-    if (!AlmostEqual(lhs[i], rhs[i])) { return false; }
+    if (!AlmostEqual(lhs[i], rhs[i])) {
+      return false;
+    }
   }
   return true;
 }
@@ -156,10 +159,10 @@ Vector<T, N> operator*(Vector<T, N> const& v, T s) {
 
 // 矢量对常量的除法
 template <class T, std::size_t N>
-Vector<T, N> operator/(Vector<T, N> const& v, T f) {
+Vector<T, N> operator/(Vector<T, N> const& v, T s) {
   auto ret = v;
   for (int i = 0; i < N; i++) {
-    ret[i] /= f;
+    ret[i] /= s;
   }
   return ret;
 }
@@ -198,7 +201,9 @@ std::ostream& operator<<(std::ostream& out, const Vector<T, N>& v) {
 }
 
 template <class T, std::size_t N>
-inline T SquareMagnitude(Vector<T, N> const& v) { return v * v; }
+inline T SquareMagnitude(Vector<T, N> const& v) {
+  return v * v;
+}
 
 template <class T, std::size_t N>
 inline T Magnitude(Vector<T, N> const& v) {
@@ -229,6 +234,8 @@ inline T Angle(Vector<T, N> const& l, Vector<T, N> const& r) {
 }
 
 template <class T, std::size_t N>
-inline Vector<T, N> Normalize(Vector<T, N> const & v) { return v / Magnitude(v); }
+inline Vector<T, N> Normalize(Vector<T, N> const& v) {
+  return v / Magnitude(v);
+}
 
 }  // namespace sren

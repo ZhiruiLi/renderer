@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <array>
 #include <cassert>
 #include <cmath>
 #include <cstddef>
@@ -16,32 +17,56 @@ template <class T, std::size_t N, std::size_t M,
           class = typename std::enable_if<!std::numeric_limits<T>::is_integer,
                                           void>::type>
 struct Matrix {
-  Vector<T, M> &operator[](std::size_t i) {
+  Matrix() = default;
+  Matrix(std::array<std::array<T, M>, N> const &arr) : data{arr} {}
+
+  std::array<T, M> &operator[](std::size_t i) {
     assert(i >= 0 && i < N);
     return data[i];
   }
 
-  Vector<T, M> const &operator[](std::size_t i) const {
+  std::array<T, M> const &operator[](std::size_t i) const {
     assert(i >= 0 && i < N);
     return data[i];
   }
 
-  static typename std::enable_if<N == M, Matrix>::type const &Identity() {
+ private:
+  std::array<std::array<T, M>, N> data{};
+};
+
+template <class T, std::size_t N>
+struct Matrix<T, N, N> {
+  Matrix() = default;
+  Matrix(std::array<std::array<T, N>, N> const &arr) : data{arr} {}
+
+  std::array<T, N> &operator[](std::size_t i) {
+    assert(i >= 0 && i < N);
+    return data[i];
+  }
+
+  std::array<T, N> const &operator[](std::size_t i) const {
+    assert(i >= 0 && i < N);
+    return data[i];
+  }
+
+  static Matrix const &Identity() {
     static Matrix ret = IdentityCopy();
     return ret;
   }
 
-  Vector<T, M> data[N]{};
-
  private:
-  static typename std::enable_if<N == M, Matrix>::type IdentityCopy() {
+  static Matrix IdentityCopy() {
     Matrix ret{};
     for (int i = 0; i < N; i++) {
       ret[i][i] = T(1);
     }
     return ret;
   }
+  std::array<std::array<T, N>, N> data{};
 };
+
+using Matrix3x3 = Matrix<float, 3, 3>;
+using Matrix4x4 = Matrix<float, 4, 4>;
 
 template <class T, std::size_t N, std::size_t M>
 bool operator==(Matrix<T, N, M> const &lhs, Matrix<T, N, M> const &rhs) {

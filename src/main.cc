@@ -7,6 +7,8 @@
 auto const red = sren::Color(255, 0, 0);
 int main() {
   sren::Matrix<float, 3, 4> x{};
+  sren::Matrix3x3 y{};
+  auto z = sren::Matrix3x3::Identity();
   sren::Window window("Test", 300, 200);
   window.set_main_loop([](sren::FrameBuffer *fb) {
     fb->Clear();
