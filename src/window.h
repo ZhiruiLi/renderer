@@ -10,6 +10,17 @@
 
 namespace sren {
 
+enum class Key {
+  kRight = 0,
+  kLeft = 1,
+  kDown = 2,
+  kUp = 3,
+
+  kCount = 4,
+};
+
+bool IsKeyOn(Key k);
+
 class Window {
  public:
   using LoopFunc = std::function<void(FrameBuffer*)>;

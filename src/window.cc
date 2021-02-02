@@ -5,16 +5,35 @@
 
 #include <iostream>
 
+namespace sren {
+
 namespace {
+
+bool keyState[int(Key::kCount)] = {};
+
+void SetKeyOn(Key k) { keyState[int(k)] = true; }
+
 void HandleKey(GLFWwindow* w, int key, int scancode, int action, int mode) {
   // ESC 关闭应用程序
   if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
     glfwSetWindowShouldClose(w, GL_TRUE);
+    return;
+  }
+  switch (key) {
+    case GLFW_KEY_RIGHT:
+      return SetKeyOn(Key::kRight);
+    case GLFW_KEY_LEFT:
+      return SetKeyOn(Key::kLeft);
+    case GLFW_KEY_DOWN:
+      return SetKeyOn(Key::kDown);
+    case GLFW_KEY_UP:
+      return SetKeyOn(Key::kUp);
   }
 }
+
 }  // namespace
 
-namespace sren {
+bool IsKeyOn(Key k) { return keyState[int(k)]; }
 
 Window::Window(std::string_view title, int width, int height) {
   // 初始化 GLFW
@@ -66,6 +85,9 @@ void Window::Run() {
 
     // 交换缓冲，修改的缓冲和展示的缓冲是两个数据，交换才能正常展示
     glfwSwapBuffers(glfw_window_);
+
+    // 清理按键记录
+    bzero(keyState, sizeof(keyState));
   }
 }
 
