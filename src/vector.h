@@ -136,20 +136,20 @@ Vector<T, N> operator-(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
 
 // 矢量对常量乘法
 template <class T, std::size_t N>
-Vector<T, N> operator*(T f, Vector<T, N> const& v) {
+Vector<T, N> operator*(T s, Vector<T, N> const& v) {
   auto ret = v;
   for (int i = 0; i < N; i++) {
-    ret[i] *= f;
+    ret[i] *= s;
   }
   return ret;
 }
 
 // 矢量对常量乘法
 template <class T, std::size_t N>
-Vector<T, N> operator*(Vector<T, N> const& v, T f) {
+Vector<T, N> operator*(Vector<T, N> const& v, T s) {
   auto ret = v;
   for (int i = 0; i < N; i++) {
-    ret[i] *= f;
+    ret[i] *= s;
   }
   return ret;
 }
