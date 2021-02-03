@@ -21,7 +21,7 @@ class Color {
 
  public:
   Color() = default;
-  Color(uint32_t vhex) : hex_(vhex) {}
+  explicit Color(uint32_t vhex) : hex_(vhex) {}
   Color(uint32_t r, uint32_t g, uint32_t b, uint32_t a = 255)
       : Color(ShiftR(r) | ShiftG(g) | ShiftB(b) | ShiftA(a)) {}
 

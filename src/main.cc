@@ -509,8 +509,8 @@ void device_init(device_t *device, int width, int height, void *fb) {
   device->max_v = 1.0f;
   device->width = width;
   device->height = height;
-  device->background = Color(0xC0C0C0);
-  device->foreground = Color(0x0);
+  device->background = Color(0xC0, 0xC0, 0xC0);
+  device->foreground = Color(0x0, 0x0, 0x0);
   transform_init(&device->transform, width, height);
   device->render_state = RENDER_STATE_WIREFRAME;
 }
