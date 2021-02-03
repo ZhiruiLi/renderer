@@ -28,7 +28,7 @@ class Color {
   uint32_t r() const { return ColorR(hex_); }
   uint32_t g() const { return ColorG(hex_); }
   uint32_t b() const { return ColorB(hex_); }
-  uint32_t a() const { return ColorB(hex_); }
+  uint32_t a() const { return ColorA(hex_); }
   uint32_t hex() const { return hex_; }
 
  private:
