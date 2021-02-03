@@ -2,10 +2,12 @@
 
 namespace sren {
 
+// 画点
 void DrawPixel(Point2D const &p, Color const &c, FrameBuffer *fb) {
   fb->Set(int(p.x()), int(p.y()), c);
 }
 
+// 画线
 void DrawLine(Point2D p0, Point2D p1, Color const &c, FrameBuffer *fb) {
   bool steep = false;
   auto diff = p0 - p1;
