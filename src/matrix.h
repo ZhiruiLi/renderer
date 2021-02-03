@@ -30,39 +30,28 @@ struct Matrix {
     return data[i];
   }
 
- private:
-  std::array<std::array<T, M>, N> data{};
-};
-
-template <class T, std::size_t N>
-struct Matrix<T, N, N> {
-  Matrix() = default;
-  Matrix(std::array<std::array<T, N>, N> const &arr) : data{arr} {}
-
-  std::array<T, N> &operator[](std::size_t i) {
-    assert(i >= 0 && i < N);
-    return data[i];
+  template <std::size_t N1 = N, std::size_t M1 = M>
+  typename std::enable_if<N1 == M1>::type SetIdentity() {
+    for (int i = 0; i < N; i++) {
+      data[i][i] = T(1);
+    }
   }
 
-  std::array<T, N> const &operator[](std::size_t i) const {
-    assert(i >= 0 && i < N);
-    return data[i];
-  }
-
-  static Matrix const &Identity() {
+  template <std::size_t N1 = N, std::size_t M1 = M>
+  static typename std::enable_if<N1 == M1, Matrix>::type const &Identity() {
     static Matrix ret = IdentityCopy();
     return ret;
   }
 
  private:
-  static Matrix IdentityCopy() {
+  template <std::size_t N1 = N, std::size_t M1 = M>
+  static typename std::enable_if<N1 == M1, Matrix>::type IdentityCopy() {
     Matrix ret{};
-    for (int i = 0; i < N; i++) {
-      ret[i][i] = T(1);
-    }
+    ret.SetIdentity();
     return ret;
   }
-  std::array<std::array<T, N>, N> data{};
+
+  std::array<std::array<T, M>, N> data{};
 };
 
 using Matrix3x3 = Matrix<float, 3, 3>;
