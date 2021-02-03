@@ -29,8 +29,4 @@ class Window {
   FrameBuffer frame_buffer_{};
 };
 
-bool IsKeyPress(Key k);
-bool IsKeyRelease(Key k);
-bool IsKeyHold(Key k);
-
 }  // namespace sren

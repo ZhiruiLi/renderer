@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <memory>
 
 namespace sren {
 
@@ -17,9 +18,9 @@ void FrameBuffer::Set(int x, int y, Color const &color) {
 void FrameBuffer::Resize(int width, int height) {
   width_ = width;
   height_ = height;
-  data_ = std::make_unique<unsigned char[]>(DataSize());
+  data_ = std::make_unique<unsigned char[]>(size());
 }
 
-void FrameBuffer::Clear() { bzero(data(), DataSize()); }
+void FrameBuffer::Clear() { bzero(data(), size()); }
 
 }  // namespace sren

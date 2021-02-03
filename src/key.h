@@ -1,5 +1,8 @@
 #pragma once
 
+#include <GLFW/glfw3.h>
+#include <stdint.h>
+
 namespace sren {
 
 enum class Key {
@@ -126,5 +129,16 @@ enum class Key {
   // --------
   kCount,
 };
+
+bool IsKeyPress(Key k);
+bool IsKeyRelease(Key k);
+bool IsKeyHold(Key k);
+
+namespace details {
+
+void HandleKey(GLFWwindow* w, int key, int scancode, int action, int mode);
+void ClearKeyState();
+
+}  // namespace details
 
 }  // namespace sren
