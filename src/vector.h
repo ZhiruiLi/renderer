@@ -169,6 +169,7 @@ struct Vector {
     return v;
   }
 
+  // 矢量对常量的除法
   Vector& operator/=(T s) {
     for (int i = 0; i < N; i++) {
       data_[i] /= s;
@@ -182,6 +183,7 @@ struct Vector {
     return v;
   }
 
+  // 矢量输出到 ostream
   friend std::ostream& operator<<(std::ostream& out, const Vector& v) {
     out << "(";
     if (N > 0) {
@@ -194,6 +196,57 @@ struct Vector {
     return out;
   }
 
+  // 计算平方和
+  T SquareMagnitude() const { return (*this) * (*this); }
+
+  // 计算长度
+  T Magnitude() const { return std::sqrtf(SquareMagnitude()); }
+
+  // 对矢量的每一项都取倒数
+  Vector& Inverse() {
+    for (int i = 0; i < N; i++) {
+      data_[i] = 1.0f / data_[i];
+    }
+    return *this;
+  }
+
+  // 复制矢量并对矢量的每一项都取倒数
+  Vector InverseCopy() const {
+    Vector v = *this;
+    v.Inverse();
+    return v;
+  }
+
+  // 对矢量的每一项都取绝对值
+  Vector& Abs() {
+    for (int i = 0; i < N; i++) {
+      data_[i] = std::abs(data_[i]);
+    }
+    return *this;
+  }
+
+  // 复制矢量并对矢量的每一项都取绝对值
+  Vector AbsCopy() const {
+    Vector v = *this;
+    v.Abs();
+    return v;
+  }
+
+  // 计算与另一个矢量的夹角
+  T Angle(Vector const& rhs) const {
+    return std::acos(
+        std::min(1.0f, (*this) * rhs / (Magnitude() * rhs.Magnitude())));
+  }
+
+  // 将矢量归一化
+  Vector& Normalize() { return (*this) /= Magnitude(); }
+
+  // 复制矢量并将矢量归一化
+  Vector NormalizeCopy() const {
+    return (*this) / Magnitude();
+    ;
+  }
+
  private:
   T data_[N] = {0};
 };
@@ -201,43 +254,5 @@ struct Vector {
 using Vector2 = Vector<float, 2>;
 using Vector3 = Vector<float, 3>;
 using Vector4 = Vector<float, 4>;
-
-template <class T, std::size_t N>
-inline T SquareMagnitude(Vector<T, N> const& v) {
-  return v * v;
-}
-
-template <class T, std::size_t N>
-inline T Magnitude(Vector<T, N> const& v) {
-  return std::sqrtf(SquareMagnitude(v));
-}
-
-template <class T, std::size_t N>
-inline Vector<T, N> Inverse(Vector<T, N> const& v) {
-  auto ret = v;
-  for (int i = 0; i < N; i++) {
-    ret[i] = 1.0f / ret[i];
-  }
-  return ret;
-}
-
-template <class T, std::size_t N>
-inline Vector<T, N> Abs(Vector<T, N> const& v) {
-  auto ret = v;
-  for (int i = 0; i < N; i++) {
-    ret[i] = std::abs(ret[i]);
-  }
-  return ret;
-}
-
-template <class T, std::size_t N>
-inline T Angle(Vector<T, N> const& l, Vector<T, N> const& r) {
-  return std::acos(std::min(1.0f, l * r / (Magnitude(l) * Magnitude(r))));
-}
-
-template <class T, std::size_t N>
-inline Vector<T, N> Normalize(Vector<T, N> const& v) {
-  return v / Magnitude(v);
-}
 
 }  // namespace sren
