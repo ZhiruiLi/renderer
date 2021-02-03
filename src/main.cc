@@ -544,7 +544,7 @@ void device_clear(device_t *device, int mode) {
     uint32_t *dst = device->framebuffer[y];
     uint32_t cc = (height - 1 - y) * 230 / (height - 1);
     cc = (cc << 16) | (cc << 8) | cc;
-    if (mode == 0) cc = device->background.rgb;
+    if (mode == 0) cc = device->background.hex();
     for (x = device->width; x > 0; dst++, x--) dst[0] = cc;
   }
   for (y = 0; y < device->height; y++) {
@@ -725,11 +725,11 @@ void device_draw_primitive(device_t *device, const vertex_t *v1,
 
   if (render_state & RENDER_STATE_WIREFRAME) {  // 线框绘制
     device_draw_line(device, (int)p1.x, (int)p1.y, (int)p2.x, (int)p2.y,
-                     device->foreground.rgb);
+                     device->foreground.hex());
     device_draw_line(device, (int)p1.x, (int)p1.y, (int)p3.x, (int)p3.y,
-                     device->foreground.rgb);
+                     device->foreground.hex());
     device_draw_line(device, (int)p3.x, (int)p3.y, (int)p2.x, (int)p2.y,
-                     device->foreground.rgb);
+                     device->foreground.hex());
   }
 }
 
