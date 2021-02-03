@@ -7,19 +7,9 @@
 #include <string_view>
 
 #include "frame_buffer.h"
+#include "key.h"
 
 namespace sren {
-
-enum class Key {
-  kRight = 0,
-  kLeft = 1,
-  kDown = 2,
-  kUp = 3,
-
-  kCount = 4,
-};
-
-bool IsKeyOn(Key k);
 
 class Window {
  public:
@@ -29,6 +19,7 @@ class Window {
   ~Window();
 
   void Run();
+  void Close();
 
   void set_main_loop(LoopFunc func) { main_loop_ = std::move(func); }
 
@@ -37,5 +28,9 @@ class Window {
   LoopFunc main_loop_{};
   FrameBuffer frame_buffer_{};
 };
+
+bool IsKeyPress(Key k);
+bool IsKeyRelease(Key k);
+bool IsKeyHold(Key k);
 
 }  // namespace sren

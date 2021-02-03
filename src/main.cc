@@ -811,10 +811,11 @@ int main(void) {
     fb->Clear();
     device_clear(&device, 1);
 
-    if (IsKeyOn(Key::kUp)) pos -= 0.01f;
-    if (IsKeyOn(Key::kDown)) pos += 0.01f;
-    if (IsKeyOn(Key::kLeft)) alpha += 0.01f;
-    if (IsKeyOn(Key::kRight)) alpha -= 0.01f;
+    if (IsKeyPress(Key::kEscape)) window.Close();
+    if (IsKeyPress(Key::kUp) || IsKeyHold(Key::kUp)) pos -= 0.01f;
+    if (IsKeyPress(Key::kDown) || IsKeyHold(Key::kDown)) pos += 0.01f;
+    if (IsKeyPress(Key::kLeft) || IsKeyHold(Key::kLeft)) alpha += 0.01f;
+    if (IsKeyPress(Key::kRight) || IsKeyHold(Key::kRight)) alpha -= 0.01f;
 
     camera_at_zero(&device, pos, 0, 0);
     draw_box(&device, alpha);
