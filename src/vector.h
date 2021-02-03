@@ -242,10 +242,7 @@ struct Vector {
   Vector& Normalize() { return (*this) /= Magnitude(); }
 
   // 复制矢量并将矢量归一化
-  Vector NormalizeCopy() const {
-    return (*this) / Magnitude();
-    ;
-  }
+  Vector NormalizeCopy() const { return (*this) / Magnitude(); }
 
  private:
   T data_[N] = {0};
