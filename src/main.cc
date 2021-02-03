@@ -5,6 +5,7 @@
 #include "draw2d.h"
 #include "frame_buffer.h"
 #include "matrix.h"
+#include "vector.h"
 #include "window.h"
 
 using namespace sren;
@@ -793,6 +794,12 @@ int main(void) {
   int kbhit = 0;
   float alpha = 1;
   float pos = 3.5;
+
+  sren::Matrix3x3 m;
+  sren::Matrix<float, 3, 4> m1;
+  sren::Vector2 v(1.1f, 2.2f);
+  v.x();
+  v.y();
 
   sren::Window window("Test", 800, 600);
   device_init(&device, 800, 600, nullptr);
