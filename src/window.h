@@ -7,7 +7,6 @@
 #include <string_view>
 
 #include "frame_buffer.h"
-#include "key.h"
 
 namespace sren {
 
