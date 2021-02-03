@@ -732,14 +732,6 @@ void device_draw_primitive(device_t *device, const vertex_t *v1,
 }
 
 //=====================================================================
-// Win32 窗口及图形绘制：为 device 提供一个 DibSection 的 FB
-//=====================================================================
-int screen_w, screen_h, screen_exit = 0;
-int screen_mx = 0, screen_my = 0, screen_mb = 0;
-unsigned char *screen_fb = NULL;  // frame buffer
-long screen_pitch = 0;
-
-//=====================================================================
 // 主程序
 //=====================================================================
 vertex_t mesh[8] = {
@@ -802,7 +794,7 @@ int main(void) {
   float pos = 3.5;
 
   sren::Window window("Test", 800, 600);
-  device_init(&device, 800, 600, screen_fb);
+  device_init(&device, 800, 600, nullptr);
   camera_at_zero(&device, 3, 0, 0);
   init_texture(&device);
   device.render_state = RENDER_STATE_TEXTURE;
