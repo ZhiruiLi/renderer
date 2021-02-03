@@ -507,8 +507,8 @@ void device_init(device_t *device, int width, int height, void *fb) {
   device->max_v = 1.0f;
   device->width = width;
   device->height = height;
-  device->background = Color(0xC0C0C0FF);
-  device->foreground = Color(0, 0, 0);
+  device->background = Color(0xC0C0C0);
+  device->foreground = Color(0x0);
   transform_init(&device->transform, width, height);
   device->render_state = RENDER_STATE_WIREFRAME;
 }
@@ -542,7 +542,7 @@ void device_clear(device_t *device, int mode) {
     uint32_t *dst = device->framebuffer[y];
     uint32_t cc = (height - 1 - y) * 230 / (height - 1);
     cc = (cc << 16) | (cc << 8) | cc;
-    if (mode == 0) cc = device->background.AsRGB();
+    if (mode == 0) cc = device->background.rgb;
     for (x = device->width; x > 0; dst++, x--) dst[0] = cc;
   }
   for (y = 0; y < device->height; y++) {
@@ -723,11 +723,11 @@ void device_draw_primitive(device_t *device, const vertex_t *v1,
 
   if (render_state & RENDER_STATE_WIREFRAME) {  // 线框绘制
     device_draw_line(device, (int)p1.x, (int)p1.y, (int)p2.x, (int)p2.y,
-                     device->foreground.AsRGB());
+                     device->foreground.rgb);
     device_draw_line(device, (int)p1.x, (int)p1.y, (int)p3.x, (int)p3.y,
-                     device->foreground.AsRGB());
+                     device->foreground.rgb);
     device_draw_line(device, (int)p3.x, (int)p3.y, (int)p2.x, (int)p2.y,
-                     device->foreground.AsRGB());
+                     device->foreground.rgb);
   }
 }
 

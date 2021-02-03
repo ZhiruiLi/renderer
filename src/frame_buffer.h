@@ -20,7 +20,7 @@ class FrameBuffer {
   void *data() { return data_ ? data_.get() : nullptr; }
 
  private:
-  int DataSize() { return width_ * height_ * 4; }
+  int DataSize() { return width_ * height_ * 3; }
 
   int width_{};
   int height_{};

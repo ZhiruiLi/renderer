@@ -80,7 +80,7 @@ void Window::Run() {
     // https://stackoverflow.com/questions/27678819/crazy-flashing-window-opengl-glfw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glDrawPixels(frame_buffer_.width(), frame_buffer_.height(), GL_RGBA,
+    glDrawPixels(frame_buffer_.width(), frame_buffer_.height(), GL_RGB,
                  GL_UNSIGNED_BYTE, frame_buffer_.data());
 
     // 交换缓冲，修改的缓冲和展示的缓冲是两个数据，交换才能正常展示
