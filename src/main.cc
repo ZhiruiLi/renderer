@@ -221,6 +221,7 @@ void matrix_set_lookat(matrix_t *m, const vector_t *eye, const vector_t *at,
 }
 
 // D3DXMatrixPerspectiveFovLH
+// fovy 为 y 轴上的视角，Aspect 为高宽比，zn 为近裁面，zf 为远裁面。
 void matrix_set_perspective(matrix_t *m, float fovy, float aspect, float zn,
                             float zf) {
   float fax = 1.0f / (float)tan(fovy * 0.5f);
