@@ -7,6 +7,7 @@
 #include "matrix.h"
 #include "vector.h"
 #include "window.h"
+#include "key.h"
 
 using namespace sren;
 
