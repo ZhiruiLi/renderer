@@ -14,8 +14,7 @@
 namespace sren {
 
 template <class T, std::size_t N, std::size_t M,
-          class = typename std::enable_if<!std::numeric_limits<T>::is_integer,
-                                          void>::type>
+          class = std::enable_if_t<!std::numeric_limits<T>::is_integer, void>>
 struct Matrix {
   Matrix() = default;
   Matrix(std::array<std::array<T, M>, N> const &arr) : data{arr} {}
@@ -31,21 +30,21 @@ struct Matrix {
   }
 
   template <std::size_t N1 = N, std::size_t M1 = M>
-  typename std::enable_if<N1 == M1>::type SetIdentity() {
+  std::enable_if_t<N1 == M1> SetIdentity() {
     for (int i = 0; i < N; i++) {
       data[i][i] = T(1);
     }
   }
 
   template <std::size_t N1 = N, std::size_t M1 = M>
-  static typename std::enable_if<N1 == M1, Matrix>::type const &Identity() {
+  static std::enable_if_t<N1 == M1, Matrix> const &Identity() {
     static Matrix ret = IdentityCopy();
     return ret;
   }
 
  private:
   template <std::size_t N1 = N, std::size_t M1 = M>
-  static typename std::enable_if<N1 == M1, Matrix>::type IdentityCopy() {
+  static std::enable_if_t<N1 == M1, Matrix> IdentityCopy() {
     Matrix ret{};
     ret.SetIdentity();
     return ret;
