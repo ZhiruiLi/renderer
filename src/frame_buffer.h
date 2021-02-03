@@ -22,7 +22,7 @@ class FrameBuffer {
   int width() { return width_; }
   int height() { return height_; }
   void *data() { return data_ ? data_.get() : nullptr; }
-  int size() { return width_ * height_ * 3; }
+  int size() { return width_ * height_ * 4; }
 
   void Resize(int width, int height);
 
