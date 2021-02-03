@@ -11,7 +11,7 @@ void DrawPixel(Point2D const &p, Color const &c, FrameBuffer *fb) {
 void DrawLine(Point2D p0, Point2D p1, Color const &c, FrameBuffer *fb) {
   bool steep = false;
   auto diff = p0 - p1;
-  diff.Abs();
+  diff.SetAbs();
   if (diff.x() < diff.y()) {
     std::swap(p0.x(), p0.y());
     std::swap(p1.x(), p1.y());

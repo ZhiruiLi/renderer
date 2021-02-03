@@ -27,6 +27,8 @@ template <class T, std::size_t N,
 struct Vector {
   Vector() = default;
 
+  explicit Vector(std::array<T, N> const& data) : data_{data} {}
+
   template <std::size_t N1 = N, class = std::enable_if_t<N1 == 2>>
   Vector(float vx, float vy) : data_{vx, vy} {}
 
@@ -86,7 +88,7 @@ struct Vector {
     return data_[3];
   }
 
-  // 矢量比较
+  // 矢量比较相等
   friend bool operator==(Vector const& lhs, Vector const& rhs) {
     for (int i = 0; i < N; i++) {
       if (!AlmostEqual(lhs[i], rhs[i])) {
@@ -96,7 +98,7 @@ struct Vector {
     return true;
   }
 
-  // 矢量比较
+  // 矢量比较不相等
   friend bool operator!=(Vector const& lhs, Vector const& rhs) {
     return !(lhs == rhs);
   }
@@ -104,7 +106,7 @@ struct Vector {
   // 矢量加法
   Vector& operator+=(Vector const& rhs) {
     for (int i = 0; i < N; i++) {
-      data_[i] += rhs.data_[i];
+      data_[i] += rhs[i];
     }
     return *this;
   }
@@ -118,7 +120,7 @@ struct Vector {
   // 矢量减法
   Vector& operator-=(Vector const& rhs) {
     for (int i = 0; i < N; i++) {
-      data_[i] -= rhs.data_[i];
+      data_[i] -= rhs[i];
     }
     return *this;
   }
@@ -185,14 +187,14 @@ struct Vector {
 
   // 矢量输出到 ostream
   friend std::ostream& operator<<(std::ostream& out, const Vector& v) {
-    out << "(";
+    out << "[";
     if (N > 0) {
       out << v[0];
     }
     for (int i = 1; i < N; i++) {
-      out << ", " << v[i];
+      out << "," << v[i];
     }
-    out << ")";
+    out << "]";
     return out;
   }
 
@@ -203,7 +205,7 @@ struct Vector {
   T Magnitude() const { return std::sqrtf(SquareMagnitude()); }
 
   // 对矢量的每一项都取倒数
-  Vector& Inverse() {
+  Vector& SetInverse() {
     for (int i = 0; i < N; i++) {
       data_[i] = 1.0f / data_[i];
     }
@@ -211,14 +213,14 @@ struct Vector {
   }
 
   // 复制矢量并对矢量的每一项都取倒数
-  Vector InverseCopy() const {
+  Vector Inverse() const {
     Vector v = *this;
-    v.Inverse();
+    v.SetInverse();
     return v;
   }
 
   // 对矢量的每一项都取绝对值
-  Vector& Abs() {
+  Vector& SetAbs() {
     for (int i = 0; i < N; i++) {
       data_[i] = std::abs(data_[i]);
     }
@@ -226,9 +228,9 @@ struct Vector {
   }
 
   // 复制矢量并对矢量的每一项都取绝对值
-  Vector AbsCopy() const {
+  Vector Abs() const {
     Vector v = *this;
-    v.Abs();
+    v.SetAbs();
     return v;
   }
 
@@ -239,13 +241,13 @@ struct Vector {
   }
 
   // 将矢量归一化
-  Vector& Normalize() { return (*this) /= Magnitude(); }
+  Vector& SetNormalize() { return (*this) /= Magnitude(); }
 
   // 复制矢量并将矢量归一化
-  Vector NormalizeCopy() const { return (*this) / Magnitude(); }
+  Vector Normalize() const { return (*this) / Magnitude(); }
 
  private:
-  T data_[N] = {0};
+  std::array<T, N> data_{};
 };
 
 using Vector2 = Vector<float, 2>;
