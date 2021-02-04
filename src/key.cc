@@ -1,266 +1,293 @@
 #include "key.h"
 
-#include <strings.h>
+#include <array>
+#include <cstddef>
+#include <utility>
+
+#include "GLFW/glfw3.h"
 
 namespace sren {
 
 namespace {
-uint8_t gKeyState[int(Key::kCount)] = {};
-void SetKey(Key k, int action) { gKeyState[int(k)] = uint8_t(action) + 1; }
+
+std::array<std::pair<uint8_t, uint8_t>, std::size_t(Key::kCount)> gKeyState{};
+
+void SetKeyState(Key k, int action, int mode) {
+  gKeyState[int(k)] = std::make_pair(uint8_t(action + 1), uint8_t(mode));
+}
+
 }  // namespace
 
-bool IsKeyPress(Key k) { return gKeyState[int(k)] == GLFW_PRESS + 1; }
-bool IsKeyRelease(Key k) { return gKeyState[int(k)] == GLFW_RELEASE + 1; }
-bool IsKeyHold(Key k) { return gKeyState[int(k)] == GLFW_REPEAT + 1; }
-
 namespace details {
+
+bool HasModifierKey(uint8_t state, KeyMod mod) {
+  switch (mod) {
+    case KeyMod::kShift:
+      return state & GLFW_MOD_SHIFT;
+    case KeyMod::kControl:
+      return state & GLFW_MOD_CONTROL;
+    case KeyMod::kAlt:
+      return state & GLFW_MOD_ALT;
+    case KeyMod::kSuper:
+      return state & GLFW_MOD_SUPER;
+    case KeyMod::kCapsLock:
+      return state & GLFW_MOD_CAPS_LOCK;
+    case KeyMod::kNumLock:
+      return state & GLFW_MOD_NUM_LOCK;
+  }
+  return false;
+}
+
+std::pair<uint8_t, uint8_t> const& GetKeyState(Key k) {
+  return gKeyState[int(k)];
+}
 
 void HandleKey(GLFWwindow* w, int key, int scancode, int action, int mode) {
   switch (key) {
     case GLFW_KEY_SPACE:
-      return SetKey(Key::kSpace, action);
+      return SetKeyState(Key::kSpace, action, mode);
     case GLFW_KEY_APOSTROPHE:
-      return SetKey(Key::kApostrophe, action);
+      return SetKeyState(Key::kApostrophe, action, mode);
     case GLFW_KEY_COMMA:
-      return SetKey(Key::kComma, action);
+      return SetKeyState(Key::kComma, action, mode);
     case GLFW_KEY_MINUS:
-      return SetKey(Key::kMinus, action);
+      return SetKeyState(Key::kMinus, action, mode);
     case GLFW_KEY_PERIOD:
-      return SetKey(Key::kPeriod, action);
+      return SetKeyState(Key::kPeriod, action, mode);
     case GLFW_KEY_SLASH:
-      return SetKey(Key::kSlash, action);
+      return SetKeyState(Key::kSlash, action, mode);
     case GLFW_KEY_0:
-      return SetKey(Key::k0, action);
+      return SetKeyState(Key::k0, action, mode);
     case GLFW_KEY_1:
-      return SetKey(Key::k1, action);
+      return SetKeyState(Key::k1, action, mode);
     case GLFW_KEY_2:
-      return SetKey(Key::k2, action);
+      return SetKeyState(Key::k2, action, mode);
     case GLFW_KEY_3:
-      return SetKey(Key::k3, action);
+      return SetKeyState(Key::k3, action, mode);
     case GLFW_KEY_4:
-      return SetKey(Key::k4, action);
+      return SetKeyState(Key::k4, action, mode);
     case GLFW_KEY_5:
-      return SetKey(Key::k5, action);
+      return SetKeyState(Key::k5, action, mode);
     case GLFW_KEY_6:
-      return SetKey(Key::k6, action);
+      return SetKeyState(Key::k6, action, mode);
     case GLFW_KEY_7:
-      return SetKey(Key::k7, action);
+      return SetKeyState(Key::k7, action, mode);
     case GLFW_KEY_8:
-      return SetKey(Key::k8, action);
+      return SetKeyState(Key::k8, action, mode);
     case GLFW_KEY_9:
-      return SetKey(Key::k9, action);
+      return SetKeyState(Key::k9, action, mode);
     case GLFW_KEY_SEMICOLON:
-      return SetKey(Key::kSemicolon, action);
+      return SetKeyState(Key::kSemicolon, action, mode);
     case GLFW_KEY_EQUAL:
-      return SetKey(Key::kEqual, action);
+      return SetKeyState(Key::kEqual, action, mode);
     case GLFW_KEY_A:
-      return SetKey(Key::kA, action);
+      return SetKeyState(Key::kA, action, mode);
     case GLFW_KEY_B:
-      return SetKey(Key::kB, action);
+      return SetKeyState(Key::kB, action, mode);
     case GLFW_KEY_C:
-      return SetKey(Key::kC, action);
+      return SetKeyState(Key::kC, action, mode);
     case GLFW_KEY_D:
-      return SetKey(Key::kD, action);
+      return SetKeyState(Key::kD, action, mode);
     case GLFW_KEY_E:
-      return SetKey(Key::kE, action);
+      return SetKeyState(Key::kE, action, mode);
     case GLFW_KEY_F:
-      return SetKey(Key::kF, action);
+      return SetKeyState(Key::kF, action, mode);
     case GLFW_KEY_G:
-      return SetKey(Key::kG, action);
+      return SetKeyState(Key::kG, action, mode);
     case GLFW_KEY_H:
-      return SetKey(Key::kH, action);
+      return SetKeyState(Key::kH, action, mode);
     case GLFW_KEY_I:
-      return SetKey(Key::kI, action);
+      return SetKeyState(Key::kI, action, mode);
     case GLFW_KEY_J:
-      return SetKey(Key::kJ, action);
+      return SetKeyState(Key::kJ, action, mode);
     case GLFW_KEY_K:
-      return SetKey(Key::kK, action);
+      return SetKeyState(Key::kK, action, mode);
     case GLFW_KEY_L:
-      return SetKey(Key::kL, action);
+      return SetKeyState(Key::kL, action, mode);
     case GLFW_KEY_M:
-      return SetKey(Key::kM, action);
+      return SetKeyState(Key::kM, action, mode);
     case GLFW_KEY_N:
-      return SetKey(Key::kN, action);
+      return SetKeyState(Key::kN, action, mode);
     case GLFW_KEY_O:
-      return SetKey(Key::kO, action);
+      return SetKeyState(Key::kO, action, mode);
     case GLFW_KEY_P:
-      return SetKey(Key::kP, action);
+      return SetKeyState(Key::kP, action, mode);
     case GLFW_KEY_Q:
-      return SetKey(Key::kQ, action);
+      return SetKeyState(Key::kQ, action, mode);
     case GLFW_KEY_R:
-      return SetKey(Key::kR, action);
+      return SetKeyState(Key::kR, action, mode);
     case GLFW_KEY_S:
-      return SetKey(Key::kS, action);
+      return SetKeyState(Key::kS, action, mode);
     case GLFW_KEY_T:
-      return SetKey(Key::kT, action);
+      return SetKeyState(Key::kT, action, mode);
     case GLFW_KEY_U:
-      return SetKey(Key::kU, action);
+      return SetKeyState(Key::kU, action, mode);
     case GLFW_KEY_V:
-      return SetKey(Key::kV, action);
+      return SetKeyState(Key::kV, action, mode);
     case GLFW_KEY_W:
-      return SetKey(Key::kW, action);
+      return SetKeyState(Key::kW, action, mode);
     case GLFW_KEY_X:
-      return SetKey(Key::kX, action);
+      return SetKeyState(Key::kX, action, mode);
     case GLFW_KEY_Y:
-      return SetKey(Key::kY, action);
+      return SetKeyState(Key::kY, action, mode);
     case GLFW_KEY_Z:
-      return SetKey(Key::kZ, action);
+      return SetKeyState(Key::kZ, action, mode);
     case GLFW_KEY_LEFT_BRACKET:
-      return SetKey(Key::kLeftBracket, action);
+      return SetKeyState(Key::kLeftBracket, action, mode);
     case GLFW_KEY_BACKSLASH:
-      return SetKey(Key::kBackslash, action);
+      return SetKeyState(Key::kBackslash, action, mode);
     case GLFW_KEY_RIGHT_BRACKET:
-      return SetKey(Key::kRightBracket, action);
+      return SetKeyState(Key::kRightBracket, action, mode);
     case GLFW_KEY_GRAVE_ACCENT:
-      return SetKey(Key::kGraveAccent, action);
+      return SetKeyState(Key::kGraveAccent, action, mode);
     case GLFW_KEY_WORLD_1:
-      return SetKey(Key::kWorld1, action);
+      return SetKeyState(Key::kWorld1, action, mode);
     case GLFW_KEY_WORLD_2:
-      return SetKey(Key::kWorld2, action);
+      return SetKeyState(Key::kWorld2, action, mode);
     case GLFW_KEY_ESCAPE:
-      return SetKey(Key::kEscape, action);
+      return SetKeyState(Key::kEscape, action, mode);
     case GLFW_KEY_ENTER:
-      return SetKey(Key::kEnter, action);
+      return SetKeyState(Key::kEnter, action, mode);
     case GLFW_KEY_TAB:
-      return SetKey(Key::kTab, action);
+      return SetKeyState(Key::kTab, action, mode);
     case GLFW_KEY_BACKSPACE:
-      return SetKey(Key::kBackspace, action);
+      return SetKeyState(Key::kBackspace, action, mode);
     case GLFW_KEY_INSERT:
-      return SetKey(Key::kInsert, action);
+      return SetKeyState(Key::kInsert, action, mode);
     case GLFW_KEY_DELETE:
-      return SetKey(Key::kDelete, action);
+      return SetKeyState(Key::kDelete, action, mode);
     case GLFW_KEY_RIGHT:
-      return SetKey(Key::kRight, action);
+      return SetKeyState(Key::kRight, action, mode);
     case GLFW_KEY_LEFT:
-      return SetKey(Key::kLeft, action);
+      return SetKeyState(Key::kLeft, action, mode);
     case GLFW_KEY_DOWN:
-      return SetKey(Key::kDown, action);
+      return SetKeyState(Key::kDown, action, mode);
     case GLFW_KEY_UP:
-      return SetKey(Key::kUp, action);
+      return SetKeyState(Key::kUp, action, mode);
     case GLFW_KEY_PAGE_UP:
-      return SetKey(Key::kPageUp, action);
+      return SetKeyState(Key::kPageUp, action, mode);
     case GLFW_KEY_PAGE_DOWN:
-      return SetKey(Key::kPageDown, action);
+      return SetKeyState(Key::kPageDown, action, mode);
     case GLFW_KEY_HOME:
-      return SetKey(Key::kHome, action);
+      return SetKeyState(Key::kHome, action, mode);
     case GLFW_KEY_END:
-      return SetKey(Key::kEnd, action);
+      return SetKeyState(Key::kEnd, action, mode);
     case GLFW_KEY_CAPS_LOCK:
-      return SetKey(Key::kCapsLock, action);
+      return SetKeyState(Key::kCapsLock, action, mode);
     case GLFW_KEY_SCROLL_LOCK:
-      return SetKey(Key::kScrollLock, action);
+      return SetKeyState(Key::kScrollLock, action, mode);
     case GLFW_KEY_NUM_LOCK:
-      return SetKey(Key::kNumLock, action);
+      return SetKeyState(Key::kNumLock, action, mode);
     case GLFW_KEY_PRINT_SCREEN:
-      return SetKey(Key::kPrintScreen, action);
+      return SetKeyState(Key::kPrintScreen, action, mode);
     case GLFW_KEY_PAUSE:
-      return SetKey(Key::kPause, action);
+      return SetKeyState(Key::kPause, action, mode);
     case GLFW_KEY_F1:
-      return SetKey(Key::kF1, action);
+      return SetKeyState(Key::kF1, action, mode);
     case GLFW_KEY_F2:
-      return SetKey(Key::kF2, action);
+      return SetKeyState(Key::kF2, action, mode);
     case GLFW_KEY_F3:
-      return SetKey(Key::kF3, action);
+      return SetKeyState(Key::kF3, action, mode);
     case GLFW_KEY_F4:
-      return SetKey(Key::kF4, action);
+      return SetKeyState(Key::kF4, action, mode);
     case GLFW_KEY_F5:
-      return SetKey(Key::kF5, action);
+      return SetKeyState(Key::kF5, action, mode);
     case GLFW_KEY_F6:
-      return SetKey(Key::kF6, action);
+      return SetKeyState(Key::kF6, action, mode);
     case GLFW_KEY_F7:
-      return SetKey(Key::kF7, action);
+      return SetKeyState(Key::kF7, action, mode);
     case GLFW_KEY_F8:
-      return SetKey(Key::kF8, action);
+      return SetKeyState(Key::kF8, action, mode);
     case GLFW_KEY_F9:
-      return SetKey(Key::kF9, action);
+      return SetKeyState(Key::kF9, action, mode);
     case GLFW_KEY_F10:
-      return SetKey(Key::kF10, action);
+      return SetKeyState(Key::kF10, action, mode);
     case GLFW_KEY_F11:
-      return SetKey(Key::kF11, action);
+      return SetKeyState(Key::kF11, action, mode);
     case GLFW_KEY_F12:
-      return SetKey(Key::kF12, action);
+      return SetKeyState(Key::kF12, action, mode);
     case GLFW_KEY_F13:
-      return SetKey(Key::kF13, action);
+      return SetKeyState(Key::kF13, action, mode);
     case GLFW_KEY_F14:
-      return SetKey(Key::kF14, action);
+      return SetKeyState(Key::kF14, action, mode);
     case GLFW_KEY_F15:
-      return SetKey(Key::kF15, action);
+      return SetKeyState(Key::kF15, action, mode);
     case GLFW_KEY_F16:
-      return SetKey(Key::kF16, action);
+      return SetKeyState(Key::kF16, action, mode);
     case GLFW_KEY_F17:
-      return SetKey(Key::kF17, action);
+      return SetKeyState(Key::kF17, action, mode);
     case GLFW_KEY_F18:
-      return SetKey(Key::kF18, action);
+      return SetKeyState(Key::kF18, action, mode);
     case GLFW_KEY_F19:
-      return SetKey(Key::kF19, action);
+      return SetKeyState(Key::kF19, action, mode);
     case GLFW_KEY_F20:
-      return SetKey(Key::kF20, action);
+      return SetKeyState(Key::kF20, action, mode);
     case GLFW_KEY_F21:
-      return SetKey(Key::kF21, action);
+      return SetKeyState(Key::kF21, action, mode);
     case GLFW_KEY_F22:
-      return SetKey(Key::kF22, action);
+      return SetKeyState(Key::kF22, action, mode);
     case GLFW_KEY_F23:
-      return SetKey(Key::kF23, action);
+      return SetKeyState(Key::kF23, action, mode);
     case GLFW_KEY_F24:
-      return SetKey(Key::kF24, action);
+      return SetKeyState(Key::kF24, action, mode);
     case GLFW_KEY_F25:
-      return SetKey(Key::kF25, action);
+      return SetKeyState(Key::kF25, action, mode);
     case GLFW_KEY_KP_0:
-      return SetKey(Key::kKp0, action);
+      return SetKeyState(Key::kKp0, action, mode);
     case GLFW_KEY_KP_1:
-      return SetKey(Key::kKp1, action);
+      return SetKeyState(Key::kKp1, action, mode);
     case GLFW_KEY_KP_2:
-      return SetKey(Key::kKp2, action);
+      return SetKeyState(Key::kKp2, action, mode);
     case GLFW_KEY_KP_3:
-      return SetKey(Key::kKp3, action);
+      return SetKeyState(Key::kKp3, action, mode);
     case GLFW_KEY_KP_4:
-      return SetKey(Key::kKp4, action);
+      return SetKeyState(Key::kKp4, action, mode);
     case GLFW_KEY_KP_5:
-      return SetKey(Key::kKp5, action);
+      return SetKeyState(Key::kKp5, action, mode);
     case GLFW_KEY_KP_6:
-      return SetKey(Key::kKp6, action);
+      return SetKeyState(Key::kKp6, action, mode);
     case GLFW_KEY_KP_7:
-      return SetKey(Key::kKp7, action);
+      return SetKeyState(Key::kKp7, action, mode);
     case GLFW_KEY_KP_8:
-      return SetKey(Key::kKp8, action);
+      return SetKeyState(Key::kKp8, action, mode);
     case GLFW_KEY_KP_9:
-      return SetKey(Key::kKp9, action);
+      return SetKeyState(Key::kKp9, action, mode);
     case GLFW_KEY_KP_DECIMAL:
-      return SetKey(Key::kKpDecimal, action);
+      return SetKeyState(Key::kKpDecimal, action, mode);
     case GLFW_KEY_KP_DIVIDE:
-      return SetKey(Key::kKpDivide, action);
+      return SetKeyState(Key::kKpDivide, action, mode);
     case GLFW_KEY_KP_MULTIPLY:
-      return SetKey(Key::kKpMultiply, action);
+      return SetKeyState(Key::kKpMultiply, action, mode);
     case GLFW_KEY_KP_SUBTRACT:
-      return SetKey(Key::kKpSubtract, action);
+      return SetKeyState(Key::kKpSubtract, action, mode);
     case GLFW_KEY_KP_ADD:
-      return SetKey(Key::kKpAdd, action);
+      return SetKeyState(Key::kKpAdd, action, mode);
     case GLFW_KEY_KP_ENTER:
-      return SetKey(Key::kKpEnter, action);
+      return SetKeyState(Key::kKpEnter, action, mode);
     case GLFW_KEY_KP_EQUAL:
-      return SetKey(Key::kKpEqual, action);
+      return SetKeyState(Key::kKpEqual, action, mode);
     case GLFW_KEY_LEFT_SHIFT:
-      return SetKey(Key::kLeftShift, action);
+      return SetKeyState(Key::kLeftShift, action, mode);
     case GLFW_KEY_LEFT_CONTROL:
-      return SetKey(Key::kLeftControl, action);
+      return SetKeyState(Key::kLeftControl, action, mode);
     case GLFW_KEY_LEFT_ALT:
-      return SetKey(Key::kLeftAlt, action);
+      return SetKeyState(Key::kLeftAlt, action, mode);
     case GLFW_KEY_LEFT_SUPER:
-      return SetKey(Key::kLeftSuper, action);
+      return SetKeyState(Key::kLeftSuper, action, mode);
     case GLFW_KEY_RIGHT_SHIFT:
-      return SetKey(Key::kRightShift, action);
+      return SetKeyState(Key::kRightShift, action, mode);
     case GLFW_KEY_RIGHT_CONTROL:
-      return SetKey(Key::kRightControl, action);
+      return SetKeyState(Key::kRightControl, action, mode);
     case GLFW_KEY_RIGHT_ALT:
-      return SetKey(Key::kRightAlt, action);
+      return SetKeyState(Key::kRightAlt, action, mode);
     case GLFW_KEY_RIGHT_SUPER:
-      return SetKey(Key::kRightSuper, action);
+      return SetKeyState(Key::kRightSuper, action, mode);
     case GLFW_KEY_MENU:
-      return SetKey(Key::kMenu, action);
+      return SetKeyState(Key::kMenu, action, mode);
   }
 }
 
-void ClearKeyState() { bzero(gKeyState, sizeof(gKeyState)); }
+void ClearKeyState() { gKeyState = {}; }
 
 }  // namespace details
 

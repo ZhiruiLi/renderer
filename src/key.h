@@ -3,7 +3,19 @@
 #include <GLFW/glfw3.h>
 #include <stdint.h>
 
+#include <cstddef>
+#include <utility>
+
 namespace sren {
+
+enum class KeyMod {
+  kShift,
+  kControl,
+  kAlt,
+  kSuper,
+  kCapsLock,
+  kNumLock,
+};
 
 enum class Key {
   kSpace,
@@ -130,15 +142,59 @@ enum class Key {
   kCount,
 };
 
-bool IsKeyPress(Key k);
-bool IsKeyRelease(Key k);
-bool IsKeyHold(Key k);
-
 namespace details {
 
-void HandleKey(GLFWwindow* w, int key, int scancode, int action, int mode);
+void HandleKey(GLFWwindow *w, int key, int scancode, int action, int mode);
+
+std::pair<uint8_t, uint8_t> const &GetKeyState(Key k);
+
 void ClearKeyState();
 
+bool HasModifier(uint8_t state, KeyMod mod);
+
+template <std::size_t N>
+bool HasAllModifiers(uint8_t state, std::array<KeyMod, N> const &mods) {
+  for (auto m : mods) {
+    if (!HasModifier(state, m)) {
+      return false;
+    }
+  }
+  return true;
+}
+
 }  // namespace details
+
+inline bool IsKeyPress(Key k) {
+  return details::GetKeyState(k).first == GLFW_PRESS + 1;
+}
+
+template <std::size_t N>
+inline bool IsKeyPress(Key k, std::array<KeyMod, N> const &mods) {
+  auto const state = details::GetKeyState(k);
+  return state.first == GLFW_PRESS + 1 &&
+         details::HasAllModifiers(state.second, mods);
+}
+
+inline bool IsKeyRelease(Key k) {
+  return details::GetKeyState(k).first == GLFW_RELEASE + 1;
+}
+
+template <std::size_t N>
+inline bool IsKeyRelease(Key k, std::array<KeyMod, N> const &mods) {
+  auto const state = details::GetKeyState(k);
+  return state.first == GLFW_RELEASE + 1 &&
+         details::HasAllModifiers(state.second, mods);
+}
+
+inline bool IsKeyHold(Key k) {
+  return details::GetKeyState(k).first == GLFW_REPEAT + 1;
+}
+
+template <std::size_t N>
+inline bool IsKeyHold(Key k, std::array<KeyMod, N> const &mods) {
+  auto const state = details::GetKeyState(k);
+  return state.first == GLFW_REPEAT + 1 &&
+         details::HasAllModifiers(state.second, mods);
+}
 
 }  // namespace sren
