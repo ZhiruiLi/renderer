@@ -13,6 +13,8 @@ namespace sren {
 class Polygon {
  public:
   Polygon() = default;
+  Polygon(std::vector<Point4> *vertexs, std::array<int, 3> vertex_indexs)
+      : vertexs_{vertexs}, vertex_indexs_{vertex_indexs} {}
 
   int state() { return state_; };
   void set_state(int state) { state_ = state; };
@@ -23,20 +25,12 @@ class Polygon {
   Color color() { return color_; };
   void set_color(Color color) { color_ = color; };
 
-  std::array<Point4, 3> vertexs() { return vertexs_; }
-  void set_vertexs(std::array<Point4, 3> const &vertexs) { vertexs_ = vertexs; }
-
-  std::array<Point4, 3> trans_vertexs() { return trans_vertexs_; }
-  void set_trans_vertexs(std::array<Point4, 3> const &vertexs) {
-    trans_vertexs_ = vertexs;
-  }
-
  private:
   int state_{};
   int attribute_{};
   Color color_{};
-  std::array<Point4, 3> vertexs_{};
-  std::array<Point4, 3> trans_vertexs_{};
+  std::vector<Point4> *vertexs_{};
+  std::array<int, 3> vertex_indexs_{};
 };
 
 class Object {
@@ -69,20 +63,12 @@ class Object {
   Vector4 uz() const { return uz_; }
   void set_uz(Vector4 const &uz) { uz_ = uz; }
 
+  std::vector<Point4> &vertexs() { return vertexs_; }
   std::vector<Point4> const &vertexs() const { return vertexs_; }
-  void set_vertexs(std::vector<Point4> vertexs) {
-    vertexs_ = std::move(vertexs);
-  }
-
+  std::vector<Point4> &trans_vertexs() { return trans_vertexs_; }
   std::vector<Point4> const &trans_vertexs() const { return trans_vertexs_; }
-  void set_trans_vertexs(std::vector<Point4> trans_vertexs) {
-    trans_vertexs_ = std::move(trans_vertexs);
-  }
-
+  std::vector<Polygon> &polygons() { return polygons_; };
   std::vector<Polygon> const &polygons() const { return polygons_; };
-  void set_polygons(std::vector<Polygon> polygons) {
-    polygons_ = std::move(polygons);
-  }
 
  private:
   int id_{};
@@ -113,20 +99,21 @@ inline Object MakeSimpleCube() {
   cube.set_avg_radius(17.3f);
   cube.set_max_radius(17.3f);
   std::vector<Point3> vertex3s{
-      {10, 10, 10},     // p0
-      {10, 10, -10},    // p1
-      {-10, 10, -10},   // p2
-      {-10, 10, 10},    // p3
-      {10, -10, 10},    // p4
-      {-10, -10, 10},   // p5
-      {-10, -10, -10},  // p6
-      {10, -10, -10},   // p7
+      {10, 10, 10},  {10, 10, -10},  {-10, 10, -10},  {-10, 10, 10},
+      {10, -10, 10}, {-10, -10, 10}, {-10, -10, -10}, {10, -10, -10},
   };
-  std::vector<Point4> vertex4s{};
-  std::transform(vertex3s.begin(), vertex3s.end(), std::back_inserter(vertex4s),
+  std::transform(vertex3s.begin(), vertex3s.end(),
+                 std::back_inserter(cube.vertexs()),
                  [](auto const &p3) { return Point4(p3, 1.0f); });
-  cube.set_vertexs(vertex4s);
-  cube.set_trans_vertexs(vertex4s);
+  std::transform(vertex3s.begin(), vertex3s.end(),
+                 std::back_inserter(cube.trans_vertexs()),
+                 [](auto const &p3) { return Point4(p3, 1.0f); });
+  std::vector<std::array<int, 3>> ploy_indexs{
+      {0, 1, 2}, {0, 2, 3}, {0, 7, 1}, {0, 4, 7}, {1, 7, 6}, {1, 6, 2},
+      {2, 6, 5}, {2, 3, 5}, {0, 5, 4}, {0, 3, 5}, {5, 6, 7}, {4, 5, 7}};
+  for (auto const &idxs : ploy_indexs) {
+    cube.polygons().emplace_back(&cube.vertexs(), idxs);
+  }
   return cube;
 }
 
