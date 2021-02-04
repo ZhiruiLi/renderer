@@ -10,24 +10,26 @@
 
 namespace sren {
 
+enum class PloygonState {
+  kPolygonActive = 0x1,
+  kPolygonClipped = 0x2,
+  kPolygonBackface = 0x4,
+};
+
 class Polygon {
  public:
   Polygon() = default;
   Polygon(std::vector<Point4> *vertexs, std::array<int, 3> vertex_indexs)
       : vertexs_{vertexs}, vertex_indexs_{vertex_indexs} {}
 
-  int state() const { return state_; };
-  void set_state(int state) { state_ = state; };
-
-  int attribute() const { return attribute_; };
-  void set_attribute(int attribute) { attribute_ = attribute; };
+  PloygonState state() const { return state_; };
+  void set_state(PloygonState state) { state_ = state; };
 
   Color color() const { return color_; };
   void set_color(Color color) { color_ = color; };
 
  private:
-  int state_{};
-  int attribute_{};
+  PloygonState state_{};
   Color color_{};
   std::vector<Point4> *vertexs_{};
   std::array<int, 3> vertex_indexs_{};
@@ -51,16 +53,17 @@ class Object {
   void set_avg_radius(float avg_radius) { avg_radius_ = avg_radius; }
   float max_radius() const { return max_radius_; }
   void set_max_radius(float max_radius) { max_radius_ = max_radius; }
-  Point4 world_pos() const { return world_pos_; }
-  void set_world_pos(Point4 const &world_pos) { world_pos_ = world_pos; }
-  Vector4 local_dir() const { return local_dir_; }
-  void set_local_dir(Vector4 const &dir) { local_dir_ = dir; }
-  Vector4 ux() const { return ux_; }
-  void set_ux(Vector4 const &ux) { ux_ = ux; }
-  Vector4 uy() const { return uy_; }
-  void set_uy(Vector4 const &uy) { uy_ = uy; }
-  Vector4 uz() const { return uz_; }
-  void set_uz(Vector4 const &uz) { uz_ = uz; }
+
+  Point4 &world_pos() { return world_pos_; }
+  Point4 const &world_pos() const { return world_pos_; }
+  Vector4 &local_dir() { return local_dir_; }
+  Vector4 const &local_dir() const { return local_dir_; }
+  Vector4 &ux() { return ux_; }
+  Vector4 const &ux() const { return ux_; }
+  Vector4 &uy() { return uy_; }
+  Vector4 const &uy() const { return uy_; }
+  Vector4 &uz() { return uz_; }
+  Vector4 const &uz() const { return uz_; }
 
   std::vector<Point4> &vertexs() { return vertexs_; }
   std::vector<Point4> const &vertexs() const { return vertexs_; }

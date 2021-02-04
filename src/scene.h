@@ -4,6 +4,7 @@
 
 #include "matrix.h"
 #include "object.h"
+#include "point.h"
 
 namespace sren {
 
@@ -50,6 +51,15 @@ class Transform {
   Matrix4x4 view_transform_{};
   Matrix4x4 projection_transform_{};
   Matrix4x4 full_transform_{};
+};
+
+class Camera {
+ public:
+ private:
+  Point4 world_pos_{};
+  float ang_x_{};
+  float ang_y_{};
+  float ang_z_{};
 };
 
 class Scene {

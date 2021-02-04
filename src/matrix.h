@@ -29,12 +29,12 @@ struct Matrix {
     return data_[i];
   }
 
-  T &Get(std::size_t i, std::size_t j) {
+  T &Get(int i, int j) {
     assert(i >= 0 && i < N && j >= 0 && j < M);
     return data_[i][j];
   }
 
-  T const &Get(std::size_t i, std::size_t j) const {
+  T const &Get(int i, int j) const {
     assert(i >= 0 && i < N && j >= 0 && j < M);
     return data_[i][j];
   }
