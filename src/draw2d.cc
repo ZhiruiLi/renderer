@@ -3,12 +3,12 @@
 namespace sren {
 
 // 画点
-void DrawPixel(Point2D const &p, Color const &c, FrameBuffer *fb) {
+void DrawPixel(Point2 const &p, Color const &c, FrameBuffer *fb) {
   fb->Set(int(p.x()), int(p.y()), c);
 }
 
 // 画线
-void DrawLine(Point2D p0, Point2D p1, Color const &c, FrameBuffer *fb) {
+void DrawLine(Point2 p0, Point2 p1, Color const &c, FrameBuffer *fb) {
   bool steep = false;
   auto diff = p0 - p1;
   diff.SetAbs();
@@ -40,7 +40,7 @@ void DrawLine(Point2D p0, Point2D p1, Color const &c, FrameBuffer *fb) {
 }
 
 // 画三角形
-void DrawTriangle(Point2D t0, Point2D t1, Point2D t2, Color const &c,
+void DrawTriangle(Point2 t0, Point2 t1, Point2 t2, Color const &c,
                   FrameBuffer *fb) {
   if (AlmostEqual(t0.y(), t1.y()) && AlmostEqual(t0.y(), t2.y())) {
     return;

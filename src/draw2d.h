@@ -7,13 +7,13 @@
 namespace sren {
 
 // 画点
-void DrawPixel(Point2D const &p, Color const &c, FrameBuffer *fb);
+void DrawPixel(Point2 const &p, Color const &c, FrameBuffer *fb);
 
 // 画线
-void DrawLine(Point2D p0, Point2D p1, Color const &c, FrameBuffer *fb);
+void DrawLine(Point2 p0, Point2 p1, Color const &c, FrameBuffer *fb);
 
 // 画三角形
-void DrawTriangle(Point2D p0, Point2D p1, Point2D p2, Color const &c,
+void DrawTriangle(Point2 p0, Point2 p1, Point2 p2, Color const &c,
                   FrameBuffer *fb);
 
 }  // namespace sren

@@ -4,8 +4,8 @@
 
 namespace sren {
 
-using Point2D = Vector<float, 2>;
-using Point3D = Vector<float, 3>;
-using Point4D = Vector<float, 4>;
+using Point2 = Vector<float, 2>;
+using Point3 = Vector<float, 3>;
+using Point4 = Vector<float, 4>;
 
 }  // namespace sren

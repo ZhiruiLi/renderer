@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <array>
 #include <cassert>
 #include <cmath>
 #include <cstddef>
@@ -28,6 +29,11 @@ struct Vector {
   Vector() = default;
 
   explicit Vector(std::array<T, N> const& data) : data_{data} {}
+
+  explicit Vector(Vector<T, N - 1> const& v, T last) {
+    std::copy(v.data_.begin(), v.data_.end(), data_.begin());
+    data_[N - 1] = last;
+  }
 
   template <std::size_t N1 = N, class = std::enable_if_t<N1 == 2>>
   Vector(float vx, float vy) : data_{vx, vy} {}

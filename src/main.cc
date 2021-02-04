@@ -4,10 +4,10 @@
 
 #include "draw2d.h"
 #include "frame_buffer.h"
+#include "key.h"
 #include "matrix.h"
 #include "vector.h"
 #include "window.h"
-#include "key.h"
 
 using namespace sren;
 
@@ -787,7 +787,14 @@ void init_texture(device_t *device) {
   device_set_texture(device, texture, 256 * 4, 256, 256);
 }
 
+void test() {
+  // std::array<int, 3> arr1 = {1, 2, 3};
+  // std::array<int, 4> arr2 = arr1;
+}
+
 int main(void) {
+  test();
+
   device_t device;
   int states[] = {RENDER_STATE_TEXTURE, RENDER_STATE_COLOR,
                   RENDER_STATE_WIREFRAME};
