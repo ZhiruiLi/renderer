@@ -16,13 +16,13 @@ class Polygon {
   Polygon(std::vector<Point4> *vertexs, std::array<int, 3> vertex_indexs)
       : vertexs_{vertexs}, vertex_indexs_{vertex_indexs} {}
 
-  int state() { return state_; };
+  int state() const { return state_; };
   void set_state(int state) { state_ = state; };
 
-  int attribute() { return attribute_; };
+  int attribute() const { return attribute_; };
   void set_attribute(int attribute) { attribute_ = attribute; };
 
-  Color color() { return color_; };
+  Color color() const { return color_; };
   void set_color(Color color) { color_ = color; };
 
  private:

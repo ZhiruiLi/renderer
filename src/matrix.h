@@ -119,6 +119,12 @@ struct Matrix {
     return ret;
   }
 
+  template <std::size_t M1 = M>
+  std::enable_if_t<M1 == M, Matrix> &operator*=(Matrix<T, M1, M1> const &rhs) {
+    *this = (*this) * rhs;
+    return *this;
+  }
+
   // 矩阵对常量的乘法
   Matrix &operator*=(T s) {
     for (int i = 0; i < N; i++) {
