@@ -42,8 +42,7 @@ class Object {
   void set_id(int id) { id_ = id; }
 
   std::string const &name() const { return name_; }
-  void name(std::string name) { name_ = std::move(name); }
-
+  void set_name(std::string name) { name_ = std::move(name); }
   int state() const { return state_; };
   void set_state(int state) { state_ = state; }
   int attribute() const { return attribute_; }
