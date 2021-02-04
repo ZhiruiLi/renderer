@@ -39,6 +39,21 @@ struct Matrix {
     return data_[i][j];
   }
 
+  // 将矩阵设为 0 矩阵
+  void SetZero() {
+    for (int i = 0; i < N; i++) {
+      for (int j = 0; j < M; j++) {
+        data_[i][j] = 0;
+      }
+    }
+  }
+
+  // 获取 0 矩阵
+  static Matrix const &Zero() {
+    static Matrix ret{};
+    return ret;
+  }
+
   // 将矩阵设为单位矩阵
   template <std::size_t N1 = N, std::size_t M1 = M>
   std::enable_if_t<N1 == M1> SetIdentity() {
