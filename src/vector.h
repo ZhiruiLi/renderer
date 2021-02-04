@@ -26,13 +26,26 @@ constexpr bool HasW(std::size_t n) { return n == 4; }
 template <class T, std::size_t N,
           class = std::enable_if_t<!std::numeric_limits<T>::is_integer, void>>
 struct Vector {
+ public:
+  using value_type = T;
+  using reference = value_type&;
+  using const_reference = value_type const&;
+  using iterator = value_type*;
+  using const_iterator = value_type const*;
+  using pointer = value_type*;
+  using const_pointer = value_type const*;
+  using size_type = size_t;
+  using difference_type = ptrdiff_t;
+  using reverse_iterator = std::reverse_iterator<iterator>;
+  using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
   Vector() = default;
 
   explicit Vector(std::array<T, N> const& data) : data_{data} {}
 
   explicit Vector(Vector<T, N - 1> const& v, T last) {
-    std::copy(v.data_.begin(), v.data_.end(), data_.begin());
-    data_[N - 1] = last;
+    std::copy(v.begin(), v.end(), begin());
+    back() = last;
   }
 
   template <std::size_t N1 = N, class = std::enable_if_t<N1 == 2>>
@@ -53,6 +66,33 @@ struct Vector {
     assert(i >= 0 && i < N);
     return data_[i];
   }
+
+  value_type* data() { return data_.data(); }
+  const value_type* data() const { return data_.data(); }
+
+  iterator begin() { return iterator(data()); }
+  const_iterator begin() const { return const_iterator(data()); }
+  iterator end() { return iterator(data() + N); }
+  const_iterator end() const { return const_iterator(data() + N); }
+
+  reverse_iterator rbegin() { return reverse_iterator(end()); }
+  const_reverse_iterator rbegin() const {
+    return const_reverse_iterator(end());
+  }
+  reverse_iterator rend() { return reverse_iterator(begin()); }
+  const_reverse_iterator rend() const {
+    return const_reverse_iterator(begin());
+  }
+
+  const_iterator cbegin() const { return begin(); }
+  const_iterator cend() const { return end(); }
+  const_reverse_iterator crbegin() const { return rbegin(); }
+  const_reverse_iterator crend() const { return rend(); }
+
+  reference front() { return data_[0]; }
+  const_reference front() const { return data_[0]; }
+  reference back() { return data_[N - 1]; }
+  const_reference back() const { return data_[N - 1]; }
 
   template <std::size_t N1 = N>
   std::enable_if_t<details::HasX(N1), T> x() const {
