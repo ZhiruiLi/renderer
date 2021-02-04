@@ -8,6 +8,7 @@
 
 namespace sren {
 
+// 修饰键
 enum class KeyMod {
   kShift,
   kControl,
@@ -17,6 +18,7 @@ enum class KeyMod {
   kNumLock,
 };
 
+// 一般按键
 enum class Key {
   kSpace,
   kApostrophe,
@@ -195,6 +197,15 @@ inline bool IsKeyHold(Key k, std::array<KeyMod, N> const &mods) {
   auto const state = details::GetKeyState(k);
   return state.first == GLFW_REPEAT + 1 &&
          details::HasAllModifiers(state.second, mods);
+}
+
+inline bool HasModifier(Key k, KeyMod mod) {
+  return details::HasModifier(details::GetKeyState(k).second, mod);
+}
+
+template <std::size_t N>
+inline bool HasModifiers(Key k, std::array<KeyMod, N> const &mods) {
+  return details::HasAllModifiers(details::GetKeyState(k).second, mods);
 }
 
 }  // namespace sren
