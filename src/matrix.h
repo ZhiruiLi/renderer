@@ -29,6 +29,16 @@ struct Matrix {
     return data_[i];
   }
 
+  T &Get(std::size_t i, std::size_t j) {
+    assert(i >= 0 && i < N && j >= 0 && j < M);
+    return data_[i][j];
+  }
+
+  T const &Get(std::size_t i, std::size_t j) const {
+    assert(i >= 0 && i < N && j >= 0 && j < M);
+    return data_[i][j];
+  }
+
   // 将矩阵设为单位矩阵
   template <std::size_t N1 = N, std::size_t M1 = M>
   std::enable_if_t<N1 == M1> SetIdentity() {
