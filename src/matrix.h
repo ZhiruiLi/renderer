@@ -144,6 +144,7 @@ struct Matrix {
     return ret;
   }
 
+  // 矩阵乘法，修改矩阵本身，因此要求变化后列数相同
   template <std::size_t M1 = M>
   std::enable_if_t<M1 == M, Matrix> &operator*=(Matrix<T, M1, M1> const &rhs) {
     *this = (*this) * rhs;
