@@ -6,6 +6,7 @@
 #include "frame_buffer.h"
 #include "key.h"
 #include "matrix.h"
+#include "object.h"
 #include "vector.h"
 #include "window.h"
 
@@ -790,6 +791,7 @@ void init_texture(device_t *device) {
 void test() {
   // std::array<int, 3> arr1 = {1, 2, 3};
   // std::array<int, 4> arr2 = arr1;
+  auto c = sren::MakeSimpleCube();
 }
 
 int main(void) {
