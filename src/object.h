@@ -10,12 +10,33 @@
 
 namespace sren {
 
-struct Polygon {
-  int state{};
-  int attribute{};
-  Color color{};
-  std::array<Point4, 3> vertexs{};
-  std::array<Point4, 3> trans_vertexs{};
+class Polygon {
+ public:
+  Polygon() = default;
+
+  int state() { return state_; };
+  void set_state(int state) { state_ = state; };
+
+  int attribute() { return attribute_; };
+  void set_attribute(int attribute) { attribute_ = attribute; };
+
+  Color color() { return color_; };
+  void set_color(Color color) { color_ = color; };
+
+  std::array<Point4, 3> vertexs() { return vertexs_; }
+  void set_vertexs(std::array<Point4, 3> const &vertexs) { vertexs_ = vertexs; }
+
+  std::array<Point4, 3> trans_vertexs() { return trans_vertexs_; }
+  void set_trans_vertexs(std::array<Point4, 3> const &vertexs) {
+    trans_vertexs_ = vertexs;
+  }
+
+ private:
+  int state_{};
+  int attribute_{};
+  Color color_{};
+  std::array<Point4, 3> vertexs_{};
+  std::array<Point4, 3> trans_vertexs_{};
 };
 
 class Object {
@@ -91,7 +112,16 @@ inline Object MakeSimpleCube() {
   Object cube(0, "example_cube");
   cube.set_avg_radius(17.3f);
   cube.set_max_radius(17.3f);
-  std::vector<Point3> vertex3s{{}};
+  std::vector<Point3> vertex3s{
+      {10, 10, 10},     // p0
+      {10, 10, -10},    // p1
+      {-10, 10, -10},   // p2
+      {-10, 10, 10},    // p3
+      {10, -10, 10},    // p4
+      {-10, -10, 10},   // p5
+      {-10, -10, -10},  // p6
+      {10, -10, -10},   // p7
+  };
   std::vector<Point4> vertex4s{};
   std::transform(vertex3s.begin(), vertex3s.end(), std::back_inserter(vertex4s),
                  [](auto const &p3) { return Point4(p3, 1.0f); });
