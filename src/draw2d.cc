@@ -12,8 +12,7 @@ void DrawPixel(Point2 const &p, Color const &c, FrameBuffer *fb) {
 // 画线
 void DrawLine(Point2 p0, Point2 p1, Color const &c, FrameBuffer *fb) {
   bool steep = false;
-  auto diff = p0 - p1;
-  diff.SetAbs();
+  auto const diff = (p0 - p1).Abs();
   if (diff.x() < diff.y()) {
     p0.SwapXY();
     p1.SwapXY();
