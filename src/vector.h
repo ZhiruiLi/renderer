@@ -56,7 +56,8 @@ struct Vector {
   Vector(float vx, float vy, float vz) : data_{vx, vy, vz} {}
 
   template <std::size_t N1 = N, class = std::enable_if_t<N1 == 4>>
-  Vector(float vx, float vy, float vz, float vw) : data_{vx, vy, vz, vw} {}
+  Vector(float vx, float vy, float vz, float vw = 1.0f)
+      : data_{vx, vy, vz, vw} {}
 
   T& operator[](std::size_t i) {
     assert(i >= 0 && i < N);
