@@ -1,5 +1,7 @@
 #pragma once
 
+#include <type_traits>
+
 #include "vector.h"
 
 namespace sren {
@@ -113,6 +115,11 @@ struct Point {
   template <std::size_t N1 = N>
   std::enable_if_t<details::HasW(N1)> set_w(T w) {
     return data_[3] = w;
+  }
+
+  template <std::size_t N1 = N>
+  std::enable_if_t<N1 == 2> SwapXY() {
+    std::swap(data_[0], data_[1]);
   }
 
   // 位置比较相等
