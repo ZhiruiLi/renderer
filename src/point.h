@@ -81,8 +81,8 @@ struct Point {
   }
 
   template <std::size_t N1 = N>
-  std::enable_if_t<details::HasX(N1), T>& x() {
-    return data_[0];
+  std::enable_if_t<details::HasX(N1)> set_x(T x) {
+    return data_[0] = x;
   }
 
   template <std::size_t N1 = N>
@@ -91,8 +91,8 @@ struct Point {
   }
 
   template <std::size_t N1 = N>
-  std::enable_if_t<details::HasY(N1), T>& y() {
-    return data_[1];
+  std::enable_if_t<details::HasY(N1)> set_y(T y) {
+    return data_[1] = y;
   }
 
   template <std::size_t N1 = N>
@@ -101,8 +101,8 @@ struct Point {
   }
 
   template <std::size_t N1 = N>
-  std::enable_if_t<details::HasZ(N1), T>& z() {
-    return data_[2];
+  std::enable_if_t<details::HasZ(N1)> set_z(T z) {
+    return data_[2] = z;
   }
 
   template <std::size_t N1 = N>
@@ -111,8 +111,8 @@ struct Point {
   }
 
   template <std::size_t N1 = N>
-  std::enable_if_t<details::HasW(N1), T>& w() {
-    return data_[3];
+  std::enable_if_t<details::HasW(N1)> set_w(T w) {
+    return data_[3] = w;
   }
 
   // 位置比较相等
