@@ -43,18 +43,21 @@ struct Matrix {
   }
 
   // 将矩阵设为 0 矩阵
-  void SetZero() {
-    for (int i = 0; i < N; i++) {
-      for (int j = 0; j < M; j++) {
-        data_[i][j] = 0;
-      }
-    }
-  }
+  void SetZero() { SetAll(0.0f); }
 
   // 获取 0 矩阵
   static Matrix const &Zero() {
     static Matrix ret{};
     return ret;
+  }
+
+  // 将矩阵每个值都设为给定值
+  void SetAll(T x) {
+    for (int i = 0; i < N; i++) {
+      for (int j = 0; j < M; j++) {
+        data_[i][j] = x;
+      }
+    }
   }
 
   // 将矩阵设为单位矩阵
