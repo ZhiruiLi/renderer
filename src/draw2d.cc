@@ -1,5 +1,7 @@
 #include "draw2d.h"
 
+#include "point.h"
+
 namespace sren {
 
 // 画点

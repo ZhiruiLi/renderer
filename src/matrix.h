@@ -16,15 +16,17 @@ namespace sren {
 template <class T, std::size_t N, std::size_t M,
           class = std::enable_if_t<!std::numeric_limits<T>::is_integer, void>>
 struct Matrix {
-  Matrix() = default;
-  Matrix(std::array<std::array<T, M>, N> const &arr) : data_{arr} {}
+  using Row = std::array<T, M>;
 
-  std::array<T, M> &operator[](std::size_t i) {
+  Matrix() = default;
+  explicit Matrix(std::array<Row, N> const &arr) : data_{arr} {}
+
+  Row &operator[](std::size_t i) {
     assert(i >= 0 && i < N);
     return data_[i];
   }
 
-  std::array<T, M> const &operator[](std::size_t i) const {
+  Row const &operator[](std::size_t i) const {
     assert(i >= 0 && i < N);
     return data_[i];
   }
@@ -211,7 +213,7 @@ struct Matrix {
     return ret;
   }
 
-  std::array<std::array<T, M>, N> data_{};
+  std::array<Row, N> data_{};
 };
 
 using Matrix3x3 = Matrix<float, 3, 3>;
