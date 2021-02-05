@@ -37,13 +37,14 @@ struct Matrix {
     return data_[i][j];
   }
 
-  void Set(int i, int j, T v) {
+  Matrix &Set(int i, int j, T v) {
     assert(i >= 0 && i < N && j >= 0 && j < M);
-    return data_[i][j] = v;
+    data_[i][j] = v;
+    return *this;
   }
 
   // 将矩阵设为 0 矩阵
-  void SetZero() { SetAll(0.0f); }
+  Matrix &SetZero() { return SetAll(0.0f); }
 
   // 获取 0 矩阵
   static Matrix const &Zero() {
@@ -52,12 +53,13 @@ struct Matrix {
   }
 
   // 将矩阵每个值都设为给定值
-  void SetAll(T x) {
+  Matrix &SetAll(T x) {
     for (int i = 0; i < N; i++) {
       for (int j = 0; j < M; j++) {
         data_[i][j] = x;
       }
     }
+    return *this;
   }
 
   // 将矩阵设为单位矩阵
