@@ -131,50 +131,50 @@ struct Point {
   }
 
   // 点对矢量的加法
-  Point& operator+=(Vector<T, N> const& rhs) {
+  Point& operator+=(Vector<T, N> const& v) {
     for (int i = 0; i < N; i++) {
-      data_[i] += rhs[i];
+      data_[i] += v[i];
     }
     return *this;
   }
 
   // 点对矢量的加法
-  friend Point operator+(Point lhs, Vector<T, N> const& rhs) {
-    lhs += rhs;
-    return lhs;
+  friend Point operator+(Point p, Vector<T, N> const& v) {
+    p += v;
+    return p;
   }
 
   // 点对矢量的加法
-  friend Point operator+(Vector<T, N> const& lhs, Point rhs) {
-    rhs += lhs;
-    return rhs;
+  friend Point operator+(Vector<T, N> const& v, Point p) {
+    p += v;
+    return p;
   }
 
   // 点对矢量的减法
-  Point& operator-=(Vector<T, N> const& rhs) {
+  Point& operator-=(Vector<T, N> const& v) {
     for (int i = 0; i < N; i++) {
-      data_[i] -= rhs[i];
+      data_[i] -= v[i];
     }
     return *this;
   }
 
   // 点对矢量的减法
-  friend Point operator-(Point lhs, Vector<T, N> const& rhs) {
-    lhs -= rhs;
-    return lhs;
+  friend Point operator-(Point p, Vector<T, N> const& v) {
+    p -= v;
+    return p;
   }
 
   // 点对矢量的减法
-  friend Point operator-(Vector<T, N> const& lhs, Point rhs) {
-    rhs -= lhs;
-    return rhs;
+  friend Point operator-(Vector<T, N> const& v, Point p) {
+    p -= v;
+    return p;
   }
 
   // 两点减法，获得一个矢量
-  friend Vector<T, N> operator-(Point const& lhs, Point const& rhs) {
-    Vector<T, N> ret{lhs.data_};
+  friend Vector<T, N> operator-(Point const& end, Point const& start) {
+    Vector<T, N> ret{end.data_};
     for (int i = 0; i < N; i++) {
-      ret[i] -= rhs[i];
+      ret[i] -= start[i];
     }
     return ret;
   }
