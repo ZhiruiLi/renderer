@@ -15,16 +15,15 @@ void DrawLine(Point2 p0, Point2 p1, Color const &c, FrameBuffer *fb) {
   auto diff = p0 - p1;
   diff.SetAbs();
   if (diff.x() < diff.y()) {
-    std::swap(p0.x(), p0.y());
-    std::swap(p1.x(), p1.y());
+    p0.SwapXY();
+    p1.SwapXY();
     steep = true;
   }
   if (p0.x() > p1.x()) {
     std::swap(p0, p1);
   }
-  auto const dx = p1.x() - p0.x();
-  auto const dy = p1.y() - p0.y();
-  auto const derror2 = std::abs(dy) * 2;
+  auto const delta = p1 - p0;
+  auto const derror2 = std::abs(delta.y()) * 2;
   auto error2 = decltype(derror2)(0);
   auto y = p0.y();
   for (auto x = p0.x(); x <= p1.x(); x++) {
@@ -34,9 +33,9 @@ void DrawLine(Point2 p0, Point2 p1, Color const &c, FrameBuffer *fb) {
       fb->Set(int(x), int(y), c);
     }
     error2 += derror2;
-    if (error2 > dx) {
+    if (error2 > delta.x()) {
       y += (y1 > y0 ? 1 : -1);
-      error2 -= dx * 2;
+      error2 -= delta.x() * 2;
     }
   }
 }
