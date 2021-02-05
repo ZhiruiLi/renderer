@@ -32,14 +32,14 @@ struct Matrix {
     return data_[i];
   }
 
-  T &Get(int i, int j) {
+  T const &Get(int i, int j) const {
     assert(i >= 0 && i < N && j >= 0 && j < M);
     return data_[i][j];
   }
 
-  T const &Get(int i, int j) const {
+  void Set(int i, int j, T v) {
     assert(i >= 0 && i < N && j >= 0 && j < M);
-    return data_[i][j];
+    return data_[i][j] = v;
   }
 
   // 将矩阵设为 0 矩阵
