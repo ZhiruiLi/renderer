@@ -102,7 +102,7 @@ struct Vector {
   }
 
   template <std::size_t N1 = N>
-  std::enable_if_t<details::HasX(N1)> set_x(T x) {
+  std::enable_if_t<details::HasX(N1), Vector>& set_x(T x) {
     return data_[0] = x;
   }
 
@@ -112,7 +112,7 @@ struct Vector {
   }
 
   template <std::size_t N1 = N>
-  std::enable_if_t<details::HasY(N1)> set_y(T y) {
+  std::enable_if_t<details::HasY(N1), Vector>& set_y(T y) {
     return data_[1] = y;
   }
 
@@ -122,7 +122,7 @@ struct Vector {
   }
 
   template <std::size_t N1 = N>
-  std::enable_if_t<details::HasZ(N1)> set_z(T z) {
+  std::enable_if_t<details::HasZ(N1), Vector>& set_z(T z) {
     return data_[2] = z;
   }
 
@@ -132,7 +132,7 @@ struct Vector {
   }
 
   template <std::size_t N1 = N>
-  std::enable_if_t<details::HasW(N1)> set_w(T w) {
+  std::enable_if_t<details::HasW(N1), Vector>& set_w(T w) {
     return data_[3] = w;
   }
 

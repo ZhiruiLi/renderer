@@ -83,7 +83,7 @@ struct Point {
   }
 
   template <std::size_t N1 = N>
-  std::enable_if_t<details::HasX(N1)> set_x(T x) {
+  std::enable_if_t<details::HasX(N1), Point>& set_x(T x) {
     return data_[0] = x;
   }
 
@@ -93,7 +93,7 @@ struct Point {
   }
 
   template <std::size_t N1 = N>
-  std::enable_if_t<details::HasY(N1)> set_y(T y) {
+  std::enable_if_t<details::HasY(N1), Point>& set_y(T y) {
     return data_[1] = y;
   }
 
@@ -103,7 +103,7 @@ struct Point {
   }
 
   template <std::size_t N1 = N>
-  std::enable_if_t<details::HasZ(N1)> set_z(T z) {
+  std::enable_if_t<details::HasZ(N1), Point>& set_z(T z) {
     return data_[2] = z;
   }
 
@@ -113,7 +113,7 @@ struct Point {
   }
 
   template <std::size_t N1 = N>
-  std::enable_if_t<details::HasW(N1)> set_w(T w) {
+  std::enable_if_t<details::HasW(N1), Point>& set_w(T w) {
     return data_[3] = w;
   }
 
