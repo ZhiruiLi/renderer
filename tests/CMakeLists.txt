@@ -24,4 +24,3 @@ file(GLOB SOURCES LIST_DIRECTORIES TRUE
   "${PROJECT_SOURCE_DIR}/tests/*.h")
 
 package_add_test(tests ${SOURCES})
-add_test(tests tests)
