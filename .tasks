@@ -3,7 +3,7 @@ command=cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .. && make -j10
 cwd=$(VIM_ROOT)
 
 [execute]
-command=cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .. && make -j10 && ./renderer.app/Contents/MacOS/renderer
+command=cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .. && make -j10 && src/renderer.app/Contents/MacOS/renderer
 cwd=$(VIM_ROOT)
 
 [test]

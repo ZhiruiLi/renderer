@@ -1,6 +1,7 @@
 #include <stdint.h>
 
 #include <iostream>
+#include <limits>
 
 #include "draw2d.h"
 #include "frame_buffer.h"
@@ -792,6 +793,10 @@ void test() {
   // std::array<int, 3> arr1 = {1, 2, 3};
   // std::array<int, 4> arr2 = arr1;
   auto c = sren::MakeSimpleCube();
+
+  auto const f1 = std::numeric_limits<float>::infinity();
+  auto const f2 = std::numeric_limits<float>::infinity();
+  std::cout << f1 - f2;
 }
 
 /**

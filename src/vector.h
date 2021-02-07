@@ -7,6 +7,7 @@
 #include <cstddef>
 #include <iostream>
 #include <iterator>
+#include <limits>
 #include <type_traits>
 
 #include "math.h"
@@ -44,20 +45,27 @@ struct Vector {
 
   explicit Vector(std::array<T, N> const& data) : data_{data} {}
 
+  explicit Vector(T const* data) { std::copy(data, data + N, begin()); }
+
   explicit Vector(Vector<T, N - 1> const& v, T last) {
     std::copy(v.begin(), v.end(), begin());
     back() = last;
   }
 
+  static Vector Fill(T value) {
+    Vector ret{};
+    std::fill(ret.begin(), ret.end(), value);
+    return ret;
+  }
+
   template <std::size_t N1 = N, class = std::enable_if_t<N1 == 2>>
-  Vector(float vx, float vy) : data_{vx, vy} {}
+  Vector(T vx, T vy) : data_{vx, vy} {}
 
   template <std::size_t N1 = N, class = std::enable_if_t<N1 == 3>>
-  Vector(float vx, float vy, float vz) : data_{vx, vy, vz} {}
+  Vector(T vx, T vy, T vz) : data_{vx, vy, vz} {}
 
   template <std::size_t N1 = N, class = std::enable_if_t<N1 == 4>>
-  Vector(float vx, float vy, float vz, float vw = 1.0f)
-      : data_{vx, vy, vz, vw} {}
+  Vector(T vx, T vy, T vz, T vw = 1.0f) : data_{vx, vy, vz, vw} {}
 
   T& operator[](std::size_t i) {
     assert(i >= 0 && i < N);
@@ -103,7 +111,8 @@ struct Vector {
 
   template <std::size_t N1 = N>
   std::enable_if_t<details::HasX(N1), Vector>& set_x(T x) {
-    return data_[0] = x;
+    data_[0] = x;
+    return *this;
   }
 
   template <std::size_t N1 = N>
@@ -113,7 +122,8 @@ struct Vector {
 
   template <std::size_t N1 = N>
   std::enable_if_t<details::HasY(N1), Vector>& set_y(T y) {
-    return data_[1] = y;
+    data_[1] = y;
+    return *this;
   }
 
   template <std::size_t N1 = N>
@@ -123,7 +133,8 @@ struct Vector {
 
   template <std::size_t N1 = N>
   std::enable_if_t<details::HasZ(N1), Vector>& set_z(T z) {
-    return data_[2] = z;
+    data_[2] = z;
+    return *this;
   }
 
   template <std::size_t N1 = N>
@@ -133,13 +144,56 @@ struct Vector {
 
   template <std::size_t N1 = N>
   std::enable_if_t<details::HasW(N1), Vector>& set_w(T w) {
-    return data_[3] = w;
+    data_[3] = w;
+    return *this;
+  }
+
+  Vector& Set(T const* data) {
+    for (int i = 0; i < N; i++) {
+      data_[i] = data[i];
+    }
+    return *this;
+  }
+
+  template <std::size_t N1 = N, class = std::enable_if_t<N1 == 2>>
+  Vector& Set(T vx, T vy) {
+    set_x(vx);
+    set_y(vy);
+    return *this;
+  }
+
+  template <std::size_t N1 = N, class = std::enable_if_t<N1 == 3>>
+  Vector& Set(T vx, T vy, T vz) {
+    set_x(vx);
+    set_y(vy);
+    set_z(vz);
+    return *this;
+  }
+
+  template <std::size_t N1 = N, class = std::enable_if_t<N1 == 4>>
+  Vector& Set(T vx, T vy, T vz, T vw = 1.0f) {
+    set_x(vx);
+    set_y(vy);
+    set_z(vz);
+    set_w(vw);
+    return *this;
+  }
+
+  // 两个矢量几乎相等
+  bool AlmostEqual(Vector const& rhs, T epsilon) const {
+    auto const m = ((*this) - rhs).SquareMagnitude();
+    return m <= epsilon * epsilon;
+  }
+
+  // 两个矢量几乎相等
+  bool AlmostEqual(Vector const& rhs) const {
+    return AlmostEqual(rhs, std::numeric_limits<T>::epsilon());
   }
 
   // 矢量比较相等
   friend bool operator==(Vector const& lhs, Vector const& rhs) {
     for (int i = 0; i < N; i++) {
-      if (!AlmostEqual(lhs[i], rhs[i])) {
+      if (lhs[i] != rhs[i]) {
         return false;
       }
     }
@@ -289,10 +343,65 @@ struct Vector {
   }
 
   // 将矢量归一化
-  Vector& SetNormalize() { return (*this) /= Magnitude(); }
+  Vector& SetNormalize() {
+    auto const m = SquareMagnitude();
+    return (*this) *= SafeInverseSqrt(m);
+  }
 
   // 复制矢量并将矢量归一化
-  Vector Normalize() const { return (*this) / Magnitude(); }
+  Vector Normalize() const {
+    auto const m = SquareMagnitude();
+    return (*this) * SafeInverseSqrt(m);
+  }
+
+  // 对应位置缩放
+  Vector& SetScale(Vector const& rhs) {
+    for (int i = 0; i < N; i++) {
+      data_[i] *= rhs[i];
+    }
+    return *this;
+  }
+
+  // 对应位置缩放
+  Vector Scale(Vector const& rhs) const {
+    Vector ret = *this;
+    ret.SetScale(rhs);
+    return ret;
+  }
+
+  // 返回每一项都无穷大的矢量
+  static Vector const& Infinty() {
+    static Vector const v = Fill(std::numeric_limits<T>::infinity());
+    return v;
+  }
+
+  // 检查一个矢量是否是归一化的
+  bool IsNormalized() const {
+    return ::sren::AlmostEqual(SquareMagnitude(), 1.0f);
+  }
+
+  // 检查一个矢量是否是归一化的
+  bool IsNormalized(T epsilon) const {
+    return ::sren::AlmostEqual(SquareMagnitude(), 1.0f, epsilon);
+  }
+
+  // 求两个矢量每一个位置的值的最小值构成的矢量
+  Vector Min(Vector const& rhs) const {
+    Vector ret{};
+    for (int i = 0; i < N; i++) {
+      ret[i] = std::min(data_[i], rhs[i]);
+    }
+    return ret;
+  }
+
+  // 求两个矢量每一个位置的值的最大值构成的矢量
+  Vector Max(Vector const& rhs) const {
+    Vector ret{};
+    for (int i = 0; i < N; i++) {
+      ret[i] = std::max(data_[i], rhs[i]);
+    }
+    return ret;
+  }
 
  private:
   std::array<T, N> data_{};

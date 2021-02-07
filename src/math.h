@@ -10,9 +10,20 @@ inline constexpr float kPI =
     3.14159265358979323846264338327950288419716939937510F;
 
 template <class T>
-std::enable_if_t<!std::numeric_limits<T>::is_integer, bool> AlmostEqual(T x,
-                                                                        T y) {
-  return std::abs(x - y) <= std::numeric_limits<T>::epsilon();
+inline std::enable_if_t<!std::numeric_limits<T>::is_integer, bool> AlmostEqual(
+    T x, T y, T epsilon) {
+  return std::abs(x - y) <= epsilon;
+}
+
+template <class T>
+inline std::enable_if_t<!std::numeric_limits<T>::is_integer, bool> AlmostEqual(
+    T x, T y) {
+  return AlmostEqual(x, y, std::numeric_limits<T>::epsilon());
+}
+
+inline float SafeInverseSqrt(float f) {
+  if (std::abs(f) == 0.0f) return f;
+  return 1.0F / std::sqrt(f);
 }
 
 }  // namespace sren
