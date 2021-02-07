@@ -17,16 +17,14 @@ class Color {
   Color(float r, float g, float b, float a = 1.0f)
       : r_(r), g_(g), b_(b), a_(a) {}
 
-  static Color RGB(uint32_t hex_color) {
-    return Color(Normalize(Shift(hex_color, 16)),
-                 Normalize(Shift(hex_color, 8)),
-                 Normalize(Shift(hex_color, 0)));
+  static Color RGB(uint32_t rgb_hex) {
+    return Color(Normalize(Shift(rgb_hex, 16)), Normalize(Shift(rgb_hex, 8)),
+                 Normalize(Shift(rgb_hex, 0)));
   }
 
-  static Color RGBA(uint32_t hex_color) {
-    return Color(
-        Normalize(Shift(hex_color, 24)), Normalize(Shift(hex_color, 16)),
-        Normalize(Shift(hex_color, 8)), Normalize(Shift(hex_color, 0)));
+  static Color RGBA(uint32_t rgba_hex) {
+    return Color(Normalize(Shift(rgba_hex, 24)), Normalize(Shift(rgba_hex, 16)),
+                 Normalize(Shift(rgba_hex, 8)), Normalize(Shift(rgba_hex, 0)));
   }
 
   float r() const { return r_; }
@@ -38,14 +36,22 @@ class Color {
   float a() const { return a_; }
   void set_a(float a) { a_ = a; }
 
+  float r_hex() const { return Unnormalize(r_); }
+  void set_r_hex(uint32_t r_hex) { r_ = Normalize(r_hex); }
+  float g_hex() const { return Unnormalize(g_); }
+  void set_g_hex(uint32_t g_hex) { g_ = Normalize(g_hex); }
+  float b_hex() const { return Unnormalize(b_); }
+  void set_b_hex(uint32_t b_hex) { b_ = Normalize(b_hex); }
+  float a_hex() const { return Unnormalize(a_); }
+  void set_a_hex(uint32_t a_hex) { a_ = Normalize(a_hex); }
+
   uint32_t rgb_hex() const {
-    return Unshift(Unnormalize(r_), 16) | Unshift(Unnormalize(g_), 8) |
-           Unshift(Unnormalize(b_), 0);
+    return Unshift(r_hex(), 16) | Unshift(g_hex(), 8) | Unshift(b_hex(), 0);
   }
 
   uint32_t rgba_hex() const {
-    return Unshift(Unnormalize(r_), 24) | Unshift(Unnormalize(g_), 16) |
-           Unshift(Unnormalize(b_), 8) | Unshift(Unnormalize(a_), 0);
+    return Unshift(r_hex(), 24) | Unshift(g_hex(), 16) | Unshift(b_hex(), 8) |
+           Unshift(a_hex(), 0);
   }
 
  private:

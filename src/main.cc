@@ -511,8 +511,8 @@ void device_init(device_t *device, int width, int height, void *fb) {
   device->max_v = 1.0f;
   device->width = width;
   device->height = height;
-  device->background = Color(0xC0, 0xC0, 0xC0);
-  device->foreground = Color(0x0, 0x0, 0x0);
+  device->background = Color::RGB(0xC0C0C0);
+  device->foreground = Color::RGB(0x0);
   transform_init(&device->transform, width, height);
   device->render_state = RENDER_STATE_WIREFRAME;
 }
@@ -546,7 +546,7 @@ void device_clear(device_t *device, int mode) {
     uint32_t *dst = device->framebuffer[y];
     uint32_t cc = (height - 1 - y) * 230 / (height - 1);
     cc = (cc << 16) | (cc << 8) | cc;
-    if (mode == 0) cc = device->background.hex();
+    if (mode == 0) cc = device->background.rgba_hex();
     for (x = device->width; x > 0; dst++, x--) dst[0] = cc;
   }
   for (y = 0; y < device->height; y++) {
@@ -727,11 +727,11 @@ void device_draw_primitive(device_t *device, const vertex_t *v1,
 
   if (render_state & RENDER_STATE_WIREFRAME) {  // 线框绘制
     device_draw_line(device, (int)p1.x, (int)p1.y, (int)p2.x, (int)p2.y,
-                     device->foreground.hex());
+                     device->foreground.rgba_hex());
     device_draw_line(device, (int)p1.x, (int)p1.y, (int)p3.x, (int)p3.y,
-                     device->foreground.hex());
+                     device->foreground.rgba_hex());
     device_draw_line(device, (int)p3.x, (int)p3.y, (int)p2.x, (int)p2.y,
-                     device->foreground.hex());
+                     device->foreground.rgba_hex());
   }
 }
 
@@ -814,12 +814,6 @@ int main(void) {
   float alpha = 1;
   float pos = 3.5;
 
-  sren::Matrix3x3 m;
-  sren::Matrix<float, 3, 4> m1;
-  sren::Vector2 v(1.1f, 2.2f);
-  v.x();
-  v.y();
-
   sren::Window window("Test", 800, 600);
   device_init(&device, 800, 600, nullptr);
   camera_at_zero(&device, 3, 0, 0);
@@ -831,17 +825,17 @@ int main(void) {
     device_clear(&device, 1);
 
     if (IsKeyPress(Key::kEscape)) window.Close();
-    if (IsKeyPress(Key::kUp) || IsKeyHold(Key::kUp)) pos -= 0.01f;
-    if (IsKeyPress(Key::kDown) || IsKeyHold(Key::kDown)) pos += 0.01f;
-    if (IsKeyPress(Key::kLeft) || IsKeyHold(Key::kLeft)) alpha += 0.01f;
-    if (IsKeyPress(Key::kRight) || IsKeyHold(Key::kRight)) alpha -= 0.01f;
+    if (IsKeyPress(Key::kUp) || IsKeyHold(Key::kUp)) pos -= 0.1f;
+    if (IsKeyPress(Key::kDown) || IsKeyHold(Key::kDown)) pos += 0.1f;
+    if (IsKeyPress(Key::kLeft) || IsKeyHold(Key::kLeft)) alpha += 0.1f;
+    if (IsKeyPress(Key::kRight) || IsKeyHold(Key::kRight)) alpha -= 0.1f;
 
     camera_at_zero(&device, pos, 0, 0);
     draw_box(&device, alpha);
 
     for (int i = 0; i < 800; i++) {
       for (int j = 0; j < 600; j++) {
-        fb->Set(i, j, Color(device.framebuffer[i][j]));
+        fb->Set(i, j, Color::RGBA(device.framebuffer[i][j]));
       }
     }
   });
