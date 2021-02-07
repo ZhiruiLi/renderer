@@ -98,6 +98,31 @@ struct Matrix {
     return *this;
   }
 
+  // 获取单位矩阵
+  template <std::size_t N1 = N, std::size_t M1 = M>
+  std::enable_if_t<N1 == M1, bool> const &IsIdentity() const {
+    for (int i = 0; i < N; i++) {
+      for (int j = 0; j < M; j++) {
+        if (i == j) {
+          if (!sren::AlmostEqual(data_[i][j], T(1))) {
+            return false;
+          }
+        } else {
+          if (!sren::AlmostEqual(data_[i][j], T(0))) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
+  }
+
+  // 获取单位矩阵
+  template <std::size_t N1 = N, std::size_t M1 = M>
+  std::enable_if_t<N1 != M1, bool> const &IsIdentity() const {
+    return false;
+  }
+
   // 将矩阵设为单位矩阵
   template <std::size_t N1 = N, std::size_t M1 = M>
   std::enable_if_t<N1 == M1> SetIdentity() {

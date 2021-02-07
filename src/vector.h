@@ -386,19 +386,19 @@ struct Vector {
   }
 
   // 求两个矢量每一个位置的值的最小值构成的矢量
-  Vector Min(Vector const& rhs) const {
+  static Vector Min(Vector lhs, Vector const& rhs) {
     Vector ret{};
     for (int i = 0; i < N; i++) {
-      ret[i] = std::min(data_[i], rhs[i]);
+      ret[i] = std::min(lhs[i], rhs[i]);
     }
     return ret;
   }
 
   // 求两个矢量每一个位置的值的最大值构成的矢量
-  Vector Max(Vector const& rhs) const {
+  static Vector Max(Vector const& lhs, Vector const& rhs) {
     Vector ret{};
     for (int i = 0; i < N; i++) {
-      ret[i] = std::max(data_[i], rhs[i]);
+      ret[i] = std::max(lhs[i], rhs[i]);
     }
     return ret;
   }
