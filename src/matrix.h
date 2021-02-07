@@ -18,9 +18,23 @@ template <class T, std::size_t N, std::size_t M,
           class = std::enable_if_t<!std::numeric_limits<T>::is_integer, void>>
 struct Matrix {
   using Row = std::array<T, M>;
+  using value_type = T;
+  using reference = value_type &;
+  using const_reference = value_type const &;
+  using iterator = value_type *;
+  using const_iterator = value_type const *;
+  using pointer = value_type *;
+  using const_pointer = value_type const *;
+  using size_type = size_t;
+  using difference_type = ptrdiff_t;
+  using reverse_iterator = std::reverse_iterator<iterator>;
+  using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
   Matrix() = default;
+
   explicit Matrix(std::array<Row, N> const &arr) : data_{arr} {}
+
+  explicit Matrix(T const *data) { std::copy(data, data + N, begin()); }
 
   Row &operator[](std::size_t i) {
     assert(i >= 0 && i < N);
@@ -31,6 +45,28 @@ struct Matrix {
     assert(i >= 0 && i < N);
     return data_[i];
   }
+
+  value_type *data() { return &data_[0][0]; }
+  const value_type *data() const { return &data_[0][0]; }
+
+  iterator begin() { return iterator(data()); }
+  const_iterator begin() const { return const_iterator(data()); }
+  iterator end() { return iterator(data() + N); }
+  const_iterator end() const { return const_iterator(data() + N); }
+
+  reverse_iterator rbegin() { return reverse_iterator(end()); }
+  const_reverse_iterator rbegin() const {
+    return const_reverse_iterator(end());
+  }
+  reverse_iterator rend() { return reverse_iterator(begin()); }
+  const_reverse_iterator rend() const {
+    return const_reverse_iterator(begin());
+  }
+
+  const_iterator cbegin() const { return begin(); }
+  const_iterator cend() const { return end(); }
+  const_reverse_iterator crbegin() const { return rbegin(); }
+  const_reverse_iterator crend() const { return rend(); }
 
   T const &Get(int i, int j) const {
     assert(i >= 0 && i < N && j >= 0 && j < M);

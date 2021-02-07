@@ -129,14 +129,14 @@ TEST(Vector2Test, Inequality_WithSameVectors_ReturnsFalse) {
 TEST(Vector2Test, Min_WithTwoVectors_ReturnsMinimumOne) {
   Vector2 v1(-1.0f, -1.0f);
   Vector2 v2(1.0f, 1.0f);
-  Vector2 mn = v1.Min(v2);
+  Vector2 mn = Vector2::Min(v1, v2);
   ASSERT_TRUE(mn == v1);
 }
 
 TEST(Vector2Test, Max_WithTwoVectors_ReturnsMaximumOne) {
   Vector2 v1(-1.0f, -1.0f);
   Vector2 v2(1.0f, 1.0f);
-  Vector2 mx = v1.Max(v2);
+  Vector2 mx = Vector2::Max(v1, v2);
   ASSERT_TRUE(mx == v2);
 }
 
