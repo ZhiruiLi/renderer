@@ -32,6 +32,16 @@ struct Matrix {
 
   Matrix() = default;
 
+  template <std::size_t N1, std::size_t M1,
+            class = std::enable_if_t<N1 <= N && M1 <= M>>
+  explicit Matrix(Matrix<T, N1, M1> const &m) {
+    for (int i = 0; i < N1; i++) {
+      for (int j = 0; j < M1; j++) {
+        data_[i][j] = m[i][j];
+      }
+    }
+  }
+
   explicit Matrix(std::array<Row, N> const &arr) : data_{arr} {}
 
   explicit Matrix(T const *data) { std::copy(data, data + N, begin()); }
@@ -281,6 +291,28 @@ struct Matrix {
     }
     out << "]";
     return out;
+  }
+
+  // 将矩阵转置，只对方阵有效
+  template <std::size_t N1 = N, std::size_t M1 = M>
+  std::enable_if_t<N1 == M1, Matrix> &SetTransform() {
+    for (int i = 0; i < N; i++) {
+      for (int j = 0; j < M; j++) {
+        std::swap(data_[i][j], data_[j][i]);
+      }
+    }
+    return *this;
+  }
+
+  // 计算转置矩阵
+  Matrix<T, M, N> Transform() const {
+    Matrix<T, M, N> ret{};
+    for (int i = 0; i < N; i++) {
+      for (int j = 0; j < M; j++) {
+        ret[j][i] = data_[i][j];
+      }
+    }
+    return *this;
   }
 
  private:
