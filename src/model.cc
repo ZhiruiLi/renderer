@@ -10,7 +10,7 @@
 
 namespace sren {
 
-Model::Model(const char *filename) : verts_(), faces_() {
+Model::Model(std::string_view filename) : verts_(), faces_() {
   std::ifstream in;
   in.open(filename, std::ifstream::in);
   if (in.fail()) return;
@@ -38,14 +38,16 @@ Model::Model(const char *filename) : verts_(), faces_() {
   std::cerr << "# v# " << verts_.size() << " f# " << faces_.size() << std::endl;
 }
 
-Model::~Model() {}
-
 int Model::nverts() { return (int)verts_.size(); }
 
 int Model::nfaces() { return (int)faces_.size(); }
 
-std::vector<int> Model::face(int idx) { return faces_[idx]; }
+std::vector<int> const &Model::face(int i) const { return faces_[i]; }
 
-Vector3 Model::vert(int i) { return verts_[i]; }
+std::vector<int> &Model::face(int i) { return faces_[i]; }
+
+Vector3 const &Model::vert(int i) const { return verts_[i]; }
+
+Vector3 &Model::vert(int i) { return verts_[i]; }
 
 }  // namespace sren

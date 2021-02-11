@@ -22,9 +22,17 @@ class Color {
                  Normalize(Shift(rgb_hex, 0)));
   }
 
+  static Color RGB(uint32_t r, uint32_t g, uint32_t b) {
+    return Color(Normalize(r), Normalize(g), Normalize(b));
+  }
+
   static Color RGBA(uint32_t rgba_hex) {
     return Color(Normalize(Shift(rgba_hex, 24)), Normalize(Shift(rgba_hex, 16)),
                  Normalize(Shift(rgba_hex, 8)), Normalize(Shift(rgba_hex, 0)));
+  }
+
+  static Color RGBA(uint32_t r, uint32_t g, uint32_t b, uint32_t a) {
+    return Color(Normalize(r), Normalize(g), Normalize(b), Normalize(a));
   }
 
   float r() const { return r_; }

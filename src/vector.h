@@ -267,9 +267,9 @@ struct Vector {
   friend std::enable_if_t<N1 == 3, Vector> operator^(Vector const& lhs,
                                                      Vector const& rhs) {
     Vector v{};
-    v.x = lhs.y * rhs.z - lhs.z * rhs.y;
-    v.y = lhs.z * rhs.x - lhs.x * rhs.z;
-    v.z = lhs.x * rhs.y - lhs.y * rhs.x;
+    v.set_x(lhs.y() * rhs.z() - lhs.z() * rhs.y());
+    v.set_y(lhs.z() * rhs.x() - lhs.x() * rhs.z());
+    v.set_z(lhs.x() * rhs.y() - lhs.y() * rhs.x());
     return v;
   }
 

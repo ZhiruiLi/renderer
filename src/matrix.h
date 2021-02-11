@@ -110,7 +110,7 @@ struct Matrix {
 
   // 获取单位矩阵
   template <std::size_t N1 = N, std::size_t M1 = M>
-  std::enable_if_t<N1 == M1, bool> const &IsIdentity() const {
+  std::enable_if_t<N1 == M1, bool> IsIdentity() const {
     for (int i = 0; i < N; i++) {
       for (int j = 0; j < M; j++) {
         if (i == j) {

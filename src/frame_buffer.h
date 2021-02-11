@@ -9,7 +9,7 @@ namespace sren {
 
 class FrameBuffer {
  public:
-  FrameBuffer();
+  FrameBuffer() = default;
   FrameBuffer(int width, int height)
       : width_(width),
         height_(height),

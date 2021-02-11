@@ -7,6 +7,7 @@
 #include "frame_buffer.h"
 #include "key.h"
 #include "matrix.h"
+#include "model.h"
 #include "object.h"
 #include "vector.h"
 #include "window.h"
@@ -808,7 +809,7 @@ void test() {
  * 5. 透视坐标到屏幕坐标的变换
  * 6. 渲染几何体
  */
-int main(void) {
+int main1(void) {
   test();
 
   device_t device;
@@ -840,8 +841,36 @@ int main(void) {
 
     for (int i = 0; i < 800; i++) {
       for (int j = 0; j < 600; j++) {
-        fb->Set(i, j, Color::RGBA(device.framebuffer[i][j]));
+        fb->Set(i, j, 0, Color::RGBA(device.framebuffer[i][j]));
       }
+    }
+  });
+  window.Run();
+
+  return 0;
+}
+
+int main(void) {
+  sren::Window window("Test", 800, 600);
+
+  sren::Model model("../asserts/obj/african_head.obj");
+
+  window.set_main_loop([&](sren::FrameBuffer *fb) {
+    fb->Clear();
+    if (IsKeyPress(Key::kEscape)) window.Close();
+
+    for (int i = 0; i < model.nfaces(); i++) {
+      std::vector<int> face = model.face(i);
+      sren::Point2 screen_coords[3];
+      for (int j = 0; j < 3; j++) {
+        auto const &world_coords = model.vert(face[j]);
+        screen_coords[j] =
+            sren::Point2((world_coords.x() + 1.) * fb->width() / 2,
+                         (world_coords.y() + 1.) * fb->height() / 2);
+      }
+      sren::DrawTriangle(
+          screen_coords[0], screen_coords[1], screen_coords[2],
+          sren::Color::RGB(rand() % 255, rand() % 255, rand() % 255), fb);
     }
   });
   window.Run();

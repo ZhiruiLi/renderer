@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string_view>
 #include <vector>
 
 #include "vector.h"
@@ -12,12 +13,16 @@ class Model {
   std::vector<std::vector<int> > faces_;
 
  public:
-  Model(const char *filename);
-  ~Model();
+  Model(std::string_view filename);
+  ~Model() = default;
+
   int nverts();
   int nfaces();
-  Vector3 vert(int i);
-  std::vector<int> face(int idx);
+
+  Vector3 const &vert(int i) const;
+  Vector3 &vert(int i);
+  std::vector<int> const &face(int i) const;
+  std::vector<int> &face(int i);
 };
 
 }  // namespace sren
