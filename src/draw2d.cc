@@ -6,7 +6,7 @@ namespace sren {
 
 // 画点
 void DrawPixel(Point2 const &p, Color const &c, FrameBuffer *fb) {
-  fb->Set(int(p.x()), int(p.y()), c);
+  fb->Set(int(p.x()), int(p.y()), 0, c);
 }
 
 // 画线
@@ -27,9 +27,9 @@ void DrawLine(Point2 p0, Point2 p1, Color const &c, FrameBuffer *fb) {
   auto y = p0.y();
   for (auto x = p0.x(); x <= p1.x(); x++) {
     if (steep) {
-      fb->Set(int(y), int(x), c);
+      fb->Set(int(y), int(x), 0, c);
     } else {
-      fb->Set(int(x), int(y), c);
+      fb->Set(int(x), int(y), 0, c);
     }
     error2 += derror2;
     if (error2 > delta.x()) {
@@ -67,7 +67,7 @@ void DrawTriangle(Point2 t0, Point2 t1, Point2 t2, Color const &c,
       std::swap(pa, pb);
     }
     for (int j = pa.x(); j <= pb.x(); j++) {
-      fb->Set(j, t0.y() + i, c);
+      fb->Set(j, t0.y() + i, 0, c);
     }
   }
 }
