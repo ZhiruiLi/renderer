@@ -117,9 +117,20 @@ struct Point {
     return data_[3] = w;
   }
 
+  // 交换 x y 的值
   template <std::size_t N1 = N>
   std::enable_if_t<N1 == 2> SwapXY() {
     std::swap(data_[0], data_[1]);
+  }
+
+  // 获取从原点到当前点的向量
+  Vector<T, N> ToVector() const { return (*this) - Zero(); }
+
+  // 计算点到向量的投影
+  Vector<T, N> ProjectTo(Vector<T, N> const& v) const {
+    auto const vthis = ToVector();
+    auto const sqmag = vthis.SquareMagnitude();
+    return vthis * v / sqmag * vthis;
   }
 
   // 位置比较相等

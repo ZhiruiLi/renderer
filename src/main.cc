@@ -890,7 +890,7 @@ void DrawShadingModel(Model const &model, Vector3 light_dir, FrameBuffer *fb) {
 int main(void) {
   Window window("Test", 800, 600);
 
-  Model model("../asserts/obj/african_head.obj");
+  Model model("../asserts/african_head/african_head.obj");
 
   float x = 0;
   float y = 0;
