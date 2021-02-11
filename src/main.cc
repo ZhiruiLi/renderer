@@ -793,7 +793,7 @@ void init_texture(device_t *device) {
 void test() {
   // std::array<int, 3> arr1 = {1, 2, 3};
   // std::array<int, 4> arr2 = arr1;
-  auto c = sren::MakeSimpleCube();
+  auto c = MakeSimpleCube();
 
   auto const f1 = std::numeric_limits<float>::infinity();
   auto const f2 = std::numeric_limits<float>::infinity();
@@ -820,13 +820,13 @@ int main1(void) {
   float alpha = 1;
   float pos = 3.5;
 
-  sren::Window window("Test", 800, 600);
+  Window window("Test", 800, 600);
   device_init(&device, 800, 600, nullptr);
   camera_at_zero(&device, 3, 0, 0);
   init_texture(&device);
   device.render_state = RENDER_STATE_TEXTURE;
 
-  window.set_main_loop([&](sren::FrameBuffer *fb) {
+  window.set_main_loop([&](FrameBuffer *fb) {
     fb->Clear();
     device_clear(&device, 1);
 
@@ -850,28 +850,60 @@ int main1(void) {
   return 0;
 }
 
+void DrawRandColorModel(Model const &model, FrameBuffer *fb) {
+  for (int i = 0; i < model.nfaces(); i++) {
+    std::vector<int> face = model.face(i);
+    Point2 screen_coords[3];
+    for (int j = 0; j < 3; j++) {
+      auto const &world_coords = model.vert(face[j]);
+      screen_coords[j] = Point2((world_coords.x() + 1.) * fb->width() / 2,
+                                (world_coords.y() + 1.) * fb->height() / 2);
+    }
+    DrawTriangle(screen_coords[0], screen_coords[1], screen_coords[2],
+                 Color::RGB(rand() % 255, rand() % 255, rand() % 255), fb);
+  }
+}
+
+void DrawShadingModel(Model const &model, Vector3 light_dir, FrameBuffer *fb) {
+  for (int i = 0; i < model.nfaces(); i++) {
+    std::vector<int> face = model.face(i);
+    Point2 screen_coords[3];
+    Vector3 world_coords[3];
+    for (int j = 0; j < 3; j++) {
+      Vector3 const &v = model.vert(face[j]);
+      screen_coords[j] =
+          Point2((v.x() + 1) * fb->width() / 2, (v.y() + 1) * fb->height() / 2);
+      world_coords[j] = v;
+    }
+    Vector3 n = (world_coords[2] - world_coords[0]) ^
+                (world_coords[1] - world_coords[0]);
+    n.SetNormalize();
+    auto const intensity = n * light_dir;
+    if (intensity > 0) {
+      DrawTriangle(
+          screen_coords[0], screen_coords[1], screen_coords[2],
+          Color::RGB(intensity * 255, intensity * 255, intensity * 255), fb);
+    }
+  }
+}
+
 int main(void) {
-  sren::Window window("Test", 800, 600);
+  Window window("Test", 800, 600);
 
-  sren::Model model("../asserts/obj/african_head.obj");
+  Model model("../asserts/obj/african_head.obj");
 
-  window.set_main_loop([&](sren::FrameBuffer *fb) {
+  float x = 0;
+  float y = 0;
+  window.set_main_loop([&](FrameBuffer *fb) {
     fb->Clear();
     if (IsKeyPress(Key::kEscape)) window.Close();
+    if (IsKeyPress(Key::kLeft) || IsKeyHold(Key::kLeft)) x -= 0.1;
+    if (IsKeyPress(Key::kRight) || IsKeyHold(Key::kRight)) x += 0.1;
+    if (IsKeyPress(Key::kUp) || IsKeyHold(Key::kUp)) y -= 0.1;
+    if (IsKeyPress(Key::kDown) || IsKeyHold(Key::kDown)) y += 0.1;
 
-    for (int i = 0; i < model.nfaces(); i++) {
-      std::vector<int> face = model.face(i);
-      sren::Point2 screen_coords[3];
-      for (int j = 0; j < 3; j++) {
-        auto const &world_coords = model.vert(face[j]);
-        screen_coords[j] =
-            sren::Point2((world_coords.x() + 1.) * fb->width() / 2,
-                         (world_coords.y() + 1.) * fb->height() / 2);
-      }
-      sren::DrawTriangle(
-          screen_coords[0], screen_coords[1], screen_coords[2],
-          sren::Color::RGB(rand() % 255, rand() % 255, rand() % 255), fb);
-    }
+    // DrawRandColorModel(model, fb);
+    DrawShadingModel(model, Vector3(x, y, -1), fb);
   });
   window.Run();
 

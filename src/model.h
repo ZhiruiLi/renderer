@@ -16,8 +16,8 @@ class Model {
   Model(std::string_view filename);
   ~Model() = default;
 
-  int nverts();
-  int nfaces();
+  int nverts() const;
+  int nfaces() const;
 
   Vector3 const &vert(int i) const;
   Vector3 &vert(int i);

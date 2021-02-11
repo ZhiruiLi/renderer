@@ -38,9 +38,9 @@ Model::Model(std::string_view filename) : verts_(), faces_() {
   std::cerr << "# v# " << verts_.size() << " f# " << faces_.size() << std::endl;
 }
 
-int Model::nverts() { return (int)verts_.size(); }
+int Model::nverts() const { return (int)verts_.size(); }
 
-int Model::nfaces() { return (int)faces_.size(); }
+int Model::nfaces() const { return (int)faces_.size(); }
 
 std::vector<int> const &Model::face(int i) const { return faces_[i]; }
 
