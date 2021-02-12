@@ -6,6 +6,8 @@
 #include <cstdint>
 #include <iterator>
 
+#include "vector.h"
+
 namespace sren {
 
 class Color {
@@ -30,6 +32,8 @@ class Color {
 
  public:
   Color() = default;
+  Color(Vector3 const& rgb) : Color(rgb[0], rgb[1], rgb[2]) {}
+  Color(Vector4 const& rgba) : Color(rgba[0], rgba[1], rgba[2], rgba[3]) {}
   Color(value_type r, value_type g, value_type b, value_type a = 1.0f)
       : data_{r, g, b, a} {}
 
