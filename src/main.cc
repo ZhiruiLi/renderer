@@ -890,7 +890,6 @@ int main(void) {
 
   float x = 0;
   float y = 0;
-  bool runned = false;
   window.set_main_loop([&](FrameBuffer *fb) {
     fb->Clear();
     if (IsKeyPress(Key::kEscape)) window.Close();
@@ -899,11 +898,8 @@ int main(void) {
     if (IsKeyPress(Key::kUp) || IsKeyHold(Key::kUp)) y -= 0.1;
     if (IsKeyPress(Key::kDown) || IsKeyHold(Key::kDown)) y += 0.1;
 
-    DrawRandColorModel(model, fb);
-    // if (!runned) {
-    //   runned = true;
-    //   DrawLineModel(model, fb);
-    // }
+    // DrawRandColorModel(model, fb);
+    DrawLineModel(model, fb);
   });
   window.Run();
 
