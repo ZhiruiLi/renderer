@@ -864,34 +864,11 @@ void DrawRandColorModel(Model const &model, FrameBuffer *fb) {
   }
 }
 
-void DrawShadingModel(Model const &model, Vector3 light_dir, FrameBuffer *fb) {
-  for (int i = 0; i < model.nfaces(); i++) {
-    std::vector<int> face = model.face(i);
-    Vector2 screen_coords[3];
-    Vector3 world_coords[3];
-    for (int j = 0; j < 3; j++) {
-      Vector3 const &v = model.vert(face[j]);
-      screen_coords[j] = {v.x() * fb->width() / 2, v.y() * fb->height() / 2};
-      world_coords[j] = v;
-    }
-    Vector3 n = (world_coords[2] - world_coords[0]) ^
-                (world_coords[1] - world_coords[0]);
-    n.SetNormalize();
-    auto const intensity = n * light_dir;
-    if (intensity > 0) {
-      draw2d::Triangle(
-          screen_coords[0], screen_coords[1], screen_coords[2],
-          Color::RGB(intensity * 255, intensity * 255, intensity * 255), fb);
-    }
-  }
-}
-
 int main(void) {
-  Window window("Test", 2000, 2000);
+  Window window("Test", 800, 600);
 
   Model model("../asserts/african_head/african_head.obj");
 
-  std::cout << "done" << std::endl;
   float x = 0;
   float y = 0;
   window.set_main_loop([&](FrameBuffer *fb) {
@@ -902,9 +879,7 @@ int main(void) {
     if (IsKeyPress(Key::kUp) || IsKeyHold(Key::kUp)) y -= 0.1;
     if (IsKeyPress(Key::kDown) || IsKeyHold(Key::kDown)) y += 0.1;
 
-    // DrawRandColorModel(model, fb);
-    DrawShadingModel(model, Vector3(x, y, -1), fb);
-    std::cout << "hhhh" << std::endl;
+    DrawRandColorModel(model, fb);
   });
   window.Run();
 
