@@ -8,7 +8,16 @@
 
 namespace sren {
 
-Model::Model(const char *filename) : verts_(), faces_(), norms_(), uv_() {
+Model::Model(const std::string filename)
+    : verts_(),
+      uv_(),
+      norms_(),
+      facet_vrt_(),
+      facet_tex_(),
+      facet_nrm_(),
+      diffusemap_(),
+      normalmap_(),
+      specularmap_() {
   std::ifstream in;
   in.open(filename, std::ifstream::in);
   if (in.fail()) return;
@@ -26,64 +35,83 @@ Model::Model(const char *filename) : verts_(), faces_(), norms_(), uv_() {
       iss >> trash >> trash;
       Vector3 n;
       for (int i = 0; i < 3; i++) iss >> n[i];
-      norms_.push_back(n);
+      norms_.push_back(n.Normalize());
     } else if (!line.compare(0, 3, "vt ")) {
       iss >> trash >> trash;
       Vector2 uv;
       for (int i = 0; i < 2; i++) iss >> uv[i];
       uv_.push_back(uv);
     } else if (!line.compare(0, 2, "f ")) {
-      std::vector<Vector3> f;
-      Vector3 tmp;
+      int f, t, n;
       iss >> trash;
-      while (iss >> tmp[0] >> trash >> tmp[1] >> trash >> tmp[2]) {
-        for (int i = 0; i < 3; i++)
-          tmp[i]--;  // in wavefront obj all indices start at 1, not zero
-        f.push_back(tmp);
+      int cnt = 0;
+      while (iss >> f >> trash >> t >> trash >> n) {
+        facet_vrt_.push_back(--f);
+        facet_tex_.push_back(--t);
+        facet_nrm_.push_back(--n);
+        cnt++;
       }
-      faces_.push_back(f);
+      if (3 != cnt) {
+        std::cerr << "Error: the obj file is supposed to be triangulated"
+                  << std::endl;
+        in.close();
+        return;
+      }
     }
   }
-  std::cerr << "# v# " << verts_.size() << " f# " << faces_.size() << " vt# "
+  in.close();
+  std::cerr << "# v# " << nverts() << " f# " << nfaces() << " vt# "
             << uv_.size() << " vn# " << norms_.size() << std::endl;
   load_texture(filename, "_diffuse.tga", diffusemap_);
+  load_texture(filename, "_nm_tangent.tga", normalmap_);
+  load_texture(filename, "_spec.tga", specularmap_);
 }
 
-Model::~Model() {}
+int Model::nverts() const { return verts_.size(); }
 
-int Model::nverts() const { return (int)verts_.size(); }
+int Model::nfaces() const { return facet_vrt_.size() / 3; }
 
-int Model::nfaces() const { return (int)faces_.size(); }
+Vector3 Model::vert(const int i) const { return verts_[i]; }
 
-std::vector<int> Model::face(int idx) const {
-  std::vector<int> face;
-  for (int i = 0; i < (int)faces_[idx].size(); i++)
-    face.push_back(faces_[idx][i][0]);
-  return face;
+Vector3 Model::vert(const int iface, const int nthvert) const {
+  return verts_[facet_vrt_[iface * 3 + nthvert]];
 }
 
-Vector3 Model::vert(int i) const { return verts_[i]; }
-
-void Model::load_texture(std::string filename, const char *suffix,
+void Model::load_texture(std::string filename, const std::string suffix,
                          TGAImage &img) {
-  std::string texfile(filename);
-  size_t dot = texfile.find_last_of(".");
-  if (dot != std::string::npos) {
-    texfile = texfile.substr(0, dot) + std::string(suffix);
-    std::cerr << "texture file " << texfile << " loading "
-              << (img.ReadFile(texfile.c_str()) ? "ok" : "failed") << std::endl;
-    img.FlipVertically();
-  }
+  size_t dot = filename.find_last_of(".");
+  if (dot == std::string::npos) return;
+  std::string texfile = filename.substr(0, dot) + suffix;
+  auto const ok = img.ReadFile(texfile.c_str());
+  std::cerr << "texture file " << texfile << " loading "
+            << (ok ? "ok" : "failed") << std::endl;
+  img.FlipVertically();
 }
 
-Color Model::diffuse(Vector2 uv) const {
-  return diffusemap_.Get(uv.x(), uv.y());
+Color Model::diffuse(const Vector2 &uvf) const {
+  return diffusemap_.Get(uvf[0] * diffusemap_.width(),
+                         uvf[1] * diffusemap_.height());
 }
 
-Vector2 Model::uv(int iface, int nvert) const {
-  int idx = faces_[iface][nvert][1];
-  return Vector2(uv_[idx].x() * diffusemap_.width(),
-                 uv_[idx].y() * diffusemap_.height());
+Vector3 Model::normal(const Vector2 &uvf) const {
+  Color c =
+      normalmap_.Get(uvf[0] * normalmap_.width(), uvf[1] * normalmap_.height());
+  Vector3 res;
+  for (int i = 0; i < 3; i++) res[2 - i] = c[i] / 255. * 2 - 1;
+  return res;
+}
+
+double Model::specular(const Vector2 &uvf) const {
+  return specularmap_.Get(uvf[0] * specularmap_.width(),
+                          uvf[1] * specularmap_.height())[0];
+}
+
+Vector2 Model::uv(const int iface, const int nthvert) const {
+  return uv_[facet_tex_[iface * 3 + nthvert]];
+}
+
+Vector3 Model::normal(const int iface, const int nthvert) const {
+  return norms_[facet_nrm_[iface * 3 + nthvert]];
 }
 
 }  // namespace sren

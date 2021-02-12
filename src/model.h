@@ -15,23 +15,31 @@ namespace sren {
 
 class Model {
  private:
-  std::vector<Vector3> verts_;
-  // attention, this Vector3 means vertex/uv/normal
-  std::vector<std::vector<Vector3> > faces_;
-  std::vector<Vector3> norms_;
-  std::vector<Vector2> uv_;
-  TGAImage diffusemap_;
-  void load_texture(std::string filename, const char *suffix, TGAImage &img);
+  std::vector<Vector3> verts_;  // array of vertices
+  std::vector<Vector2> uv_;     // array of tex coords
+  std::vector<Vector3> norms_;  // array of normal vectors
+  std::vector<int> facet_vrt_;
+  std::vector<int> facet_tex_;  // indices in the above arrays per triangle
+  std::vector<int> facet_nrm_;
+  TGAImage diffusemap_;   // diffuse color texture
+  TGAImage normalmap_;    // normal map texture
+  TGAImage specularmap_;  // specular map texture
+  void load_texture(const std::string filename, const std::string suffix,
+                    TGAImage &img);
 
  public:
-  Model(const char *filename);
-  ~Model();
+  Model(const std::string filename);
   int nverts() const;
   int nfaces() const;
-  Vector3 vert(int i) const;
-  Vector2 uv(int iface, int nvert) const;
-  Color diffuse(Vector2 uv) const;
-  std::vector<int> face(int idx) const;
+  // per triangle corner normal vertex
+  Vector3 normal(const int iface, const int nthvert) const;
+  // fetch the normal vector from the normal map texture
+  Vector3 normal(const Vector2 &uv) const;
+  Vector3 vert(const int i) const;
+  Vector3 vert(const int iface, const int nthvert) const;
+  Vector2 uv(const int iface, const int nthvert) const;
+  Color diffuse(const Vector2 &uv) const;
+  double specular(const Vector2 &uv) const;
 };
 
 }  // namespace sren

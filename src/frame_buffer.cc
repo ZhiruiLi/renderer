@@ -5,11 +5,13 @@
 #include <limits>
 #include <memory>
 
+#include "math.h"
+
 namespace sren {
 
 void FrameBuffer::Set(int x, int y, Color const &color) {
-  std::clamp(x, 0, width_ - 1);
-  std::clamp(y, 0, height_ - 1);
+  Clamp(0, width_ - 1, &x);
+  Clamp(0, height_ - 1, &y);
   auto const idx = x + y * width_;
   int n = y * width_ * 4 + x * 4;
   data_[n] = color.r_hex();

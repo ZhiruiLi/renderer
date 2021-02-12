@@ -9,6 +9,7 @@
 #include "matrix.h"
 #include "model.h"
 #include "object.h"
+#include "src/color.h"
 #include "vector.h"
 #include "window.h"
 
@@ -850,15 +851,32 @@ int main1(void) {
   return 0;
 }
 
-void DrawRandColorModel(Model const &model, FrameBuffer *fb) {
+void DrawLineModel(Model const &model, FrameBuffer *fb) {
   for (int i = 0; i < model.nfaces(); i++) {
-    std::vector<int> face = model.face(i);
     Vector2 screen_coords[3];
     for (int j = 0; j < 3; j++) {
-      auto const &world_coords = model.vert(face[j]);
-      screen_coords[j] = Vector2((world_coords.x() + 1.) * fb->width() / 2,
-                                 (world_coords.y() + 1.) * fb->height() / 2);
+      auto const &world_coords = model.vert(i, j) + Vector3(1, 1, 0);
+      screen_coords[j] = Vector2(world_coords.x() * fb->width() / 2,
+                                 world_coords.y() * fb->height() / 2);
     }
+    auto const c = Color::RGB(rand() % 255, rand() % 255, rand() % 255);
+    draw2d::Line(screen_coords[0], screen_coords[1], c, fb);
+    draw2d::Line(screen_coords[0], screen_coords[2], c, fb);
+    draw2d::Line(screen_coords[1], screen_coords[2], c, fb);
+  }
+}
+
+void DrawRandColorModel(Model const &model, FrameBuffer *fb) {
+  for (int i = 0; i < model.nfaces(); i++) {
+    Vector2 screen_coords[3];
+    for (int j = 0; j < 3; j++) {
+      auto const &world_coords = model.vert(i, j) + Vector3(1, 1, 0);
+      screen_coords[j] = Vector2(world_coords.x() * fb->width() / 2,
+                                 world_coords.y() * fb->height() / 2);
+    }
+    draw2d::Line(screen_coords[0], screen_coords[1], colors::White(), fb);
+    draw2d::Line(screen_coords[2], screen_coords[1], colors::White(), fb);
+    draw2d::Line(screen_coords[0], screen_coords[2], colors::White(), fb);
     draw2d::Triangle(screen_coords[0], screen_coords[1], screen_coords[2],
                      Color::RGB(rand() % 255, rand() % 255, rand() % 255), fb);
   }
@@ -868,9 +886,11 @@ int main(void) {
   Window window("Test", 800, 600);
 
   Model model("../asserts/african_head/african_head.obj");
+  // Model model("../asserts/cube/cube.obj");
 
   float x = 0;
   float y = 0;
+  bool runned = false;
   window.set_main_loop([&](FrameBuffer *fb) {
     fb->Clear();
     if (IsKeyPress(Key::kEscape)) window.Close();
@@ -880,6 +900,10 @@ int main(void) {
     if (IsKeyPress(Key::kDown) || IsKeyHold(Key::kDown)) y += 0.1;
 
     DrawRandColorModel(model, fb);
+    // if (!runned) {
+    //   runned = true;
+    //   DrawLineModel(model, fb);
+    // }
   });
   window.Run();
 

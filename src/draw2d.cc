@@ -8,9 +8,9 @@ namespace draw2d {
 
 namespace {
 void SwapXY(Vector2 *p) {
-  float tmp = p->x();
+  float const x = p->x();
   p->set_x(p->y());
-  p->set_y(tmp);
+  p->set_y(x);
 }
 }  // namespace
 
@@ -21,30 +21,63 @@ void Pixel(Vector2 const &p, Color const &c, FrameBuffer *fb) {
 
 // 画线
 void Line(Vector2 p0, Vector2 p1, Color const &c, FrameBuffer *fb) {
-  bool steep = false;
-  auto const diff = (p0 - p1).Abs();
-  if (diff.x() < diff.y()) {
-    SwapXY(&p0);
-    SwapXY(&p1);
-    steep = true;
-  }
-  if (p0.x() > p1.x()) {
-    std::swap(p0, p1);
-  }
-  auto const delta = p1 - p0;
-  auto const derror2 = std::abs(delta.y()) * 2;
-  auto error2 = decltype(derror2)(0);
-  auto y = p0.y();
-  for (auto x = p0.x(); x <= p1.x(); x++) {
-    if (steep) {
-      fb->Set(int(y), int(x), c);
-    } else {
-      fb->Set(int(x), int(y), c);
+  if (p0.x() == p1.x() && p0.y() == p1.y()) {
+    fb->Set(p0.x(), p0.y(), c);
+  } else if (p0.x() == p1.x()) {
+    int const inc = (p0.y() <= p1.y()) ? 1 : -1;
+    int const y0 = p0.y();
+    int const y1 = p1.y();
+    for (int y = y0; y != y1; y += inc) {
+      fb->Set(p0.x(), y, c);
     }
-    error2 += derror2;
-    if (error2 > delta.x()) {
-      y += (y1 > y0 ? 1 : -1);
-      error2 -= delta.x() * 2;
+    fb->Set(p1.x(), p1.y(), c);
+  } else if (p0.y() == p1.y()) {
+    int const inc = (p0.x() <= p1.x()) ? 1 : -1;
+    int const x0 = std::floor(p0.x());
+    int const x1 = std::floor(p1.x());
+    for (int x = x0; x != x1; x += inc) {
+      fb->Set(x, p0.y(), c);
+    }
+    fb->Set(p1.x(), p1.y(), c);
+  } else {
+    int const dx = std::abs(p1.x() - p0.x());
+    int const dy = std::abs(p1.y() - p0.y());
+    if (dx >= dy) {
+      if (p1.x() < p0.x()) {
+        std::swap(p0, p1);
+      }
+      int rem = 0;
+      int const x0 = p0.x();
+      int const x1 = p1.x();
+      int const y0 = p0.y();
+      for (int x = x0, y = y0; x <= x1; x++) {
+        fb->Set(x, y, c);
+        rem += dy;
+        if (rem >= dx) {
+          rem -= dx;
+          y += (p1.y() >= p0.y()) ? 1 : -1;
+          fb->Set(x, y, c);
+        }
+      }
+      fb->Set(p1.x(), p1.y(), c);
+    } else {
+      if (p1.y() < p0.y()) {
+        std::swap(p0, p1);
+      }
+      int rem = 0;
+      int const x0 = p0.x();
+      int const y0 = p0.y();
+      int const y1 = p1.y();
+      for (int x = x0, y = y0; y <= y1; y++) {
+        fb->Set(x, y, c);
+        rem += dx;
+        if (rem >= dy) {
+          rem -= dy;
+          x += (p1.x() >= p0.x()) ? 1 : -1;
+          fb->Set(x, y, c);
+        }
+      }
+      fb->Set(p1.x(), p1.y(), c);
     }
   }
 }

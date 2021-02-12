@@ -26,4 +26,13 @@ inline float SafeInverseSqrt(float f) {
   return 1.0F / std::sqrt(f);
 }
 
+template <class T>
+inline void Clamp(T lo, T hi, T *target) {
+  if (*target < lo) {
+    *target = lo;
+  } else if (*target > hi) {
+    *target = hi;
+  }
+}
+
 }  // namespace sren
