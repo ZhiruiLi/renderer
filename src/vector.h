@@ -306,6 +306,11 @@ struct Vector {
   // 计算长度
   T Magnitude() const { return std::sqrtf(SquareMagnitude()); }
 
+  // 计算向量到向量的投影
+  Vector<T, N> ProjectTo(Vector<T, N> const& v) const {
+    return (*this) * v / SquareMagnitude() * (*this);
+  }
+
   // 对矢量的每一项都取倒数
   Vector& SetInverse() {
     for (int i = 0; i < N; i++) {
@@ -336,12 +341,6 @@ struct Vector {
     return v;
   }
 
-  // 计算与另一个矢量的夹角
-  T Angle(Vector const& rhs) const {
-    return std::acos(
-        std::min(1.0f, (*this) * rhs / (Magnitude() * rhs.Magnitude())));
-  }
-
   // 将矢量归一化
   Vector& SetNormalize() {
     auto const m = SquareMagnitude();
@@ -369,6 +368,12 @@ struct Vector {
     return ret;
   }
 
+  // 返回每一项都为 0 的矢量
+  static Vector const& Zero() {
+    static Vector const v{};
+    return v;
+  }
+
   // 返回每一项都无穷大的矢量
   static Vector const& Infinty() {
     static Vector const v = Fill(std::numeric_limits<T>::infinity());
@@ -385,24 +390,6 @@ struct Vector {
     return ::sren::AlmostEqual(SquareMagnitude(), 1.0f, epsilon);
   }
 
-  // 求两个矢量每一个位置的值的最小值构成的矢量
-  static Vector Min(Vector lhs, Vector const& rhs) {
-    Vector ret{};
-    for (int i = 0; i < N; i++) {
-      ret[i] = std::min(lhs[i], rhs[i]);
-    }
-    return ret;
-  }
-
-  // 求两个矢量每一个位置的值的最大值构成的矢量
-  static Vector Max(Vector const& lhs, Vector const& rhs) {
-    Vector ret{};
-    for (int i = 0; i < N; i++) {
-      ret[i] = std::max(lhs[i], rhs[i]);
-    }
-    return ret;
-  }
-
  private:
   std::array<T, N> data_{};
 };
@@ -410,5 +397,36 @@ struct Vector {
 using Vector2 = Vector<float, 2>;
 using Vector3 = Vector<float, 3>;
 using Vector4 = Vector<float, 4>;
+
+namespace vectors {
+
+// 求两个矢量每一个位置的值的最小值构成的矢量
+template <class T, std::size_t N>
+Vector<T, N> Min(Vector<T, N> lhs, Vector<T, N> const& rhs) {
+  Vector<T, N> ret{};
+  for (int i = 0; i < N; i++) {
+    ret[i] = std::min(lhs[i], rhs[i]);
+  }
+  return ret;
+}
+
+// 求两个矢量每一个位置的值的最大值构成的矢量
+template <class T, std::size_t N>
+Vector<T, N> Max(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
+  Vector<T, N> ret{};
+  for (int i = 0; i < N; i++) {
+    ret[i] = std::max(lhs[i], rhs[i]);
+  }
+  return ret;
+}
+
+// 计算与另一个矢量的夹角
+template <class T, std::size_t N>
+T Angle(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
+  return std::acos(
+      std::min(1.0f, lhs * rhs / (lhs.Magnitude() * rhs.Magnitude())));
+}
+
+}  // namespace vectors
 
 }  // namespace sren

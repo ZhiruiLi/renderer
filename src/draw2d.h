@@ -2,18 +2,22 @@
 
 #include "color.h"
 #include "frame_buffer.h"
-#include "point.h"
+#include "vector.h"
 
 namespace sren {
 
+namespace draw2d {
+
 // 画点
-void DrawPixel(Point2 const &p, Color const &c, FrameBuffer *fb);
+void Pixel(Vector2 const &p, Color const &c, FrameBuffer *fb);
 
 // 画线
-void DrawLine(Point2 p0, Point2 p1, Color const &c, FrameBuffer *fb);
+void Line(Vector2 p0, Vector2 p1, Color const &c, FrameBuffer *fb);
 
 // 画三角形
-void DrawTriangle(Point2 p0, Point2 p1, Point2 p2, Color const &c,
-                  FrameBuffer *fb);
+void Triangle(Vector2 p0, Vector2 p1, Vector2 p2, Color const &c,
+              FrameBuffer *fb);
+
+}  // namespace draw2d
 
 }  // namespace sren

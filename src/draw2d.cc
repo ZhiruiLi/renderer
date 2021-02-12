@@ -1,21 +1,41 @@
 #include "draw2d.h"
 
-#include "point.h"
-
 namespace sren {
 
+namespace draw2d {
+
+namespace {
+void SwapXY(Vector2 *p) {
+  float tmp = p->x();
+  p->set_x(p->y());
+  p->set_y(tmp);
+}
+
+Vector3 Barycentric(Vector2 pt0, Vector2 pt1, Vector2 pt2, Vector2 p) {
+  Vector3 u = Vector3(pt2[0] - pt0[0], pt1[0] - pt0[0], pt0[0] - p[0]) ^
+              Vector3(pt2[1] - pt0[1], pt1[1] - pt0[1], pt0[1] - p[1]);
+  /* `pts` and `P` has integer value as coordinates
+     so `abs(u[2])` < 1 means `u[2]` is 0, that means
+     triangle is degenerate, in this case return something with negative
+     coordinates */
+  if (std::abs(u[2]) < 1) return Vector3(-1, 1, 1);
+  return Vector3(1.f - (u.x() + u.y()) / u.z(), u.y() / u.z(), u.x() / u.z());
+}
+
+}  // namespace
+
 // 画点
-void DrawPixel(Point2 const &p, Color const &c, FrameBuffer *fb) {
-  fb->Set(int(p.x()), int(p.y()), 0, c);
+void Pixel(Vector2 const &p, Color const &c, FrameBuffer *fb) {
+  fb->Set(int(p.x()), int(p.y()), c);
 }
 
 // 画线
-void DrawLine(Point2 p0, Point2 p1, Color const &c, FrameBuffer *fb) {
+void Line(Vector2 p0, Vector2 p1, Color const &c, FrameBuffer *fb) {
   bool steep = false;
   auto const diff = (p0 - p1).Abs();
   if (diff.x() < diff.y()) {
-    p0.SwapXY();
-    p1.SwapXY();
+    SwapXY(&p0);
+    SwapXY(&p1);
     steep = true;
   }
   if (p0.x() > p1.x()) {
@@ -27,9 +47,9 @@ void DrawLine(Point2 p0, Point2 p1, Color const &c, FrameBuffer *fb) {
   auto y = p0.y();
   for (auto x = p0.x(); x <= p1.x(); x++) {
     if (steep) {
-      fb->Set(int(y), int(x), 0, c);
+      fb->Set(int(y), int(x), c);
     } else {
-      fb->Set(int(x), int(y), 0, c);
+      fb->Set(int(x), int(y), c);
     }
     error2 += derror2;
     if (error2 > delta.x()) {
@@ -40,36 +60,31 @@ void DrawLine(Point2 p0, Point2 p1, Color const &c, FrameBuffer *fb) {
 }
 
 // 画三角形
-void DrawTriangle(Point2 t0, Point2 t1, Point2 t2, Color const &c,
-                  FrameBuffer *fb) {
-  if (AlmostEqual(t0.y(), t1.y()) && AlmostEqual(t0.y(), t2.y())) {
-    return;
+void Triangle(Vector2 pt0, Vector2 pt1, Vector2 pt2, Color const &color,
+              FrameBuffer *fb) {
+  Vector2 bboxmin(fb->width() - 1, fb->height() - 1);
+  Vector2 bboxmax(0, 0);
+  Vector2 clamp(fb->width() - 1, fb->height() - 1);
+  for (int i = 0; i < 2; i++) {
+    bboxmin[i] = std::max(0.0f, std::min(bboxmin[i], pt0[i]));
+    bboxmax[i] = std::min(clamp[i], std::max(bboxmax[i], pt0[i]));
+    bboxmin[i] = std::max(0.0f, std::min(bboxmin[i], pt1[i]));
+    bboxmax[i] = std::min(clamp[i], std::max(bboxmax[i], pt1[i]));
+    bboxmin[i] = std::max(0.0f, std::min(bboxmin[i], pt2[i]));
+    bboxmax[i] = std::min(clamp[i], std::max(bboxmax[i], pt2[i]));
   }
-  if (t0.y() > t1.y()) {
-    std::swap(t0, t1);
-  }
-  if (t0.y() > t2.y()) {
-    std::swap(t0, t2);
-  }
-  if (t1.y() > t2.y()) {
-    std::swap(t1, t2);
-  }
-  auto const total_height = int(t2.y() - t0.y());
-  for (int i = 0; i < total_height; i++) {
-    bool const second_half = i > t1.y() - t0.y() || t1.y() == t0.y();
-    int const segment_height = second_half ? t2.y() - t1.y() : t1.y() - t0.y();
-    float const alpha = (float)i / total_height;
-    float const beta =
-        (float)(i - (second_half ? t1.y() - t0.y() : 0)) / segment_height;
-    auto pa = t0 + (t2 - t0) * alpha;
-    auto pb = second_half ? t1 + (t2 - t1) * beta : t0 + (t1 - t0) * beta;
-    if (pa.x() > pb.x()) {
-      std::swap(pa, pb);
-    }
-    for (int j = pa.x(); j <= pb.x(); j++) {
-      fb->Set(j, t0.y() + i, 0, c);
+  Vector2 p{};
+  for (p.set_x(bboxmin.x()); p.x() <= bboxmax.x(); p.set_x(p.x() + 1)) {
+    for (p.set_y(bboxmin.y()); p.y() <= bboxmax.y(); p.set_y(p.y())) {
+      Vector3 bc_screen = Barycentric(pt0, pt1, pt2, p);
+      if (bc_screen.x() < 0 || bc_screen.y() < 0 || bc_screen.z() < 0) {
+        continue;
+      }
+      fb->Set(p.x(), p.y(), color);
     }
   }
 }
+
+}  // namespace draw2d
 
 }  // namespace sren

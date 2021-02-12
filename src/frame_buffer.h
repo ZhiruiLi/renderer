@@ -20,6 +20,7 @@ class FrameBuffer {
 
   ~FrameBuffer() = default;
 
+  void Set(int x, int y, Color const &color);
   void Set(int x, int y, int z, Color const &color);
   void Clear();
 

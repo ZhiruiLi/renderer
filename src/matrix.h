@@ -9,7 +9,6 @@
 #include <type_traits>
 
 #include "math.h"
-#include "point.h"
 #include "vector.h"
 
 namespace sren {
@@ -200,17 +199,6 @@ struct Matrix {
   // 用矩阵对矢量进行变换
   friend Vector<T, M> operator*(Vector<T, N> const &v, Matrix const &m) {
     Vector<T, M> ret{};
-    for (int i = 0; i < M; i++) {
-      for (int j = 0; j < N; j++) {
-        ret[i] += v[j] * m[j][i];
-      }
-    }
-    return ret;
-  }
-
-  // 用矩阵对点进行变换
-  friend Point<T, M> operator*(Point<T, N> const &v, Matrix const &m) {
-    Point<T, M> ret{};
     for (int i = 0; i < M; i++) {
       for (int j = 0; j < N; j++) {
         ret[i] += v[j] * m[j][i];

@@ -2,7 +2,7 @@
 
 namespace sren {
 
-Camera& Camera::SetLookAt(Point3 const& pos, Point3 const& target,
+Camera& Camera::SetLookAt(Vector3 const& pos, Vector3 const& target,
                           Vector3 const& up) {
   pos_ = pos;
   target_ = target;
@@ -51,7 +51,7 @@ Matrix4x4 Camera::CalcViewMatrix() const {
   Vector3 const n = (target_ - pos_).Normalize();
   Vector3 const u = (n ^ up_).Normalize();
   Vector3 const v = u ^ n;
-  auto const posv = pos_ - Point3::Zero();
+  auto const posv = pos_ - Vector3::Zero();
   return Matrix4x4({{
       {u.x(), v.x(), n.x(), 0.0f},
       {u.y(), v.y(), n.y(), 0.0f},

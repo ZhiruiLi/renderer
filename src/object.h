@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "color.h"
-#include "point.h"
+#include "vector.h"
 
 namespace sren {
 
@@ -19,7 +19,7 @@ enum class PloygonState {
 class Polygon {
  public:
   Polygon() = default;
-  Polygon(std::vector<Point4> *vertexs, std::array<int, 3> vertex_indexs)
+  Polygon(std::vector<Vector4> *vertexs, std::array<int, 3> vertex_indexs)
       : vertexs_{vertexs}, vertex_indexs_{vertex_indexs} {}
 
   PloygonState state() const { return state_; };
@@ -31,7 +31,7 @@ class Polygon {
  private:
   PloygonState state_{};
   Color color_{};
-  std::vector<Point4> *vertexs_{};
+  std::vector<Vector4> *vertexs_{};
   std::array<int, 3> vertex_indexs_{};
 };
 
@@ -54,8 +54,8 @@ class Object {
   float max_radius() const { return max_radius_; }
   void set_max_radius(float max_radius) { max_radius_ = max_radius; }
 
-  Point4 &world_pos() { return world_pos_; }
-  Point4 const &world_pos() const { return world_pos_; }
+  Vector4 &world_pos() { return world_pos_; }
+  Vector4 const &world_pos() const { return world_pos_; }
   Vector4 &local_dir() { return local_dir_; }
   Vector4 const &local_dir() const { return local_dir_; }
   Vector4 &ux() { return ux_; }
@@ -65,10 +65,10 @@ class Object {
   Vector4 &uz() { return uz_; }
   Vector4 const &uz() const { return uz_; }
 
-  std::vector<Point4> &vertexs() { return vertexs_; }
-  std::vector<Point4> const &vertexs() const { return vertexs_; }
-  std::vector<Point4> &trans_vertexs() { return trans_vertexs_; }
-  std::vector<Point4> const &trans_vertexs() const { return trans_vertexs_; }
+  std::vector<Vector4> &vertexs() { return vertexs_; }
+  std::vector<Vector4> const &vertexs() const { return vertexs_; }
+  std::vector<Vector4> &trans_vertexs() { return trans_vertexs_; }
+  std::vector<Vector4> const &trans_vertexs() const { return trans_vertexs_; }
   std::vector<Polygon> &polygons() { return polygons_; };
   std::vector<Polygon> const &polygons() const { return polygons_; };
 
@@ -82,7 +82,7 @@ class Object {
   // 最大半径
   float max_radius_{};
   // 物体在世界坐标系中的位置
-  Point4 world_pos_{0.0f, 0.0f, 0.0f, 0.0f};
+  Vector4 world_pos_{0.0f, 0.0f, 0.0f, 0.0f};
   // 物体在局部坐标系下的旋转角度
   Vector4 local_dir_{0.0f, 0.0f, 1.0f, 0.0f};
   // 记录物体朝向的局部坐标轴
@@ -90,9 +90,9 @@ class Object {
   Vector4 uy_{};
   Vector4 uz_{};
   // 原始物体的顶点
-  std::vector<Point4> vertexs_{};
+  std::vector<Vector4> vertexs_{};
   // 变换后物体的顶点
-  std::vector<Point4> trans_vertexs_{};
+  std::vector<Vector4> trans_vertexs_{};
   std::vector<Polygon> polygons_{};
 };
 
@@ -100,16 +100,16 @@ inline Object MakeSimpleCube() {
   Object cube(0, "example_cube");
   cube.set_avg_radius(17.3f);
   cube.set_max_radius(17.3f);
-  std::vector<Point3> vertex3s{
+  std::vector<Vector3> vertex3s{
       {10, 10, 10},  {10, 10, -10},  {-10, 10, -10},  {-10, 10, 10},
       {10, -10, 10}, {-10, -10, 10}, {-10, -10, -10}, {10, -10, -10},
   };
   std::transform(vertex3s.begin(), vertex3s.end(),
                  std::back_inserter(cube.vertexs()),
-                 [](auto const &p3) { return Point4(p3, 1.0f); });
+                 [](auto const &p3) { return Vector4(p3, 1.0f); });
   std::transform(vertex3s.begin(), vertex3s.end(),
                  std::back_inserter(cube.trans_vertexs()),
-                 [](auto const &p3) { return Point4(p3, 1.0f); });
+                 [](auto const &p3) { return Vector4(p3, 1.0f); });
   std::vector<std::array<int, 3>> ploy_indexs{
       {0, 1, 2}, {0, 2, 3}, {0, 7, 1}, {0, 4, 7}, {1, 7, 6}, {1, 6, 2},
       {2, 6, 5}, {2, 3, 5}, {0, 5, 4}, {0, 3, 5}, {5, 6, 7}, {4, 5, 7}};

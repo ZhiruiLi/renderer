@@ -841,7 +841,7 @@ int main1(void) {
 
     for (int i = 0; i < 800; i++) {
       for (int j = 0; j < 600; j++) {
-        fb->Set(i, j, 0, Color::RGBA(device.framebuffer[i][j]));
+        fb->Set(i, j, Color::RGBA(device.framebuffer[i][j]));
       }
     }
   });
@@ -853,26 +853,25 @@ int main1(void) {
 void DrawRandColorModel(Model const &model, FrameBuffer *fb) {
   for (int i = 0; i < model.nfaces(); i++) {
     std::vector<int> face = model.face(i);
-    Point2 screen_coords[3];
+    Vector2 screen_coords[3];
     for (int j = 0; j < 3; j++) {
       auto const &world_coords = model.vert(face[j]);
-      screen_coords[j] = Point2((world_coords.x() + 1.) * fb->width() / 2,
-                                (world_coords.y() + 1.) * fb->height() / 2);
+      screen_coords[j] = Vector2((world_coords.x() + 1.) * fb->width() / 2,
+                                 (world_coords.y() + 1.) * fb->height() / 2);
     }
-    DrawTriangle(screen_coords[0], screen_coords[1], screen_coords[2],
-                 Color::RGB(rand() % 255, rand() % 255, rand() % 255), fb);
+    draw2d::Triangle(screen_coords[0], screen_coords[1], screen_coords[2],
+                     Color::RGB(rand() % 255, rand() % 255, rand() % 255), fb);
   }
 }
 
 void DrawShadingModel(Model const &model, Vector3 light_dir, FrameBuffer *fb) {
   for (int i = 0; i < model.nfaces(); i++) {
     std::vector<int> face = model.face(i);
-    Point2 screen_coords[3];
+    Vector2 screen_coords[3];
     Vector3 world_coords[3];
     for (int j = 0; j < 3; j++) {
       Vector3 const &v = model.vert(face[j]);
-      screen_coords[j] =
-          Point2((v.x() + 1) * fb->width() / 2, (v.y() + 1) * fb->height() / 2);
+      screen_coords[j] = {v.x() * fb->width() / 2, v.y() * fb->height() / 2};
       world_coords[j] = v;
     }
     Vector3 n = (world_coords[2] - world_coords[0]) ^
@@ -880,7 +879,7 @@ void DrawShadingModel(Model const &model, Vector3 light_dir, FrameBuffer *fb) {
     n.SetNormalize();
     auto const intensity = n * light_dir;
     if (intensity > 0) {
-      DrawTriangle(
+      draw2d::Triangle(
           screen_coords[0], screen_coords[1], screen_coords[2],
           Color::RGB(intensity * 255, intensity * 255, intensity * 255), fb);
     }
@@ -888,10 +887,11 @@ void DrawShadingModel(Model const &model, Vector3 light_dir, FrameBuffer *fb) {
 }
 
 int main(void) {
-  Window window("Test", 800, 600);
+  Window window("Test", 2000, 2000);
 
   Model model("../asserts/african_head/african_head.obj");
 
+  std::cout << "done" << std::endl;
   float x = 0;
   float y = 0;
   window.set_main_loop([&](FrameBuffer *fb) {
@@ -904,6 +904,7 @@ int main(void) {
 
     // DrawRandColorModel(model, fb);
     DrawShadingModel(model, Vector3(x, y, -1), fb);
+    std::cout << "hhhh" << std::endl;
   });
   window.Run();
 

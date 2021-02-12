@@ -1,7 +1,6 @@
 #pragma once
 
 #include "matrix.h"
-#include "point.h"
 #include "vector.h"
 
 namespace sren {
@@ -11,11 +10,12 @@ class Camera {
   Camera() = default;
   ~Camera() {}
 
-  Camera& SetLookAt(Point3 const& pos, Point3 const& target) {
+  Camera& SetLookAt(Vector3 const& pos, Vector3 const& target) {
     return SetLookAt(pos, target, {0, 1, 0});
   }
 
-  Camera& SetLookAt(Point3 const& pos, Point3 const& target, Vector3 const& up);
+  Camera& SetLookAt(Vector3 const& pos, Vector3 const& target,
+                    Vector3 const& up);
 
   Camera& SetPerspective(float fov_radian_v, float aspect) {
     return SetPerspective(fov_radian_v, aspect, near_clip(), far_clip());
@@ -37,8 +37,8 @@ class Camera {
   Matrix4x4 CalcViewMatrix() const;
   Matrix4x4 CalcProjectionMatrix() const;
 
-  Point3 pos_{0, 0, 1};
-  Point3 target_{0, 0, 0};
+  Vector3 pos_{0, 0, 1};
+  Vector3 target_{0, 0, 0};
   Vector3 up_{0, 1, 0};
   float fov_radian_v_{90.0f};
   float aspect_ = 1.0f;
