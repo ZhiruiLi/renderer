@@ -879,9 +879,9 @@ void RenderPipeline(Object *obj, FrameBuffer *fb) {
       vert_pos.set_x(vert_pos.x() * fb->width());
       vert_pos.set_y(vert_pos.y() * fb->height());
     }
-    draw2d::Line(coords[0], coords[1], colors::White(), fb);
-    draw2d::Line(coords[2], coords[1], colors::White(), fb);
-    draw2d::Line(coords[0], coords[2], colors::White(), fb);
+    // draw2d::Line(coords[0], coords[1], colors::White(), fb);
+    // draw2d::Line(coords[2], coords[1], colors::White(), fb);
+    // draw2d::Line(coords[0], coords[2], colors::White(), fb);
     auto const color = simple_colors[i % 6];
     draw2d::Triangle(coords[0], coords[1], coords[2], color, fb);
     i++;
