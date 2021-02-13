@@ -125,7 +125,7 @@ void Triangle(Vector4 p0, Vector4 p1, Vector4 p2, Color const &c,
       std::swap(pa, pb);
     }
     auto const delta_z = (pb.z() - pa.z()) / (pb.x() - pa.x());
-    auto z = pa.z();
+    auto z = pa.z() + 1;
     for (int j = pa.x(); j <= pb.x(); j++) {
       fb->Set(j, p0.y() + i, 1 / z, c);
       z += delta_z;
