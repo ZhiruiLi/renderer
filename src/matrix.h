@@ -31,19 +31,23 @@ struct Matrix {
 
   Matrix() = default;
 
-  template <std::size_t N1, std::size_t M1,
-            class = std::enable_if_t<N1 <= N && M1 <= M>>
+  template <
+      std::size_t N1, std::size_t M1, std::size_t N2 = N, std::size_t M2 = M,
+      class = std::enable_if_t<N1 <= N2 && M1 <= M2 && N1 == M1 && N2 == M2>>
   explicit Matrix(Matrix<T, N1, M1> const &m) {
     for (int i = 0; i < N1; i++) {
       for (int j = 0; j < M1; j++) {
         data_[i][j] = m[i][j];
       }
     }
+    for (int i = N1; i < N2; i++) {
+      data_[i][i] = 1;
+    }
   }
 
   explicit Matrix(std::array<Row, N> const &arr) : data_{arr} {}
 
-  explicit Matrix(T const *data) { std::copy(data, data + N, begin()); }
+  explicit Matrix(T const *data) { std::copy(data, data + N * M, begin()); }
 
   Row &operator[](std::size_t i) {
     assert(i >= 0 && i < N);
@@ -316,5 +320,46 @@ struct Matrix {
 
 using Matrix3x3 = Matrix<float, 3, 3>;
 using Matrix4x4 = Matrix<float, 4, 4>;
+
+namespace matrixs {
+
+template <class T>
+inline Matrix<T, 4, 4> WorldTransform(Vector<T, 3> const &pos) {
+  return Matrix<T, 4, 4>({{
+      {1, 0, 0, 0},
+      {0, 1, 0, 0},
+      {0, 0, 1, 0},
+      {pos.x(), pos.y(), pos.z(), 1},
+  }});
+}
+
+template <class T>
+inline Matrix<T, 4, 4> ViewTransform(Vector<T, 3> const &pos,
+                                     Vector<T, 3> const &target,
+                                     Vector<T, 3> const &up = {0, 1, 0}) {
+  auto const n = (target - pos).Normalize();
+  auto const u = (n ^ up).Normalize();
+  auto const v = u ^ n;
+  return Matrix4x4({{
+      {u.x(), v.x(), n.x(), 0.0f},
+      {u.y(), v.y(), n.y(), 0.0f},
+      {u.z(), v.z(), n.z(), 0.0f},
+      {-(pos * u), -(pos * v), -(pos * n), 1.0f},
+  }});
+}
+
+template <class T>
+inline Matrix<T, 4, 4> ProjectionTransform(T aspect, T fov_radian_v,
+                                           T near_clip, T far_clip) {
+  auto const cot_theta = 1 / tan(fov_radian_v / 2);
+  return Matrix4x4({{
+      {cot_theta / aspect, 0.0f, 0.0f, 0.0f},
+      {0.0f, cot_theta, 0.0f, 0.0f},
+      {0.0f, 0.0f, far_clip / (far_clip - near_clip), 1.0f},
+      {0.0f, 0.0f, far_clip * near_clip / (near_clip - far_clip), 0.0f},
+  }});
+}
+
+}  // namespace matrixs
 
 }  // namespace sren

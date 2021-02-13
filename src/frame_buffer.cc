@@ -10,8 +10,9 @@
 namespace sren {
 
 void FrameBuffer::Set(int x, int y, Color const &color) {
-  Clamp(0, width_ - 1, &x);
-  Clamp(0, height_ - 1, &y);
+  if (x < 0 || x >= width_ || y < 0 || y > height_) {
+    return;
+  }
   auto const idx = x + y * width_;
   int n = y * width_ * 4 + x * 4;
   data_[n] = color.r_hex();
@@ -21,8 +22,9 @@ void FrameBuffer::Set(int x, int y, Color const &color) {
 }
 
 void FrameBuffer::Set(int x, int y, int z, Color const &color) {
-  std::clamp(x, 0, width_ - 1);
-  std::clamp(y, 0, height_ - 1);
+  if (x < 0 || x >= width_ || y < 0 || y > height_) {
+    return;
+  }
   auto const idx = x + y * width_;
   auto &bufz = (z_buffer_.get())[idx];
   if (bufz > z) {
