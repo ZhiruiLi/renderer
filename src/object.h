@@ -102,7 +102,9 @@ class Object {
   std::vector<Polygon> polygons_{};
 };
 
-inline void SetObjectData(Model const &m, Object *obj) {
+inline void InitObjectData(Model const &m, Vector3 world_pos, Object *obj) {
+  obj->world_pos() = world_pos;
+
   auto &vertexs = obj->vertexs();
   auto &trans_vertexs = obj->trans_vertexs();
   auto &vertex_attrs = obj->vertex_attrs();

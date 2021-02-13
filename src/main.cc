@@ -886,8 +886,7 @@ int main(void) {
   Model model("../asserts/cube/cube.obj");
   // Model model("../asserts/african_head/african_head.obj");
   Object obj(101, "MyObj");
-  SetObjectData(model, &obj);
-  obj.world_pos() = {0, 0, 10};
+  InitObjectData(model, {0, 0, 10}, &obj);
   window.set_main_loop([&](FrameBuffer *fb) {
     fb->Clear();
     auto &world_pos = obj.world_pos();
