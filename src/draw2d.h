@@ -9,7 +9,7 @@ namespace sren {
 namespace draw2d {
 
 // 画点
-void Pixel(Vector2 const &p, Color const &c, FrameBuffer *fb);
+void Pixel(Vector2 p, Color const &c, FrameBuffer *fb);
 
 // 画线
 void Line(Vector2 p0, Vector2 p1, Color const &c, FrameBuffer *fb);

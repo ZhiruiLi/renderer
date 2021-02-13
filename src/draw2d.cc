@@ -15,12 +15,18 @@ void SwapXY(Vector2 *p) {
 }  // namespace
 
 // 画点
-void Pixel(Vector2 const &p, Color const &c, FrameBuffer *fb) {
+void Pixel(Vector2 p, Color const &c, FrameBuffer *fb) {
+  p.set_x(p.x() + fb->width() / 2.0f);
+  p.set_y(p.y() + fb->height() / 2.0f);
   fb->Set(int(p.x()), int(p.y()), c);
 }
 
 // 画线
 void Line(Vector2 p0, Vector2 p1, Color const &c, FrameBuffer *fb) {
+  p0.set_x(p0.x() + fb->width() / 2.0f);
+  p0.set_y(p0.y() + fb->height() / 2.0f);
+  p1.set_x(p1.x() + fb->width() / 2.0f);
+  p1.set_y(p1.y() + fb->height() / 2.0f);
   if (p0.x() == p1.x() && p0.y() == p1.y()) {
     fb->Set(p0.x(), p0.y(), c);
   } else if (p0.x() == p1.x()) {
@@ -83,34 +89,40 @@ void Line(Vector2 p0, Vector2 p1, Color const &c, FrameBuffer *fb) {
 }
 
 // 画三角形
-void Triangle(Vector2 t0, Vector2 t1, Vector2 t2, Color const &c,
+void Triangle(Vector2 p0, Vector2 p1, Vector2 p2, Color const &c,
               FrameBuffer *fb) {
-  if (AlmostEqual(t0.y(), t1.y()) && AlmostEqual(t0.y(), t2.y())) {
+  p0.set_x(p0.x() + fb->width() / 2.0f);
+  p0.set_y(p0.y() + fb->height() / 2.0f);
+  p1.set_x(p1.x() + fb->width() / 2.0f);
+  p1.set_y(p1.y() + fb->height() / 2.0f);
+  p2.set_x(p2.x() + fb->width() / 2.0f);
+  p2.set_y(p2.y() + fb->height() / 2.0f);
+  if (AlmostEqual(p0.y(), p1.y()) && AlmostEqual(p0.y(), p2.y())) {
     return;
   }
-  if (t0.y() > t1.y()) {
-    std::swap(t0, t1);
+  if (p0.y() > p1.y()) {
+    std::swap(p0, p1);
   }
-  if (t0.y() > t2.y()) {
-    std::swap(t0, t2);
+  if (p0.y() > p2.y()) {
+    std::swap(p0, p2);
   }
-  if (t1.y() > t2.y()) {
-    std::swap(t1, t2);
+  if (p1.y() > p2.y()) {
+    std::swap(p1, p2);
   }
-  auto const total_height = int(t2.y() - t0.y());
+  auto const total_height = int(p2.y() - p0.y());
   for (int i = 0; i < total_height; i++) {
-    bool const second_half = i > t1.y() - t0.y() || t1.y() == t0.y();
-    int const segment_height = second_half ? t2.y() - t1.y() : t1.y() - t0.y();
+    bool const second_half = i > p1.y() - p0.y() || p1.y() == p0.y();
+    int const segment_height = second_half ? p2.y() - p1.y() : p1.y() - p0.y();
     float const alpha = (float)i / total_height;
     float const beta =
-        (float)(i - (second_half ? t1.y() - t0.y() : 0)) / segment_height;
-    auto pa = t0 + (t2 - t0) * alpha;
-    auto pb = second_half ? t1 + (t2 - t1) * beta : t0 + (t1 - t0) * beta;
+        (float)(i - (second_half ? p1.y() - p0.y() : 0)) / segment_height;
+    auto pa = p0 + (p2 - p0) * alpha;
+    auto pb = second_half ? p1 + (p2 - p1) * beta : p0 + (p1 - p0) * beta;
     if (pa.x() > pb.x()) {
       std::swap(pa, pb);
     }
     for (int j = pa.x(); j <= pb.x(); j++) {
-      fb->Set(j, t0.y() + i, c);
+      fb->Set(j, p0.y() + i, c);
     }
   }
 }
