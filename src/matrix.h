@@ -338,7 +338,7 @@ inline Matrix<T, 4, 4> ViewTransform(Vector<T, 3> const &pos,
                                      Vector<T, 3> const &target,
                                      Vector<T, 3> const &up = {0, 1, 0}) {
   auto const n = (target - pos).Normalize();
-  auto const u = (n ^ up).Normalize();
+  auto const u = (up ^ n).Normalize();
   auto const v = u ^ n;
   return Matrix4x4({{
       {u.x(), v.x(), n.x(), 0.0f},
