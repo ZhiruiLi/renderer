@@ -71,12 +71,26 @@ int Model::nverts() const { return verts_.size(); }
 
 int Model::nfaces() const { return facet_vrt_.size() / 3; }
 
+std::array<int, 3> Model::VertexIndexs(int iface) const {
+  return {VertexIndex(iface, 0), VertexIndex(iface, 1), VertexIndex(iface, 2)};
+}
+
 int Model::VertexIndex(int iface, int nthvert) const {
   return facet_vrt_[iface * 3 + nthvert];
 }
 
+std::array<int, 3> Model::VertexUVIndexs(int iface) const {
+  return {VertexUVIndex(iface, 0), VertexUVIndex(iface, 1),
+          VertexUVIndex(iface, 2)};
+}
+
 int Model::VertexUVIndex(int iface, int nthvert) const {
   return facet_tex_[iface * 3 + nthvert];
+}
+
+std::array<int, 3> Model::VertexNormalIndexs(int iface) const {
+  return {VertexNormalIndex(iface, 0), VertexNormalIndex(iface, 1),
+          VertexNormalIndex(iface, 2)};
 }
 
 int Model::VertexNormalIndex(int iface, int nthvert) const {

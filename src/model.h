@@ -1,11 +1,9 @@
 #pragma once
 
-#include <math.h>
-
+#include <array>
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <string_view>
 #include <vector>
 
 #include "tgaimage.h"
@@ -40,14 +38,19 @@ class Model {
   Color Diffuse(Vector2 const &uv) const;
   double Specular(Vector2 const &uv) const;
 
+  std::array<int, 3> VertexIndexs(int iface) const;
   int VertexIndex(int iface, int nthvert) const;
+  std::array<int, 3> VertexUVIndexs(int iface) const;
   int VertexUVIndex(int iface, int nthvert) const;
+  std::array<int, 3> VertexNormalIndexs(int iface) const;
   int VertexNormalIndex(int iface, int nthvert) const;
 
   std::vector<Vector3> &vertexs() { return verts_; }
   std::vector<Vector3> const &vertexs() const { return verts_; }
   std::vector<Vector2> &uvs() { return uv_; }
   std::vector<Vector2> const &uvs() const { return uv_; }
+  std::vector<Vector3> &norms() { return norms_; }
+  std::vector<Vector3> const &norms() const { return norms_; }
 };
 
 }  // namespace sren

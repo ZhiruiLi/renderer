@@ -8,6 +8,7 @@
 #include "color.h"
 #include "model.h"
 #include "vector.h"
+#include "vertex.h"
 
 namespace sren {
 
@@ -18,31 +19,20 @@ enum class PolygonState {
   kBackface = 0x4,
 };
 
-class VertexAttr {
- public:
-  Vector2 texture_uv;
-  Color color;
-};
-
 class Polygon {
  public:
   Polygon() = default;
-  Polygon(std::vector<Vector4> const *vertexs,
-          std::vector<VertexAttr> const *vertex_attrs,
-          std::array<int, 3> vertex_indexs)
-      : vertexs_(vertexs),
-        vertex_attrs_(vertex_attrs),
-        vertex_indexs_(vertex_indexs) {}
+  Polygon(std::vector<Vertex> const *vertexs, std::array<int, 3> vertex_indexs)
+      : vertexs_(vertexs), vertex_indexs_(vertex_indexs) {}
 
   PolygonState state() const { return state_; };
   void set_state(PolygonState state) { state_ = state; };
 
-  Vector4 const &vertex(int i) const { return (*vertexs_)[vertex_indexs_[i]]; }
+  Vertex const &vertex(int i) const { return (*vertexs_)[vertex_indexs_[i]]; }
 
  private:
   PolygonState state_{};
-  std::vector<Vector4> const *vertexs_{};
-  std::vector<VertexAttr> const *vertex_attrs_{};
+  std::vector<Vertex> const *vertexs_{};
   std::array<int, 3> vertex_indexs_{};
 };
 
@@ -70,12 +60,10 @@ class Object {
   Vector3 &local_dir() { return local_dir_; }
   Vector3 const &local_dir() const { return local_dir_; }
 
-  std::vector<Vector4> &vertexs() { return vertexs_; }
-  std::vector<Vector4> const &vertexs() const { return vertexs_; }
-  std::vector<Vector4> &trans_vertexs() { return trans_vertexs_; }
-  std::vector<Vector4> const &trans_vertexs() const { return trans_vertexs_; }
-  std::vector<VertexAttr> &vertex_attrs() { return vertex_attrs_; }
-  std::vector<VertexAttr> const &vertex_attrs() const { return vertex_attrs_; }
+  std::vector<Vertex> &vertexs() { return vertexs_; }
+  std::vector<Vertex> const &vertexs() const { return vertexs_; }
+  std::vector<Vertex> &trans_vertexs() { return trans_vertexs_; }
+  std::vector<Vertex> const &trans_vertexs() const { return trans_vertexs_; }
   std::vector<Polygon> &polygons() { return polygons_; };
   std::vector<Polygon> const &polygons() const { return polygons_; };
 
@@ -93,11 +81,9 @@ class Object {
   // 物体在局部坐标系下的旋转角度
   Vector3 local_dir_{0.0f, 0.0f, -1.0f};
   // 原始物体的顶点
-  std::vector<Vector4> vertexs_{};
+  std::vector<Vertex> vertexs_{};
   // 变换后物体的顶点
-  std::vector<Vector4> trans_vertexs_{};
-  // 顶点的属性
-  std::vector<VertexAttr> vertex_attrs_{};
+  std::vector<Vertex> trans_vertexs_{};
   // 物体的面信息
   std::vector<Polygon> polygons_{};
 };
@@ -106,29 +92,22 @@ inline void InitObjectData(Model const &m, Vector3 world_pos, Object *obj) {
   obj->world_pos() = world_pos;
 
   auto &vertexs = obj->vertexs();
-  auto &trans_vertexs = obj->trans_vertexs();
-  auto &vertex_attrs = obj->vertex_attrs();
   auto &polygons = obj->polygons();
   vertexs.clear();
-  trans_vertexs.clear();
-  vertex_attrs.clear();
   polygons.clear();
 
   for (int i = 0; i < m.nverts(); i++) {
     auto const &vert3 = m.vertexs()[i];
-    vertexs.push_back(Vector4(vert3, 1.0f));
-    trans_vertexs.push_back(Vector4(vert3, 1.0f));
-    auto const uv = m.uvs()[i];
-    vertex_attrs.push_back(VertexAttr{uv, m.Diffuse(uv)});
+    auto const &uv = m.uvs()[i];
+    auto const &norm = m.norms()[i];
+    vertexs.push_back(Vertex(Vector4(vert3, 1.0f), uv, norm, m.Diffuse(uv)));
   }
   for (int i = 0; i < m.nfaces(); i++) {
-    polygons.push_back(Polygon(&trans_vertexs, &vertex_attrs,
-                               {
-                                   m.VertexIndex(i, 0),
-                                   m.VertexIndex(i, 1),
-                                   m.VertexIndex(i, 2),
-                               }));
+    polygons.push_back(Polygon(
+        &obj->trans_vertexs(),
+        {m.VertexIndex(i, 0), m.VertexIndex(i, 1), m.VertexIndex(i, 2)}));
   }
+  obj->trans_vertexs() = vertexs;
 }
 
 }  // namespace sren
