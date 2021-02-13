@@ -12,6 +12,7 @@
 namespace sren {
 
 enum class PolygonState {
+  kUnknown = 0x0,
   kActive = 0x1,
   kClipped = 0x2,
   kBackface = 0x4,
@@ -48,25 +49,7 @@ class Polygon {
 class Object {
  public:
   Object() = default;
-  Object(int id, std::string name, Model const &m)
-      : id_{id}, name_{std::move(name)} {
-    for (int i = 0; i < m.nverts(); i++) {
-      auto const &vert3 = m.verts()[i];
-      vertexs_.push_back(Vector4(vert3, 1.0f));
-      trans_vertexs_.push_back(Vector4(vert3, 1.0f));
-      auto const uv = m.uvs()[i];
-      vertex_attrs_.push_back(VertexAttr{uv, m.Diffuse(uv)});
-    }
-    int idx = 0;
-    for (int i = 0; i < m.nfaces(); i++) {
-      polygons_.push_back(Polygon(&vertexs_, &vertex_attrs_,
-                                  {
-                                      m.VertIndex(i, 0),
-                                      m.VertIndex(i, 1),
-                                      m.VertIndex(i, 2),
-                                  }));
-    }
-  }
+  Object(int id, std::string name) : id_{id}, name_{std::move(name)} {}
 
   int id() const { return id_; }
   void set_id(int id) { id_ = id; }
@@ -82,21 +65,17 @@ class Object {
   float max_radius() const { return max_radius_; }
   void set_max_radius(float max_radius) { max_radius_ = max_radius; }
 
-  Vector4 &world_pos() { return world_pos_; }
-  Vector4 const &world_pos() const { return world_pos_; }
-  Vector4 &local_dir() { return local_dir_; }
-  Vector4 const &local_dir() const { return local_dir_; }
-  Vector4 &ux() { return ux_; }
-  Vector4 const &ux() const { return ux_; }
-  Vector4 &uy() { return uy_; }
-  Vector4 const &uy() const { return uy_; }
-  Vector4 &uz() { return uz_; }
-  Vector4 const &uz() const { return uz_; }
+  Vector3 &world_pos() { return world_pos_; }
+  Vector3 const &world_pos() const { return world_pos_; }
+  Vector3 &local_dir() { return local_dir_; }
+  Vector3 const &local_dir() const { return local_dir_; }
 
   std::vector<Vector4> &vertexs() { return vertexs_; }
   std::vector<Vector4> const &vertexs() const { return vertexs_; }
   std::vector<Vector4> &trans_vertexs() { return trans_vertexs_; }
   std::vector<Vector4> const &trans_vertexs() const { return trans_vertexs_; }
+  std::vector<VertexAttr> &vertex_attrs() { return vertex_attrs_; }
+  std::vector<VertexAttr> const &vertex_attrs() const { return vertex_attrs_; }
   std::vector<Polygon> &polygons() { return polygons_; };
   std::vector<Polygon> const &polygons() const { return polygons_; };
 
@@ -110,13 +89,9 @@ class Object {
   // 最大半径
   float max_radius_{};
   // 物体在世界坐标系中的位置
-  Vector4 world_pos_{0.0f, 0.0f, 0.0f, 1.0f};
+  Vector3 world_pos_{0.0f, 0.0f, 0.0f};
   // 物体在局部坐标系下的旋转角度
-  Vector4 local_dir_{0.0f, 0.0f, -1.0f, 1.0f};
-  // 记录物体朝向的局部坐标轴
-  Vector4 ux_{};
-  Vector4 uy_{};
-  Vector4 uz_{};
+  Vector3 local_dir_{0.0f, 0.0f, -1.0f};
   // 原始物体的顶点
   std::vector<Vector4> vertexs_{};
   // 变换后物体的顶点
@@ -126,5 +101,32 @@ class Object {
   // 物体的面信息
   std::vector<Polygon> polygons_{};
 };
+
+inline void SetObjectData(Model const &m, Object *obj) {
+  auto &vertexs = obj->vertexs();
+  auto &trans_vertexs = obj->trans_vertexs();
+  auto &vertex_attrs = obj->vertex_attrs();
+  auto &polygons = obj->polygons();
+  vertexs.clear();
+  trans_vertexs.clear();
+  vertex_attrs.clear();
+  polygons.clear();
+
+  for (int i = 0; i < m.nverts(); i++) {
+    auto const &vert3 = m.verts()[i];
+    vertexs.push_back(Vector4(vert3, 1.0f));
+    trans_vertexs.push_back(Vector4(vert3, 1.0f));
+    auto const uv = m.uvs()[i];
+    vertex_attrs.push_back(VertexAttr{uv, m.Diffuse(uv)});
+  }
+  for (int i = 0; i < m.nfaces(); i++) {
+    polygons.push_back(Polygon(&vertexs, &vertex_attrs,
+                               {
+                                   m.VertIndex(i, 0),
+                                   m.VertIndex(i, 1),
+                                   m.VertIndex(i, 2),
+                               }));
+  }
+}
 
 }  // namespace sren
