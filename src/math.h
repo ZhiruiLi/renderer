@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <cmath>
 #include <limits>
 #include <type_traits>
@@ -33,6 +34,11 @@ inline void Clamp(T lo, T hi, T *target) {
   } else if (*target > hi) {
     *target = hi;
   }
+}
+
+template <class T>
+inline T Clamp(T lo, T hi, T target) {
+  return std::min(hi, std::max(lo, target));
 }
 
 }  // namespace sren

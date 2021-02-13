@@ -14,14 +14,14 @@ class FrameBuffer {
       : width_(width),
         height_(height),
         data_(std::make_unique<unsigned char[]>(size())),
-        z_buffer_(std::make_unique<int[]>(width * height)) {
+        z_buffer_(std::make_unique<float[]>(width * height)) {
     ResetZBuffer();
   }
 
   ~FrameBuffer() = default;
 
-  void Set(int x, int y, Color const &color);
-  void Set(int x, int y, int z, Color const &color);
+  void Set(float x, float y, Color const &color);
+  void Set(float x, float y, float z, Color const &color);
   void Clear();
 
   int width() { return width_; }
@@ -37,7 +37,7 @@ class FrameBuffer {
   int width_{};
   int height_{};
   std::unique_ptr<unsigned char[]> data_{};
-  std::unique_ptr<int[]> z_buffer_{};
+  std::unique_ptr<float[]> z_buffer_{};
 };
 
 }  // namespace sren

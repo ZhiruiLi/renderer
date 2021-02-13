@@ -841,12 +841,17 @@ int main1(void) {
   return 0;
 }
 
-void ApplyToAll(Matrix4x4 const &m, std::vector<Vertex> *vertexs) {
+void ApplyToAll(Matrix4x4 const &m, std::vector<Vector4> *vertexs) {
   auto &vs = *vertexs;
   for (int i = 0; i < vs.size(); i++) {
-    vs[i].pos() = vs[i].pos() * m;
+    vs[i] = vs[i] * m;
   }
 }
+
+std::array<Color, 6> simple_colors{
+    colors::Red(),    colors::Blue(), colors::Green(),
+    colors::Yellow(), colors::Cyan(), colors::Purple(),
+};
 
 void RenderPipeline(Object *obj, FrameBuffer *fb) {
   Vector3 const camera_world_coords(0, 0, 0);
@@ -864,20 +869,22 @@ void RenderPipeline(Object *obj, FrameBuffer *fb) {
       matrixs::ProjectionTransform(aspect, fov_radian, 0.1f, 100.0f);
   ApplyToAll(project_transform, &obj->trans_vertexs());
 
+  int i = 0;
   for (auto const &poly : obj->polygons()) {
-    Vector2 screen_coords[3];
+    Vector4 coords[3];
     for (int i = 0; i < 3; i++) {
-      auto vert_pos = poly.vertex(i).pos();
+      auto &vert_pos = coords[i];
+      vert_pos = poly.Vertex(i);
       vert_pos /= vert_pos.w();
-      screen_coords[i] =
-          Vector2(vert_pos.x() * fb->width(), vert_pos.y() * fb->height());
+      vert_pos.set_x(vert_pos.x() * fb->width());
+      vert_pos.set_y(vert_pos.y() * fb->height());
     }
-    draw2d::Line(screen_coords[0], screen_coords[1], colors::White(), fb);
-    draw2d::Line(screen_coords[2], screen_coords[1], colors::White(), fb);
-    draw2d::Line(screen_coords[0], screen_coords[2], colors::White(), fb);
-    // auto const color = Color::RGB(rand() % 255, rand() % 255, rand() % 255);
-    // draw2d::Triangle(screen_coords[0], screen_coords[1], screen_coords[2],
-    //                  color, fb);
+    draw2d::Line(coords[0], coords[1], colors::White(), fb);
+    draw2d::Line(coords[2], coords[1], colors::White(), fb);
+    draw2d::Line(coords[0], coords[2], colors::White(), fb);
+    auto const color = simple_colors[i % 6];
+    draw2d::Triangle(coords[0], coords[1], coords[2], color, fb);
+    i++;
   }
 }
 

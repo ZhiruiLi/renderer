@@ -9,7 +9,9 @@
 
 namespace sren {
 
-void FrameBuffer::Set(int x, int y, Color const &color) {
+void FrameBuffer::Set(float fx, float fy, Color const &color) {
+  int x = int(fx);
+  int y = int(fy);
   if (x < 0 || x >= width_ || y < 0 || y > height_) {
     return;
   }
@@ -21,7 +23,9 @@ void FrameBuffer::Set(int x, int y, Color const &color) {
   data_[n + 3] = color.a_hex();
 }
 
-void FrameBuffer::Set(int x, int y, int z, Color const &color) {
+void FrameBuffer::Set(float fx, float fy, float z, Color const &color) {
+  int x = int(fx);
+  int y = int(fy);
   if (x < 0 || x >= width_ || y < 0 || y > height_) {
     return;
   }
@@ -42,7 +46,7 @@ void FrameBuffer::Resize(int width, int height) {
   width_ = width;
   height_ = height;
   data_ = std::make_unique<unsigned char[]>(size());
-  z_buffer_ = std::make_unique<int[]>(width * height);
+  z_buffer_ = std::make_unique<float[]>(width * height);
   ResetZBuffer();
 }
 
@@ -50,7 +54,7 @@ void FrameBuffer::Clear() { bzero(data(), size()); }
 
 void FrameBuffer::ResetZBuffer() {
   std::fill(z_buffer_.get(), z_buffer_.get() + width_ * height_,
-            std::numeric_limits<int>::min());
+            std::numeric_limits<float>::min());
 }
 
 }  // namespace sren

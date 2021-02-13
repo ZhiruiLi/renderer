@@ -21,6 +21,70 @@ class Vertex {
   Color &color() { return color_; }
   Color const &color() const { return color_; }
 
+  Vertex &operator+=(Vertex const &rhs) {
+    pos_ += rhs.pos();
+    uv_ += rhs.uv();
+    norm_ += rhs.norm();
+    color_ += rhs.color();
+    return *this;
+  }
+
+  friend Vertex operator+(Vertex lhs, Vertex const &rhs) {
+    lhs.pos() += rhs.pos();
+    lhs.uv() += rhs.uv();
+    lhs.norm() += rhs.norm();
+    lhs.color() += rhs.color();
+    return lhs;
+  }
+
+  Vertex &operator-=(Vertex const &rhs) {
+    pos_ -= rhs.pos();
+    uv_ -= rhs.uv();
+    norm_ -= rhs.norm();
+    color_ -= rhs.color();
+    return *this;
+  }
+
+  friend Vertex operator-(Vertex lhs, Vertex const &rhs) {
+    lhs.pos() -= rhs.pos();
+    lhs.uv() -= rhs.uv();
+    lhs.norm() -= rhs.norm();
+    lhs.color() -= rhs.color();
+    return lhs;
+  }
+
+  Vertex &operator*=(float s) {
+    pos_ *= s;
+    uv_ *= s;
+    norm_ *= s;
+    color_ *= s;
+    return *this;
+  }
+
+  friend Vertex operator*(Vertex v, float s) {
+    v.pos() *= s;
+    v.uv() *= s;
+    v.norm() *= s;
+    v.color() *= s;
+    return v;
+  }
+
+  Vertex &operator/=(float s) {
+    pos_ /= s;
+    uv_ /= s;
+    norm_ /= s;
+    color_ /= s;
+    return *this;
+  }
+
+  friend Vertex operator/(Vertex v, float s) {
+    v.pos() /= s;
+    v.uv() /= s;
+    v.norm() /= s;
+    v.color() /= s;
+    return v;
+  }
+
  private:
   Vector4 pos_{};
   Vector2 uv_{};

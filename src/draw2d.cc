@@ -1,5 +1,7 @@
 #include "draw2d.h"
 
+#include "src/color.h"
+#include "src/frame_buffer.h"
 #include "vector.h"
 
 namespace sren {
@@ -12,21 +14,25 @@ void SwapXY(Vector2 *p) {
   p->set_x(p->y());
   p->set_y(x);
 }
+
+template <class Vec>
+void CenterPos(Vec *p, FrameBuffer *fb) {
+  p->set_x(p->x() + fb->width() / 2.0f);
+  p->set_y(p->y() + fb->height() / 2.0f);
+}
+
 }  // namespace
 
 // 画点
-void Pixel(Vector2 p, Color const &c, FrameBuffer *fb) {
-  p.set_x(p.x() + fb->width() / 2.0f);
-  p.set_y(p.y() + fb->height() / 2.0f);
-  fb->Set(int(p.x()), int(p.y()), c);
+void Pixel(Vector4 p, Color const &c, FrameBuffer *fb) {
+  CenterPos(&p, fb);
+  fb->Set(int(p.x()), int(p.y()), int(p.z()), c);
 }
 
 // 画线
-void Line(Vector2 p0, Vector2 p1, Color const &c, FrameBuffer *fb) {
-  p0.set_x(p0.x() + fb->width() / 2.0f);
-  p0.set_y(p0.y() + fb->height() / 2.0f);
-  p1.set_x(p1.x() + fb->width() / 2.0f);
-  p1.set_y(p1.y() + fb->height() / 2.0f);
+void Line(Vector4 p0, Vector4 p1, Color const &c, FrameBuffer *fb) {
+  CenterPos(&p0, fb);
+  CenterPos(&p1, fb);
   if (p0.x() == p1.x() && p0.y() == p1.y()) {
     fb->Set(p0.x(), p0.y(), c);
   } else if (p0.x() == p1.x()) {
@@ -89,14 +95,11 @@ void Line(Vector2 p0, Vector2 p1, Color const &c, FrameBuffer *fb) {
 }
 
 // 画三角形
-void Triangle(Vector2 p0, Vector2 p1, Vector2 p2, Color const &c,
+void Triangle(Vector4 p0, Vector4 p1, Vector4 p2, Color const &c,
               FrameBuffer *fb) {
-  p0.set_x(p0.x() + fb->width() / 2.0f);
-  p0.set_y(p0.y() + fb->height() / 2.0f);
-  p1.set_x(p1.x() + fb->width() / 2.0f);
-  p1.set_y(p1.y() + fb->height() / 2.0f);
-  p2.set_x(p2.x() + fb->width() / 2.0f);
-  p2.set_y(p2.y() + fb->height() / 2.0f);
+  CenterPos(&p0, fb);
+  CenterPos(&p1, fb);
+  CenterPos(&p2, fb);
   if (AlmostEqual(p0.y(), p1.y()) && AlmostEqual(p0.y(), p2.y())) {
     return;
   }
@@ -121,8 +124,11 @@ void Triangle(Vector2 p0, Vector2 p1, Vector2 p2, Color const &c,
     if (pa.x() > pb.x()) {
       std::swap(pa, pb);
     }
+    auto const delta_z = (pb.z() - pa.z()) / (pb.x() - pa.x());
+    auto z = pa.z();
     for (int j = pa.x(); j <= pb.x(); j++) {
-      fb->Set(j, p0.y() + i, c);
+      fb->Set(j, p0.y() + i, 1 / z, c);
+      z += delta_z;
     }
   }
 }

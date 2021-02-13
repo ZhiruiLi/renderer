@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <iterator>
 
+#include "math.h"
 #include "vector.h"
 
 namespace sren {
@@ -148,6 +149,12 @@ class Color {
            Unshift(a_hex(), 0);
   }
 
+  void Fix() {
+    for (int i = 0; i < 4; i++) {
+      Clamp(0.0f, 1.0f, &data_[i]);
+    }
+  }
+
   // 颜色比较相等
   friend bool operator==(Color const& lhs, Color const& rhs) {
     for (int i = 0; i < 4; i++) {
@@ -166,7 +173,7 @@ class Color {
   // 颜色加法，需要避免超过 1.0
   Color& operator+=(Color const& rhs) {
     for (int i = 0; i < 4; i++) {
-      data_[i] = std::min(data_[i] + rhs[i], 1.0f);
+      data_[i] += rhs[i];
     }
     return *this;
   }
@@ -180,7 +187,7 @@ class Color {
   // 颜色减法，需要避免小于 0.0
   Color& operator-=(Color const& rhs) {
     for (int i = 0; i < 4; i++) {
-      data_[i] = std::max(data_[i] - rhs[i], 0.0f);
+      data_[i] -= rhs[i];
     }
     return *this;
   }
@@ -193,16 +200,6 @@ class Color {
 
   // 颜色对常量乘法，调制
   Color& operator*=(value_type s) {
-    if (s < 0.0f) {
-      return *this;
-    }
-    if (s > 1.0f) {
-      auto const maxv = std::max_element(begin(), begin() + 3);
-      auto const max_scaled = (*maxv) * s;
-      if (max_scaled > 1.0f) {
-        s = 1.0f / (*maxv);
-      }
-    }
     for (int i = 0; i < 4; i++) {
       data_[i] *= s;
     }
@@ -230,6 +227,20 @@ class Color {
     return ret;
   }
 
+  // 颜色对常量除法，调制
+  Color& operator/=(value_type s) {
+    for (int i = 0; i < 4; i++) {
+      data_[i] /= s;
+    }
+    return *this;
+  }
+
+  // 颜色对常量除法
+  friend Color operator/(Color v, value_type s) {
+    v /= s;
+    return v;
+  }
+
  private:
   std::array<value_type, 4> data_{};
 };
@@ -241,8 +252,23 @@ inline Color const& Red() {
   return c;
 }
 
-inline Color const& Green() {
+inline Color const& Lime() {
   static auto const c = Color::RGB(0x0, 0xFF, 0x0);
+  return c;
+}
+
+inline Color const& Green() {
+  static auto const c = Color::RGB(0x0, 0x80, 0x0);
+  return c;
+}
+
+inline Color const& Purple() {
+  static auto const c = Color::RGB(0x80, 0x0, 0x80);
+  return c;
+}
+
+inline Color const& Teal() {
+  static auto const c = Color::RGB(0x0, 0x80, 0x80);
   return c;
 }
 
@@ -259,6 +285,51 @@ inline Color const& White() {
 inline Color const& Black() {
   static auto const c = Color::RGB(0x0, 0x0, 0x0);
   return c;
+}
+
+inline Color const& Yellow() {
+  static auto const c = Color::RGB(0xFF, 0xFF, 0x0);
+  return c;
+}
+
+inline Color const& Cyan() {
+  static auto const c = Color::RGB(0x0, 0xFF, 0xFF);
+  return c;
+}
+
+inline Color const& Magenta() {
+  static auto const c = Color::RGB(0xFF, 0x0, 0xFF);
+  return c;
+}
+
+inline Color SafeAdd(Color const& lhs, Color const& rhs) {
+  Color ret{};
+  for (int i = 0; i < 4; i++) {
+    ret[i] = Clamp(0.0f, 1.0f, lhs[i] + rhs[i]);
+  }
+  return ret;
+}
+
+inline Color SafeSub(Color const& lhs, Color const& rhs) {
+  Color ret{};
+  for (int i = 0; i < 4; i++) {
+    ret[i] = Clamp(0.0f, 1.0f, lhs[i] - rhs[i]);
+  }
+  return ret;
+}
+
+inline Color SafeMul(Color const& c, float s) {
+  if (s < 0.0f) {
+    return c;
+  }
+  if (s > 1.0f) {
+    auto const maxv = std::max_element(c.rgb_begin(), c.rgb_end());
+    auto const max_scaled = (*maxv) * s;
+    if (max_scaled > 1.0f) {
+      s = 1.0f / (*maxv);
+    }
+  }
+  return Color(c.r() * s, c.g() * s, c.b() * s, c.a() * s);
 }
 
 }  // namespace colors
