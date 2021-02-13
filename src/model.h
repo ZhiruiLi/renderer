@@ -35,14 +35,17 @@ class Model {
   Vector3 VertexNormal(int iface, int nthvert) const;
   // fetch the normal vector from the normal map texture
   Vector3 TextureNormal(Vector2 const &uv) const;
-  int VertIndex(int iface, int nthvert) const;
-  Vector3 Vert(int iface, int nthvert) const;
+  Vector3 Vertex(int iface, int nthvert) const;
   Vector2 UV(int iface, int nthvert) const;
   Color Diffuse(Vector2 const &uv) const;
   double Specular(Vector2 const &uv) const;
 
-  std::vector<Vector3> &verts() { return verts_; }
-  std::vector<Vector3> const &verts() const { return verts_; }
+  int VertexIndex(int iface, int nthvert) const;
+  int VertexUVIndex(int iface, int nthvert) const;
+  int VertexNormalIndex(int iface, int nthvert) const;
+
+  std::vector<Vector3> &vertexs() { return verts_; }
+  std::vector<Vector3> const &vertexs() const { return verts_; }
   std::vector<Vector2> &uvs() { return uv_; }
   std::vector<Vector2> const &uvs() const { return uv_; }
 };

@@ -71,12 +71,20 @@ int Model::nverts() const { return verts_.size(); }
 
 int Model::nfaces() const { return facet_vrt_.size() / 3; }
 
-int Model::VertIndex(int iface, int nthvert) const {
+int Model::VertexIndex(int iface, int nthvert) const {
   return facet_vrt_[iface * 3 + nthvert];
 }
 
-Vector3 Model::Vert(int iface, int nthvert) const {
-  return verts_[VertIndex(iface, nthvert)];
+int Model::VertexUVIndex(int iface, int nthvert) const {
+  return facet_tex_[iface * 3 + nthvert];
+}
+
+int Model::VertexNormalIndex(int iface, int nthvert) const {
+  return facet_nrm_[iface * 3 + nthvert];
+}
+
+Vector3 Model::Vertex(int iface, int nthvert) const {
+  return verts_[VertexIndex(iface, nthvert)];
 }
 
 void Model::LoadTexture(std::string const &filename, std::string const &suffix,
@@ -109,11 +117,11 @@ double Model::Specular(Vector2 const &uvf) const {
 }
 
 Vector2 Model::UV(int iface, int nthvert) const {
-  return uv_[facet_tex_[iface * 3 + nthvert]];
+  return uv_[VertexUVIndex(iface, nthvert)];
 }
 
 Vector3 Model::VertexNormal(int iface, int nthvert) const {
-  return norms_[facet_nrm_[iface * 3 + nthvert]];
+  return norms_[VertexNormalIndex(iface, nthvert)];
 }
 
 }  // namespace sren

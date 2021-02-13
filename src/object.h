@@ -113,18 +113,18 @@ inline void SetObjectData(Model const &m, Object *obj) {
   polygons.clear();
 
   for (int i = 0; i < m.nverts(); i++) {
-    auto const &vert3 = m.verts()[i];
+    auto const &vert3 = m.vertexs()[i];
     vertexs.push_back(Vector4(vert3, 1.0f));
     trans_vertexs.push_back(Vector4(vert3, 1.0f));
     auto const uv = m.uvs()[i];
     vertex_attrs.push_back(VertexAttr{uv, m.Diffuse(uv)});
   }
   for (int i = 0; i < m.nfaces(); i++) {
-    polygons.push_back(Polygon(&vertexs, &vertex_attrs,
+    polygons.push_back(Polygon(&trans_vertexs, &vertex_attrs,
                                {
-                                   m.VertIndex(i, 0),
-                                   m.VertIndex(i, 1),
-                                   m.VertIndex(i, 2),
+                                   m.VertexIndex(i, 0),
+                                   m.VertexIndex(i, 1),
+                                   m.VertexIndex(i, 2),
                                }));
   }
 }
