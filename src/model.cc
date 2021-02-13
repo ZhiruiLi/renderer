@@ -62,25 +62,25 @@ Model::Model(std::string const &filename)
   in.close();
   std::cerr << "# v# " << nverts() << " f# " << nfaces() << " vt# "
             << uv_.size() << " vn# " << norms_.size() << std::endl;
-  load_texture(filename, "_diffuse.tga", diffusemap_);
-  load_texture(filename, "_nm_tangent.tga", normalmap_);
-  load_texture(filename, "_spec.tga", specularmap_);
+  LoadTexture(filename, "_diffuse.tga", diffusemap_);
+  LoadTexture(filename, "_nm_tangent.tga", normalmap_);
+  LoadTexture(filename, "_spec.tga", specularmap_);
 }
 
 int Model::nverts() const { return verts_.size(); }
 
 int Model::nfaces() const { return facet_vrt_.size() / 3; }
 
-int Model::vert_index(int iface, int nthvert) const {
+int Model::VertIndex(int iface, int nthvert) const {
   return facet_vrt_[iface * 3 + nthvert];
 }
 
-Vector3 Model::vert(int iface, int nthvert) const {
-  return verts_[vert_index(iface, nthvert)];
+Vector3 Model::Vert(int iface, int nthvert) const {
+  return verts_[VertIndex(iface, nthvert)];
 }
 
-void Model::load_texture(std::string const &filename, std::string const &suffix,
-                         TGAImage &img) {
+void Model::LoadTexture(std::string const &filename, std::string const &suffix,
+                        TGAImage &img) {
   size_t dot = filename.find_last_of(".");
   if (dot == std::string::npos) return;
   std::string texfile = filename.substr(0, dot) + suffix;
@@ -90,29 +90,29 @@ void Model::load_texture(std::string const &filename, std::string const &suffix,
   img.FlipVertically();
 }
 
-Color Model::diffuse(Vector2 const &uvf) const {
+Color Model::Diffuse(Vector2 const &uvf) const {
   return diffusemap_.Get(uvf[0] * diffusemap_.width(),
                          uvf[1] * diffusemap_.height());
 }
 
-Vector3 Model::normal(Vector2 const &uvf) const {
+Vector3 Model::TextureNormal(Vector2 const &uv) const {
   Color c =
-      normalmap_.Get(uvf[0] * normalmap_.width(), uvf[1] * normalmap_.height());
+      normalmap_.Get(uv[0] * normalmap_.width(), uv[1] * normalmap_.height());
   Vector3 res;
   for (int i = 0; i < 3; i++) res[2 - i] = c[i] / 255. * 2 - 1;
   return res;
 }
 
-double Model::specular(Vector2 const &uvf) const {
+double Model::Specular(Vector2 const &uvf) const {
   return specularmap_.Get(uvf[0] * specularmap_.width(),
                           uvf[1] * specularmap_.height())[0];
 }
 
-Vector2 Model::uv(int iface, int nthvert) const {
+Vector2 Model::UV(int iface, int nthvert) const {
   return uv_[facet_tex_[iface * 3 + nthvert]];
 }
 
-Vector3 Model::normal(int iface, int nthvert) const {
+Vector3 Model::VertexNormal(int iface, int nthvert) const {
   return norms_[facet_nrm_[iface * 3 + nthvert]];
 }
 
