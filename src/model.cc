@@ -8,7 +8,7 @@
 
 namespace sren {
 
-Model::Model(const std::string filename)
+Model::Model(std::string const &filename)
     : verts_(),
       uv_(),
       norms_(),
@@ -71,13 +71,15 @@ int Model::nverts() const { return verts_.size(); }
 
 int Model::nfaces() const { return facet_vrt_.size() / 3; }
 
-Vector3 Model::vert(const int i) const { return verts_[i]; }
-
-Vector3 Model::vert(const int iface, const int nthvert) const {
-  return verts_[facet_vrt_[iface * 3 + nthvert]];
+int Model::vert_index(int iface, int nthvert) const {
+  return facet_vrt_[iface * 3 + nthvert];
 }
 
-void Model::load_texture(std::string filename, const std::string suffix,
+Vector3 Model::vert(int iface, int nthvert) const {
+  return verts_[vert_index(iface, nthvert)];
+}
+
+void Model::load_texture(std::string const &filename, std::string const &suffix,
                          TGAImage &img) {
   size_t dot = filename.find_last_of(".");
   if (dot == std::string::npos) return;
@@ -88,12 +90,12 @@ void Model::load_texture(std::string filename, const std::string suffix,
   img.FlipVertically();
 }
 
-Color Model::diffuse(const Vector2 &uvf) const {
+Color Model::diffuse(Vector2 const &uvf) const {
   return diffusemap_.Get(uvf[0] * diffusemap_.width(),
                          uvf[1] * diffusemap_.height());
 }
 
-Vector3 Model::normal(const Vector2 &uvf) const {
+Vector3 Model::normal(Vector2 const &uvf) const {
   Color c =
       normalmap_.Get(uvf[0] * normalmap_.width(), uvf[1] * normalmap_.height());
   Vector3 res;
@@ -101,16 +103,16 @@ Vector3 Model::normal(const Vector2 &uvf) const {
   return res;
 }
 
-double Model::specular(const Vector2 &uvf) const {
+double Model::specular(Vector2 const &uvf) const {
   return specularmap_.Get(uvf[0] * specularmap_.width(),
                           uvf[1] * specularmap_.height())[0];
 }
 
-Vector2 Model::uv(const int iface, const int nthvert) const {
+Vector2 Model::uv(int iface, int nthvert) const {
   return uv_[facet_tex_[iface * 3 + nthvert]];
 }
 
-Vector3 Model::normal(const int iface, const int nthvert) const {
+Vector3 Model::normal(int iface, int nthvert) const {
   return norms_[facet_nrm_[iface * 3 + nthvert]];
 }
 
