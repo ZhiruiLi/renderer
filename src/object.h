@@ -103,9 +103,7 @@ inline void InitObjectData(Model const &m, Vector3 world_pos, Object *obj) {
     vertexs.push_back(Vertex(Vector4(vert3, 1.0f), uv, norm, m.Diffuse(uv)));
   }
   for (int i = 0; i < m.nfaces(); i++) {
-    polygons.push_back(Polygon(
-        &obj->trans_vertexs(),
-        {m.VertexIndex(i, 0), m.VertexIndex(i, 1), m.VertexIndex(i, 2)}));
+    polygons.push_back(Polygon(&obj->trans_vertexs(), m.VertexIndexs(i)));
   }
   obj->trans_vertexs() = vertexs;
 }

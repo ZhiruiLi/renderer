@@ -841,10 +841,10 @@ int main1(void) {
   return 0;
 }
 
-void ApplyToAll(Matrix4x4 const &m, std::vector<Vector4> *vertexs) {
+void ApplyToAll(Matrix4x4 const &m, std::vector<Vertex> *vertexs) {
   auto &vs = *vertexs;
   for (int i = 0; i < vs.size(); i++) {
-    vs[i] = vs[i] * m;
+    vs[i].pos() = vs[i].pos() * m;
   }
 }
 
@@ -867,10 +867,10 @@ void RenderPipeline(Object *obj, FrameBuffer *fb) {
   for (auto const &poly : obj->polygons()) {
     Vector2 screen_coords[3];
     for (int i = 0; i < 3; i++) {
-      auto vert = poly.vertex(i);
-      vert /= vert.w();
+      auto vert_pos = poly.vertex(i).pos();
+      vert_pos /= vert_pos.w();
       screen_coords[i] =
-          Vector2(vert.x() * fb->width(), vert.y() * fb->height());
+          Vector2(vert_pos.x() * fb->width(), vert_pos.y() * fb->height());
     }
     draw2d::Line(screen_coords[0], screen_coords[1], colors::White(), fb);
     draw2d::Line(screen_coords[2], screen_coords[1], colors::White(), fb);
