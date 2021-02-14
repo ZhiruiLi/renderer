@@ -7,6 +7,7 @@
 #include "src/math.h"
 
 using namespace sren;
+using namespace sren::vectors;
 
 TEST(Vector2Test, Abs_WithTwoPositiveValues_ReturnsTwoPositiveValues) {
   Vector2 v(1.0f, 1.0f);
@@ -195,4 +196,18 @@ TEST(Vector3Test, GetPtrConst_WithValues_ReturnsValuesInXYZOrder) {
   Vector3 const expected = Vector3(1.0f, 5.0f, 13.0f);
   float const* result = expected.data();
   ASSERT_EQ(expected, Vector3(result));
+}
+
+TEST(Vector2Test, LeftOfLine_OnlyReturnsTrueWhenLeft) {
+  auto const p1 = Vector2(0, 1);
+  auto const p2 = Vector2(1, 0);
+  auto const p_on = Vector2(0.5f, 0.5f);
+  auto const p_left = Vector2(0.4f, 0.5f);
+  auto const p_right = Vector2(0.6f, 0.5f);
+  ASSERT_TRUE(LeftOfLine(p_left, p1, p2));
+  ASSERT_TRUE(LeftOfLine(p_left, p2, p1));
+  ASSERT_FALSE(LeftOfLine(p_on, p1, p2));
+  ASSERT_FALSE(LeftOfLine(p_on, p2, p1));
+  ASSERT_FALSE(LeftOfLine(p_right, p1, p2));
+  ASSERT_FALSE(LeftOfLine(p_right, p2, p1));
 }

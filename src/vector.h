@@ -402,7 +402,7 @@ namespace vectors {
 
 // 求两个矢量每一个位置的值的最小值构成的矢量
 template <class T, std::size_t N>
-Vector<T, N> Min(Vector<T, N> lhs, Vector<T, N> const& rhs) {
+inline Vector<T, N> Min(Vector<T, N> lhs, Vector<T, N> const& rhs) {
   Vector<T, N> ret{};
   for (int i = 0; i < N; i++) {
     ret[i] = std::min(lhs[i], rhs[i]);
@@ -412,7 +412,7 @@ Vector<T, N> Min(Vector<T, N> lhs, Vector<T, N> const& rhs) {
 
 // 求两个矢量每一个位置的值的最大值构成的矢量
 template <class T, std::size_t N>
-Vector<T, N> Max(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
+inline Vector<T, N> Max(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
   Vector<T, N> ret{};
   for (int i = 0; i < N; i++) {
     ret[i] = std::max(lhs[i], rhs[i]);
@@ -422,9 +422,21 @@ Vector<T, N> Max(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
 
 // 计算与另一个矢量的夹角
 template <class T, std::size_t N>
-T Angle(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
+inline T Angle(Vector<T, N> const& lhs, Vector<T, N> const& rhs) {
   return std::acos(
       std::min(1.0f, lhs * rhs / (lhs.Magnitude() * rhs.Magnitude())));
+}
+
+// 检查点 p 是否在 p1-p2 构成的直线的左侧
+template <class T, std::size_t N>
+inline std::enable_if_t<details::HasX(N) && details::HasY(N), bool> LeftOfLine(
+    Vector<T, N> const& p, Vector<T, N> const& p1, Vector<T, N> const& p2) {
+  auto const tmpx =
+      (p1.x() - p2.x()) / (p1.y() - p2.y()) * (p.y() - p2.y()) + p2.x();
+  if (tmpx > p.x()) {
+    return true;
+  }
+  return false;
 }
 
 }  // namespace vectors

@@ -8,66 +8,14 @@
 
 namespace sren {
 
-Model::Model(std::string const &filename)
-    : verts_(),
-      uv_(),
-      norms_(),
-      facet_vrt_(),
-      facet_tex_(),
-      facet_nrm_(),
-      diffusemap_(),
-      normalmap_(),
-      specularmap_() {
-  std::ifstream in;
-  in.open(filename, std::ifstream::in);
-  if (in.fail()) return;
-  std::string line;
-  while (!in.eof()) {
-    std::getline(in, line);
-    std::istringstream iss(line.c_str());
-    char trash;
-    if (!line.compare(0, 2, "v ")) {
-      iss >> trash;
-      Vector3 v;
-      for (int i = 0; i < 3; i++) iss >> v[i];
-      verts_.push_back(v);
-    } else if (!line.compare(0, 3, "vn ")) {
-      iss >> trash >> trash;
-      Vector3 n;
-      for (int i = 0; i < 3; i++) iss >> n[i];
-      norms_.push_back(n.Normalize());
-    } else if (!line.compare(0, 3, "vt ")) {
-      iss >> trash >> trash;
-      Vector2 uv;
-      for (int i = 0; i < 2; i++) iss >> uv[i];
-      uv_.push_back(uv);
-    } else if (!line.compare(0, 2, "f ")) {
-      int f, t, n;
-      iss >> trash;
-      int cnt = 0;
-      while (iss >> f >> trash >> t >> trash >> n) {
-        facet_vrt_.push_back(--f);
-        facet_tex_.push_back(--t);
-        facet_nrm_.push_back(--n);
-        cnt++;
-      }
-      if (3 != cnt) {
-        std::cerr << "Error: the obj file is supposed to be triangulated"
-                  << std::endl;
-        in.close();
-        return;
-      }
-    }
-  }
-  in.close();
-  std::cerr << "# v# " << nverts() << " f# " << nfaces() << " vt# "
-            << uv_.size() << " vn# " << norms_.size() << std::endl;
+Model::Model(std::string const &filename) {
+  LoadData(filename);
   LoadTexture(filename, "_diffuse.tga", diffusemap_);
   LoadTexture(filename, "_nm_tangent.tga", normalmap_);
   LoadTexture(filename, "_spec.tga", specularmap_);
 }
 
-int Model::nverts() const { return verts_.size(); }
+int Model::nverts() const { return vertexs_.size(); }
 
 int Model::nfaces() const { return facet_vrt_.size() / 3; }
 
@@ -98,7 +46,57 @@ int Model::VertexNormalIndex(int iface, int nthvert) const {
 }
 
 Vector3 Model::Vertex(int iface, int nthvert) const {
-  return verts_[VertexIndex(iface, nthvert)];
+  return vertexs_[VertexIndex(iface, nthvert)];
+}
+
+void Model::LoadData(std::string const &filename) {
+  std::ifstream in;
+  in.open(filename, std::ifstream::in);
+  if (in.fail()) return;
+  std::string line;
+  while (!in.eof()) {
+    std::getline(in, line);
+    std::istringstream iss(line.c_str());
+    char trash;
+    if (!line.compare(0, 2, "v ")) {
+      iss >> trash;
+      Vector3 v;
+      for (int i = 0; i < 3; i++) iss >> v[i];
+      vertexs_.push_back(v);
+      Color c = Color::RGB(0x0);
+      for (int i = 0; i < 3; i++) iss >> c[i];
+      colors_.push_back(c);
+    } else if (!line.compare(0, 3, "vn ")) {
+      iss >> trash >> trash;
+      Vector3 n;
+      for (int i = 0; i < 3; i++) iss >> n[i];
+      normals_.push_back(n.Normalize());
+    } else if (!line.compare(0, 3, "vt ")) {
+      iss >> trash >> trash;
+      Vector2 uv;
+      for (int i = 0; i < 2; i++) iss >> uv[i];
+      uvs_.push_back(uv);
+    } else if (!line.compare(0, 2, "f ")) {
+      int f, t, n;
+      iss >> trash;
+      int cnt = 0;
+      while (iss >> f >> trash >> t >> trash >> n) {
+        facet_vrt_.push_back(--f);
+        facet_tex_.push_back(--t);
+        facet_nrm_.push_back(--n);
+        cnt++;
+      }
+      if (3 != cnt) {
+        std::cerr << "Error: the obj file is supposed to be triangulated"
+                  << std::endl;
+        in.close();
+        return;
+      }
+    }
+  }
+  in.close();
+  std::cerr << "# v# " << nverts() << " f# " << nfaces() << " vt# "
+            << uvs_.size() << " vn# " << normals_.size() << std::endl;
 }
 
 void Model::LoadTexture(std::string const &filename, std::string const &suffix,
@@ -131,11 +129,11 @@ double Model::Specular(Vector2 const &uvf) const {
 }
 
 Vector2 Model::UV(int iface, int nthvert) const {
-  return uv_[VertexUVIndex(iface, nthvert)];
+  return uvs_[VertexUVIndex(iface, nthvert)];
 }
 
 Vector3 Model::VertexNormal(int iface, int nthvert) const {
-  return norms_[VertexNormalIndex(iface, nthvert)];
+  return normals_[VertexNormalIndex(iface, nthvert)];
 }
 
 }  // namespace sren

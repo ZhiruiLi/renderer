@@ -51,7 +51,12 @@ void FrameBuffer::Resize(int width, int height) {
 }
 
 void FrameBuffer::Clear() {
-  bzero(data(), size());
+  auto const count = width_ * height_ * 4;
+  for (int i = 0; i < count; i += 4) {
+    for (int j = 0; j < 4; j++) {
+      data_[i + j] = background_[j];
+    }
+  }
   std::fill(z_buffer_.get(), z_buffer_.get() + width_ * height_,
             std::numeric_limits<float>::min());
 }

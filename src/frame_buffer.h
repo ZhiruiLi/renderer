@@ -30,10 +30,16 @@ class FrameBuffer {
   int size() const { return width_ * height_ * 4; }
   void *data() { return data_ ? data_.get() : nullptr; }
   void const *data() const { return data_ ? data_.get() : nullptr; }
+  Color &foreground() { return foreground_; }
+  Color &background() { return background_; }
+  Color const &foreground() const { return foreground_; }
+  Color const &background() const { return background_; }
 
  private:
   int width_{};
   int height_{};
+  Color foreground_{colors::White()};
+  Color background_{colors::Black()};
   std::unique_ptr<unsigned char[]> data_{};
   std::unique_ptr<float[]> z_buffer_{};
 };

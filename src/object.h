@@ -40,10 +40,12 @@ class Object {
   std::vector<Vector4> const &vertexs() const { return vertexs_; }
   std::vector<Vector4> &trans_vertexs() { return trans_vertexs_; }
   std::vector<Vector4> const &trans_vertexs() const { return trans_vertexs_; }
+  std::vector<Color> &colors() { return colors_; }
+  std::vector<Color> const &colors() const { return colors_; }
   std::vector<Vector2> &uvs() { return uvs_; }
   std::vector<Vector2> const &uvs() const { return uvs_; }
-  std::vector<Vector4> &norms() { return norms_; }
-  std::vector<Vector4> const &norms() const { return norms_; }
+  std::vector<Vector4> &normals() { return normals_; }
+  std::vector<Vector4> const &normals() const { return normals_; }
   std::vector<Polygon> &polygons() { return polygons_; };
   std::vector<Polygon> const &polygons() const { return polygons_; };
 
@@ -64,10 +66,12 @@ class Object {
   std::vector<Vector4> vertexs_{};
   // 变换后物体的顶点
   std::vector<Vector4> trans_vertexs_{};
+  // 物体顶点颜色
+  std::vector<Color> colors_{};
   // 物体相关的 UV 坐标
   std::vector<Vector2> uvs_{};
   // 物体相关的法线
-  std::vector<Vector4> norms_{};
+  std::vector<Vector4> normals_{};
   // 物体的面
   std::vector<Polygon> polygons_{};
 };

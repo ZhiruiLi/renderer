@@ -4,9 +4,11 @@ namespace sren {
 
 void InitObjectData(Model const &m, Vector3 world_pos, Object *obj) {
   obj->world_pos() = world_pos;
+  obj->colors() = m.colors();
+
   obj->vertexs().clear();
   obj->uvs().clear();
-  obj->norms().clear();
+  obj->normals().clear();
   obj->polygons().clear();
 
   for (auto const &v : m.vertexs()) {
@@ -15,8 +17,8 @@ void InitObjectData(Model const &m, Vector3 world_pos, Object *obj) {
   for (auto const &u : m.uvs()) {
     obj->uvs().emplace_back(u);
   }
-  for (auto const &n : m.norms()) {
-    obj->norms().emplace_back(n, 1.0f);
+  for (auto const &n : m.normals()) {
+    obj->normals().emplace_back(n, 1.0f);
   }
   for (int i = 0; i < m.nfaces(); i++) {
     obj->polygons().emplace_back(obj, m.VertexIndexs(i), m.VertexUVIndexs(i),

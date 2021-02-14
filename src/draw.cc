@@ -1,35 +1,53 @@
 #include "draw.h"
 
-#include "src/color.h"
-#include "src/frame_buffer.h"
+#include <array>
+
+#include "color.h"
+#include "frame_buffer.h"
+#include "trapezoid.h"
 #include "vector.h"
 
 namespace sren {
 
 namespace draw {
 
-namespace {
+namespace details {
+
 void SwapXY(Vector2 *p) {
   float const x = p->x();
   p->set_x(p->y());
   p->set_y(x);
 }
 
-template <class Vec>
-void CenterPos(Vec *p, FrameBuffer *fb) {}
+// 计算插值：t 为 [0, 1] 之间的数值
+float Interp(float x1, float x2, float t) { return x1 + (x2 - x1) * t; }
 
-}  // namespace
+Vector2 InterpUV(Vector2 const &uv1, Vector2 const &uv2, float t) {
+  return {Interp(uv1.x(), uv2.x(), t), Interp(uv1.y(), uv2.y(), t)};
+}
+
+Vector4 InterpPos(Vector4 const &pos1, Vector4 const &pos2, float t) {
+  return {
+      Interp(pos1.x(), pos2.x(), t),
+      Interp(pos1.y(), pos2.y(), t),
+      Interp(pos1.z(), pos2.z(), t),
+      1.0f,
+  };
+}
+
+void RenderTrapezoid(Trapezoid const &trap, FrameBuffer *fb) {}
+
+}  // namespace details
+
+using namespace details;
 
 // 画点
 void Pixel(Vector4 p, Color const &c, FrameBuffer *fb) {
-  CenterPos(&p, fb);
   fb->Set(int(p.x()), int(p.y()), int(p.z()), c);
 }
 
 // 画线
 void Line(Vector4 p0, Vector4 p1, Color const &c, FrameBuffer *fb) {
-  CenterPos(&p0, fb);
-  CenterPos(&p1, fb);
   if (p0.x() == p1.x() && p0.y() == p1.y()) {
     fb->Set(p0.x(), p0.y(), c);
   } else if (p0.x() == p1.x()) {
@@ -94,9 +112,6 @@ void Line(Vector4 p0, Vector4 p1, Color const &c, FrameBuffer *fb) {
 // 画三角形
 void Triangle(Vector4 p0, Vector4 p1, Vector4 p2, Color const &c,
               FrameBuffer *fb) {
-  CenterPos(&p0, fb);
-  CenterPos(&p1, fb);
-  CenterPos(&p2, fb);
   if (AlmostEqual(p0.y(), p1.y()) && AlmostEqual(p0.y(), p2.y())) {
     return;
   }
@@ -128,6 +143,13 @@ void Triangle(Vector4 p0, Vector4 p1, Vector4 p2, Color const &c,
       z += delta_z;
     }
   }
+}
+
+// 画三角形
+void Triangle(Polygon const &poly, FrameBuffer *fb) {
+  std::array<Trapezoid, 2> traps{};
+  int const count = trapezoids::CutTriangle(
+      {poly.Vertex(0), poly.Vertex(1), poly.Vertex(2)}, &traps);
 }
 
 }  // namespace draw

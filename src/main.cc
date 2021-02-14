@@ -66,7 +66,8 @@ void RenderPipeline(Object *obj, FrameBuffer *fb) {
     // draw::Line(poly.Vertex(1), poly.Vertex(2), colors::White(), fb);
     // draw::Line(poly.Vertex(0), poly.Vertex(2), colors::White(), fb);
     auto const color = simple_colors[i % 6];
-    draw::Triangle(poly.Vertex(0), poly.Vertex(1), poly.Vertex(2), color, fb);
+    draw::Triangle(poly.Vertex(0).pos(), poly.Vertex(1).pos(),
+                   poly.Vertex(2).pos(), color, fb);
     i++;
   }
 }
@@ -117,8 +118,8 @@ int main(void) {
       int i = 0;
       for (auto const &poly : obj.polygons()) {
         i++;
-        std::cout << "poly " << i << ":" << poly.Vertex(0) << poly.Vertex(1)
-                  << poly.Vertex(2) << std::endl;
+        std::cout << "poly " << i << ":" << poly.Vertex(0).pos()
+                  << poly.Vertex(1).pos() << poly.Vertex(2).pos() << std::endl;
       }
     }
   });

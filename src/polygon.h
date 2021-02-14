@@ -2,9 +2,11 @@
 
 #include <array>
 
-#include "vector.h"
+#include "vertex.h"
 
 namespace sren {
+
+class Object;
 
 enum class PolygonState {
   kUnknown = 0x0,
@@ -12,8 +14,6 @@ enum class PolygonState {
   kClipped = 0x2,
   kBackface = 0x4,
 };
-
-class Object;
 
 class Polygon {
  public:
@@ -28,9 +28,7 @@ class Polygon {
   PolygonState state() const { return state_; };
   void set_state(PolygonState state) { state_ = state; };
 
-  Vector4 const &Vertex(int i) const;
-  Vector2 const &UV(int i) const;
-  Vector4 const &Norm(int i) const;
+  Vertex Vertex(int i) const;
 
  private:
   PolygonState state_{};
