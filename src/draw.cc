@@ -3,15 +3,18 @@
 #include <array>
 
 #include "color.h"
+#include "draw_helper.h"
 #include "frame_buffer.h"
 #include "trapezoid.h"
 #include "vector.h"
 
 namespace sren {
 
+using namespace details;
+
 namespace draw {
 
-namespace details {
+namespace {
 
 void SwapXY(Vector2 *p) {
   float const x = p->x();
@@ -19,27 +22,30 @@ void SwapXY(Vector2 *p) {
   p->set_y(x);
 }
 
-// 计算插值：t 为 [0, 1] 之间的数值
-float Interp(float x1, float x2, float t) { return x1 + (x2 - x1) * t; }
-
-Vector2 InterpUV(Vector2 const &uv1, Vector2 const &uv2, float t) {
-  return {Interp(uv1.x(), uv2.x(), t), Interp(uv1.y(), uv2.y(), t)};
+void RenderOneLine(Trapezoid const &trap, float y, FrameBuffer *fb) {
+  auto left = CalcRenderPoint(trap.left.top, trap.left.bottom, y);
+  auto const right = CalcRenderPoint(trap.right.top, trap.right.bottom, y);
+  auto const width = right.pos().x() - left.pos().x();
+  auto const step = (right - left) / width;
+  for (float x = left.pos().x(); x < right.pos().x(); x++) {
+    left += step;
+    auto const &pos = left.pos();
+    fb->Set(pos.x(), pos.y(), pos.z(), left.color());
+  }
 }
 
-Vector4 InterpPos(Vector4 const &pos1, Vector4 const &pos2, float t) {
-  return {
-      Interp(pos1.x(), pos2.x(), t),
-      Interp(pos1.y(), pos2.y(), t),
-      Interp(pos1.z(), pos2.z(), t),
-      1.0f,
-  };
+void RenderTrapezoid(Trapezoid const &trap, FrameBuffer *fb) {
+  for (float y = trap.bottom; y < trap.top; y++) {
+    if (y >= 0 && y < fb->height()) {
+      RenderOneLine(trap, y, fb);
+    }
+    if (y >= fb->height()) {
+      break;
+    }
+  }
 }
 
-void RenderTrapezoid(Trapezoid const &trap, FrameBuffer *fb) {}
-
-}  // namespace details
-
-using namespace details;
+}  // namespace
 
 // 画点
 void Pixel(Vector4 p, Color const &c, FrameBuffer *fb) {
@@ -150,6 +156,12 @@ void Triangle(Polygon const &poly, FrameBuffer *fb) {
   std::array<Trapezoid, 2> traps{};
   int const count = trapezoids::CutTriangle(
       {poly.Vertex(0), poly.Vertex(1), poly.Vertex(2)}, &traps);
+  if (count >= 1) {
+    RenderTrapezoid(traps[0], fb);
+  }
+  if (count >= 2) {
+    RenderTrapezoid(traps[1], fb);
+  }
 }
 
 }  // namespace draw

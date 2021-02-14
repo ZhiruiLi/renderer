@@ -21,6 +21,7 @@ struct Trapezoid {
 
 namespace trapezoids {
 
+// TODO: 这个函数暂时放在头文件里，因为测试用例暂时还不链接 src 中的内容
 inline int CutTriangle(std::array<Vertex, 3> verts,
                        std::array<Trapezoid, 2> *traps) {
   std::sort(verts.begin(), verts.end(), [](auto const &a, auto const &b) {
@@ -71,9 +72,9 @@ inline int CutTriangle(std::array<Vertex, 3> verts,
     (*traps)[1].right = {verts[2], verts[0]};
   } else {
     (*traps)[0].left = {verts[2], verts[0]};
-    (*traps)[0].right = {verts[1], verts[0]};
+    (*traps)[0].right = {verts[2], verts[1]};
     (*traps)[1].left = {verts[2], verts[0]};
-    (*traps)[1].right = {verts[2], verts[1]};
+    (*traps)[1].right = {verts[1], verts[0]};
   }
   return 2;
 }

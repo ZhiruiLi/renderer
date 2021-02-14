@@ -21,6 +21,58 @@ class Vertex {
   Vector4 const &normal() const { return normal_; }
   Vector4 &normal() { return normal_; }
 
+  Vertex &operator+=(Vertex const &rhs) {
+    pos_ += rhs.pos();
+    color_ += rhs.color();
+    uv_ += rhs.uv();
+    normal_ += rhs.normal();
+    return *this;
+  }
+
+  friend Vertex operator+(Vertex lhs, Vertex const &rhs) {
+    lhs += rhs;
+    return lhs;
+  }
+
+  Vertex &operator-=(Vertex const &rhs) {
+    pos_ -= rhs.pos();
+    color_ -= rhs.color();
+    uv_ -= rhs.uv();
+    normal_ -= rhs.normal();
+    return *this;
+  }
+
+  friend Vertex operator-(Vertex lhs, Vertex const &rhs) {
+    lhs -= rhs;
+    return lhs;
+  }
+
+  Vertex &operator*=(float s) {
+    pos_ *= s;
+    color_ *= s;
+    uv_ *= s;
+    normal_ *= s;
+    return *this;
+  }
+
+  friend Vertex operator*(Vertex v, float s) {
+    v *= s;
+    return v;
+  }
+
+  Vertex &operator/=(float s) {
+    pos_ /= s;
+    color_ /= s;
+    uv_ /= s;
+    normal_ /= s;
+    return *this;
+  }
+
+  friend Vertex operator/(Vertex v, float s) {
+    v /= s;
+    return v;
+  }
+
  private:
   Vector4 pos_{};
   Color color_{};
