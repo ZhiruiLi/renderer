@@ -340,11 +340,11 @@ inline Matrix<T, 4, 4> ViewTransform(Vector<T, 3> const &pos,
   auto const n = (target - pos).Normalize();
   auto const u = (up ^ n).Normalize();
   auto const v = n ^ u;
-  return Matrix4x4({{
-      {u.x(), v.x(), n.x(), 0.0f},
-      {u.y(), v.y(), n.y(), 0.0f},
-      {u.z(), v.z(), n.z(), 0.0f},
-      {-(pos * u), -(pos * v), -(pos * n), 1.0f},
+  return Matrix<T, 4, 4>({{
+      {u.x(), v.x(), n.x(), 0},
+      {u.y(), v.y(), n.y(), 0},
+      {u.z(), v.z(), n.z(), 0},
+      {-(pos * u), -(pos * v), -(pos * n), 1},
   }});
 }
 
@@ -353,11 +353,41 @@ inline Matrix<T, 4, 4> ProjectionTransform(T aspect, T fov_radian_v,
                                            T near_clip, T far_clip) {
   auto const theta = fov_radian_v / 2;
   auto const cot_theta = 1 / tan(theta);
-  return Matrix4x4({{
-      {cot_theta / aspect, 0.0f, 0.0f, 0.0f},
-      {0.0f, cot_theta, 0.0f, 0.0f},
-      {0.0f, 0.0f, far_clip / (far_clip - near_clip), 1.0f},
-      {0.0f, 0.0f, far_clip * near_clip / (near_clip - far_clip), 0.0f},
+  return Matrix<T, 4, 4>({{
+      {cot_theta / aspect, 0, 0, 0},
+      {0, cot_theta, 0, 0},
+      {0, 0, far_clip / (far_clip - near_clip), 1},
+      {0, 0, far_clip * near_clip / (near_clip - far_clip), 0},
+  }});
+}
+
+template <class T>
+inline Matrix<T, 4, 4> RotateXTransform(T theta) {
+  return Matrix<T, 4, 4>({{
+      {1, 0, 0, 0},
+      {0, cos(theta), -sin(theta), 0},
+      {0, sin(theta), cos(theta), 0},
+      {0, 0, 0, 1},
+  }});
+}
+
+template <class T>
+inline Matrix<T, 4, 4> RotateYTransform(T theta) {
+  return Matrix<T, 4, 4>({{
+      {cos(theta), 0, sin(theta), 0},
+      {0, 1, 0, 0},
+      {-sin(theta), 0, cos(theta), 0},
+      {0, 0, 0, 1},
+  }});
+}
+
+template <class T>
+inline Matrix<T, 4, 4> RotateZTransform(T theta) {
+  return Matrix<T, 4, 4>({{
+      {cos(theta), -sin(theta), 0, 0},
+      {sin(theta), cos(theta), 0, 0},
+      {0, 0, 1, 0},
+      {0, 0, 0, 1},
   }});
 }
 

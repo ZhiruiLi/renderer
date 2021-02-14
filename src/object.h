@@ -67,8 +67,8 @@ class Object {
 
   Vector3 &world_pos() { return world_pos_; }
   Vector3 const &world_pos() const { return world_pos_; }
-  Vector3 &local_dir() { return local_dir_; }
-  Vector3 const &local_dir() const { return local_dir_; }
+  Vector3 &rotation() { return rotation_; }
+  Vector3 const &rotation() const { return rotation_; }
 
   std::vector<Vector4> &vertexs() { return vertexs_; }
   std::vector<Vector4> const &vertexs() const { return vertexs_; }
@@ -93,7 +93,7 @@ class Object {
   // 物体在世界坐标系中的位置
   Vector3 world_pos_{0.0f, 0.0f, 0.0f};
   // 物体在局部坐标系下的旋转角度
-  Vector3 local_dir_{0.0f, 0.0f, -1.0f};
+  Vector3 rotation_{0.0f, 0.0f, 0.0f};
   // 原始物体的顶点
   std::vector<Vector4> vertexs_{};
   // 变换后物体的顶点
