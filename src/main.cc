@@ -38,8 +38,8 @@ std::array<Color, 6> simple_colors{
 };
 
 void RenderPipeline(Object *obj, FrameBuffer *fb) {
-  Vector3 const camera_world_coords(0, 0, 5);
-  Vector3 const camera_target(0, 0, 0);
+  Vector3 const camera_world_coords(0, 0, 0);
+  Vector3 const camera_target(0, 0, 1);
 
   auto const fov_radian = 0.5f * kPI;
   auto const aspect = float(fb->width()) / float(fb->height());
@@ -73,16 +73,16 @@ int main(void) {
   Model model("../asserts/cube/cube.obj");
   // Model model("../asserts/african_head/african_head.obj");
   Object obj(101, "MyObj");
-  InitObjectData(model, {0, 0, 0}, &obj);
+  InitObjectData(model, {0, 0, 5}, &obj);
   window.set_main_loop([&](FrameBuffer *fb) {
     fb->Clear();
     auto &world_pos = obj.world_pos();
     if (IsKeyPress(Key::kEscape)) window.Close();
     if (IsKeyPress(Key::kRight) || IsKeyHold(Key::kRight)) {
-      world_pos.set_x(world_pos.x() - 0.1);
+      world_pos.set_x(world_pos.x() + 0.1);
     }
     if (IsKeyPress(Key::kLeft) || IsKeyHold(Key::kLeft)) {
-      world_pos.set_x(world_pos.x() + 0.1);
+      world_pos.set_x(world_pos.x() - 0.1);
     }
     if (IsKeyPress(Key::kUp) || IsKeyHold(Key::kUp)) {
       world_pos.set_y(world_pos.y() + 0.1);
