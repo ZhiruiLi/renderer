@@ -3,7 +3,6 @@
 #include "color.h"
 #include "frame_buffer.h"
 #include "vector.h"
-#include "vertex.h"
 
 namespace sren {
 
