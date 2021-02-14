@@ -16,10 +16,7 @@ void SwapXY(Vector2 *p) {
 }
 
 template <class Vec>
-void CenterPos(Vec *p, FrameBuffer *fb) {
-  p->set_x(p->x() + fb->width() / 2.0f);
-  p->set_y(p->y() + fb->height() / 2.0f);
-}
+void CenterPos(Vec *p, FrameBuffer *fb) {}
 
 }  // namespace
 
@@ -125,7 +122,7 @@ void Triangle(Vector4 p0, Vector4 p1, Vector4 p2, Color const &c,
       std::swap(pa, pb);
     }
     auto const delta_z = (pb.z() - pa.z()) / (pb.x() - pa.x());
-    auto z = pa.z() + 1;
+    auto z = pa.z();
     for (int j = pa.x(); j <= pb.x(); j++) {
       fb->Set(j, p0.y() + i, 1 / z, c);
       z += delta_z;

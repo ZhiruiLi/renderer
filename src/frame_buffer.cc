@@ -47,12 +47,11 @@ void FrameBuffer::Resize(int width, int height) {
   height_ = height;
   data_ = std::make_unique<unsigned char[]>(size());
   z_buffer_ = std::make_unique<float[]>(width * height);
-  ResetZBuffer();
+  Clear();
 }
 
-void FrameBuffer::Clear() { bzero(data(), size()); }
-
-void FrameBuffer::ResetZBuffer() {
+void FrameBuffer::Clear() {
+  bzero(data(), size());
   std::fill(z_buffer_.get(), z_buffer_.get() + width_ * height_,
             std::numeric_limits<float>::min());
 }

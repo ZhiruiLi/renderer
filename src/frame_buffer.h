@@ -15,7 +15,7 @@ class FrameBuffer {
         height_(height),
         data_(std::make_unique<unsigned char[]>(size())),
         z_buffer_(std::make_unique<float[]>(width * height)) {
-    ResetZBuffer();
+    Clear();
   }
 
   ~FrameBuffer() = default;
@@ -23,17 +23,15 @@ class FrameBuffer {
   void Set(float x, float y, Color const &color);
   void Set(float x, float y, float z, Color const &color);
   void Clear();
-
-  int width() { return width_; }
-  int height() { return height_; }
-  void *data() { return data_ ? data_.get() : nullptr; }
-  int size() { return width_ * height_ * 4; }
-
   void Resize(int width, int height);
 
- private:
-  void ResetZBuffer();
+  int width() const { return width_; }
+  int height() const { return height_; }
+  int size() const { return width_ * height_ * 4; }
+  void *data() { return data_ ? data_.get() : nullptr; }
+  void const *data() const { return data_ ? data_.get() : nullptr; }
 
+ private:
   int width_{};
   int height_{};
   std::unique_ptr<unsigned char[]> data_{};
