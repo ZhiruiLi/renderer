@@ -3,8 +3,7 @@
 #include <iostream>
 #include <limits>
 
-#include "gtest/gtest.h"
-#include "src/math.h"
+#include "test.h"
 
 using namespace sren;
 using namespace sren::vectors;

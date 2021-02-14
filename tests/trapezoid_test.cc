@@ -2,8 +2,7 @@
 
 #include <array>
 
-#include "gtest/gtest.h"
-#include "src/vertex.h"
+#include "test.h"
 
 using namespace sren;
 
