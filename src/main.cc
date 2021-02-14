@@ -45,10 +45,7 @@ void RenderPipeline(Object *obj, FrameBuffer *fb) {
   auto const aspect = float(fb->width()) / float(fb->height());
   obj->trans_vertexs() = obj->vertexs();
 
-  auto const &rotx = matrixs::RotateXTransform(obj->rotation().x());
-  auto const &roty = matrixs::RotateYTransform(obj->rotation().y());
-  auto const &rotz = matrixs::RotateZTransform(obj->rotation().z());
-  auto const rot = rotx * roty * rotz;
+  auto const rot = matrixs::RotateTransform(obj->rotation());
   ApplyToAll(rot, &obj->trans_vertexs());
   auto const world_transform = matrixs::WorldTransform(obj->world_pos());
   ApplyToAll(world_transform, &obj->trans_vertexs());
@@ -104,16 +101,16 @@ int main(void) {
       world_pos.set_z(world_pos.z() - 0.1);
     }
     if (IsKeyPress(Key::kA) || IsKeyHold(Key::kA)) {
-      rotation.set_y(rotation.y() + 0.1);
-    }
-    if (IsKeyPress(Key::kD) || IsKeyHold(Key::kD)) {
       rotation.set_y(rotation.y() - 0.1);
     }
+    if (IsKeyPress(Key::kD) || IsKeyHold(Key::kD)) {
+      rotation.set_y(rotation.y() + 0.1);
+    }
     if (IsKeyPress(Key::kW) || IsKeyHold(Key::kW)) {
-      rotation.set_x(rotation.x() + 0.1);
+      rotation.set_x(rotation.x() - 0.1);
     }
     if (IsKeyPress(Key::kS) || IsKeyHold(Key::kS)) {
-      rotation.set_x(rotation.x() - 0.1);
+      rotation.set_x(rotation.x() + 0.1);
     }
     RenderPipeline(&obj, fb);
     if (IsKeyPress(Key::kP)) {

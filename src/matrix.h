@@ -391,6 +391,12 @@ inline Matrix<T, 4, 4> RotateZTransform(T theta) {
   }});
 }
 
+template <class T>
+inline Matrix<T, 4, 4> RotateTransform(Vector<T, 3> const &thetas) {
+  return RotateXTransform(thetas.x()) * RotateYTransform(thetas.y()) *
+         RotateZTransform(thetas.z());
+}
+
 }  // namespace matrixs
 
 }  // namespace sren
