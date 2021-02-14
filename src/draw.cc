@@ -30,7 +30,7 @@ void RenderOneLine(Trapezoid const &trap, float y, FrameBuffer *fb) {
   for (float x = left.pos().x(); x < right.pos().x(); x++) {
     left += step;
     auto const &pos = left.pos();
-    fb->Set(pos.x(), pos.y(), pos.z(), left.color());
+    fb->Set(pos.x(), pos.y(), 1 / pos.z(), left.color());
   }
 }
 
