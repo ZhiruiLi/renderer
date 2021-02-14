@@ -38,8 +38,8 @@ std::array<Color, 6> simple_colors{
 };
 
 void RenderPipeline(Object *obj, FrameBuffer *fb) {
-  Vector3 const camera_world_coords(0, 0, 0);
-  Vector3 const camera_target(0, 0, 1);
+  Vector3 const camera_world_coords(1, 5, 0);
+  Vector3 const camera_target(0, 0, 5);
 
   auto const fov_radian = 0.5f * kPI;
   auto const aspect = float(fb->width()) / float(fb->height());
