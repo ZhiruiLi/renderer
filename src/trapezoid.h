@@ -59,10 +59,10 @@ inline int CutTriangle(std::array<Vertex, 3> verts,
     t.right = {verts[2], verts[0]};
     return 1;
   }
-  (*traps)[0].top = verts[0].pos().y();
+  (*traps)[0].top = verts[2].pos().y();
   (*traps)[0].bottom = verts[1].pos().y();
   (*traps)[1].top = verts[1].pos().y();
-  (*traps)[1].bottom = verts[2].pos().y();
+  (*traps)[1].bottom = verts[0].pos().y();
   auto const is_left =
       vectors::LeftOfLine(verts[1].pos(), verts[0].pos(), verts[2].pos());
   if (is_left) {

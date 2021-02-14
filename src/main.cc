@@ -28,7 +28,7 @@ void Homogenize(FrameBuffer const &fb, Vector4 *v) {
   float const rhw = 1.0f / v->w();
   v->set_x((v->x() * rhw + 1.0f) * fb.width() * 0.5f);
   v->set_y((v->y() * rhw + 1.0f) * fb.height() * 0.5f);
-  v->set_z(v->z() * rhw);
+  v->set_z(1 / v->z() * rhw);  // 使用 1 / z
   v->set_w(1.0f);
 }
 

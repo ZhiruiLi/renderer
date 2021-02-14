@@ -30,7 +30,7 @@ void RenderOneLine(Trapezoid const &trap, float y, FrameBuffer *fb) {
   for (float x = left.pos().x(); x < right.pos().x(); x++) {
     left += step;
     auto const &pos = left.pos();
-    fb->Set(pos.x(), pos.y(), 1 / pos.z(), left.color());
+    fb->Set(pos.x(), pos.y(), pos.z(), left.color());
   }
 }
 
@@ -145,7 +145,7 @@ void Triangle(Vector4 p0, Vector4 p1, Vector4 p2, Color const &c,
     auto const delta_z = (pb.z() - pa.z()) / (pb.x() - pa.x());
     auto z = pa.z();
     for (int j = pa.x(); j <= pb.x(); j++) {
-      fb->Set(j, p0.y() + i, 1 / z, c);
+      fb->Set(j, p0.y() + i, z, c);
       z += delta_z;
     }
   }
