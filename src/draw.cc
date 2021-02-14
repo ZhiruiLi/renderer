@@ -1,4 +1,4 @@
-#include "draw2d.h"
+#include "draw.h"
 
 #include "src/color.h"
 #include "src/frame_buffer.h"
@@ -6,7 +6,7 @@
 
 namespace sren {
 
-namespace draw2d {
+namespace draw {
 
 namespace {
 void SwapXY(Vector2 *p) {
@@ -130,6 +130,6 @@ void Triangle(Vector4 p0, Vector4 p1, Vector4 p2, Color const &c,
   }
 }
 
-}  // namespace draw2d
+}  // namespace draw
 
 }  // namespace sren

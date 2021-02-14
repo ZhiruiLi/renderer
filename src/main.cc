@@ -6,7 +6,7 @@
 
 #include "camera.h"
 #include "color.h"
-#include "draw2d.h"
+#include "draw.h"
 #include "frame_buffer.h"
 #include "key.h"
 #include "matrix.h"
@@ -62,11 +62,11 @@ void RenderPipeline(Object *obj, FrameBuffer *fb) {
 
   int i = 0;
   for (auto const &poly : obj->polygons()) {
-    // draw2d::Line(poly.Vertex(0), poly.Vertex(1), colors::White(), fb);
-    // draw2d::Line(poly.Vertex(1), poly.Vertex(2), colors::White(), fb);
-    // draw2d::Line(poly.Vertex(0), poly.Vertex(2), colors::White(), fb);
+    // draw::Line(poly.Vertex(0), poly.Vertex(1), colors::White(), fb);
+    // draw::Line(poly.Vertex(1), poly.Vertex(2), colors::White(), fb);
+    // draw::Line(poly.Vertex(0), poly.Vertex(2), colors::White(), fb);
     auto const color = simple_colors[i % 6];
-    draw2d::Triangle(poly.Vertex(0), poly.Vertex(1), poly.Vertex(2), color, fb);
+    draw::Triangle(poly.Vertex(0), poly.Vertex(1), poly.Vertex(2), color, fb);
     i++;
   }
 }

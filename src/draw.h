@@ -7,7 +7,7 @@
 
 namespace sren {
 
-namespace draw2d {
+namespace draw {
 
 // 画点
 void Pixel(Vector4 p, Color const &c, FrameBuffer *fb);
@@ -19,6 +19,6 @@ void Line(Vector4 p0, Vector4 p1, Color const &c, FrameBuffer *fb);
 void Triangle(Vector4 p0, Vector4 p1, Vector4 p2, Color const &c,
               FrameBuffer *fb);
 
-}  // namespace draw2d
+}  // namespace draw
 
 }  // namespace sren
