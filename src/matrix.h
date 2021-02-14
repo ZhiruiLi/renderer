@@ -351,7 +351,8 @@ inline Matrix<T, 4, 4> ViewTransform(Vector<T, 3> const &pos,
 template <class T>
 inline Matrix<T, 4, 4> ProjectionTransform(T aspect, T fov_radian_v,
                                            T near_clip, T far_clip) {
-  auto const cot_theta = 1 / tan(fov_radian_v / 2);
+  auto const theta = fov_radian_v / 2;
+  auto const cot_theta = 1 / tan(theta);
   return Matrix4x4({{
       {cot_theta / aspect, 0.0f, 0.0f, 0.0f},
       {0.0f, cot_theta, 0.0f, 0.0f},

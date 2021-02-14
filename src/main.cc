@@ -38,8 +38,8 @@ std::array<Color, 6> simple_colors{
 };
 
 void RenderPipeline(Object *obj, FrameBuffer *fb) {
-  Vector3 const camera_world_coords(0, 0, 0);
-  Vector3 const camera_target(0, 0, -1);
+  Vector3 const camera_world_coords(0, 0, 5);
+  Vector3 const camera_target(0, 0, 0);
 
   auto const fov_radian = 0.5f * kPI;
   auto const aspect = float(fb->width()) / float(fb->height());
@@ -59,12 +59,11 @@ void RenderPipeline(Object *obj, FrameBuffer *fb) {
 
   int i = 0;
   for (auto const &poly : obj->polygons()) {
-    draw2d::Line(poly.Vertex(0), poly.Vertex(1), colors::White(), fb);
-    draw2d::Line(poly.Vertex(1), poly.Vertex(2), colors::White(), fb);
-    draw2d::Line(poly.Vertex(0), poly.Vertex(2), colors::White(), fb);
-    // auto const color = simple_colors[i % 6];
-    // draw2d::Triangle(poly.Vertex(0), poly.Vertex(1), poly.Vertex(2), color,
-    // fb);
+    // draw2d::Line(poly.Vertex(0), poly.Vertex(1), colors::White(), fb);
+    // draw2d::Line(poly.Vertex(1), poly.Vertex(2), colors::White(), fb);
+    // draw2d::Line(poly.Vertex(0), poly.Vertex(2), colors::White(), fb);
+    auto const color = simple_colors[i % 6];
+    draw2d::Triangle(poly.Vertex(0), poly.Vertex(1), poly.Vertex(2), color, fb);
     i++;
   }
 }
@@ -74,7 +73,7 @@ int main(void) {
   Model model("../asserts/cube/cube.obj");
   // Model model("../asserts/african_head/african_head.obj");
   Object obj(101, "MyObj");
-  InitObjectData(model, {0, 0, -5}, &obj);
+  InitObjectData(model, {0, 0, 0}, &obj);
   window.set_main_loop([&](FrameBuffer *fb) {
     fb->Clear();
     auto &world_pos = obj.world_pos();
@@ -98,6 +97,14 @@ int main(void) {
       world_pos.set_z(world_pos.z() - 0.1);
     }
     RenderPipeline(&obj, fb);
+    if (IsKeyPress(Key::kP)) {
+      int i = 0;
+      for (auto const &poly : obj.polygons()) {
+        i++;
+        std::cout << "poly " << i << ":" << poly.Vertex(0) << poly.Vertex(1)
+                  << poly.Vertex(2) << std::endl;
+      }
+    }
   });
   window.Run();
   return 0;
