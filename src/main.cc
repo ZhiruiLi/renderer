@@ -290,6 +290,7 @@ int transform_check_cvv(const vector_t *v) {
 }
 
 // 归一化，得到屏幕坐标
+// TODO: 参考这个实现一下归一化
 void transform_homogenize(const transform_t *ts, vector_t *y,
                           const vector_t *x) {
   // rhw，即屏幕空间 1/z 线性插值（1/z 与 x’, y’ 是线性关系）
