@@ -21,6 +21,15 @@ class Vertex {
   Vector4 const &normal() const { return normal_; }
   Vector4 &normal() { return normal_; }
 
+  friend bool operator==(Vertex const &lhs, Vertex const &rhs) {
+    return lhs.pos() == rhs.pos() && lhs.color() == rhs.color() &&
+           lhs.uv() == rhs.uv() && lhs.normal() == rhs.normal();
+  }
+
+  friend bool operator!=(Vertex const &lhs, Vertex const &rhs) {
+    return !(lhs == rhs);
+  }
+
   Vertex &operator+=(Vertex const &rhs) {
     pos_ += rhs.pos();
     color_ += rhs.color();
