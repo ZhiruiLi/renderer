@@ -28,20 +28,5 @@ inline Vector4 InterpColor(Color const &pos1, Color const &pos2, float t) {
   };
 }
 
-inline Vertex InterpVertex(Vertex const &v1, Vertex const &v2, float t) {
-  return {
-      InterpVector(v1.pos(), v2.pos(), t),
-      InterpColor(v1.color(), v2.color(), t),
-      InterpVector(v1.uv(), v2.uv(), t),
-      InterpVector(v1.normal(), v2.normal(), t),
-  };
-}
-
-inline Vertex CalcRenderPoint(Vertex const &top, Vertex const &bot, float y) {
-  auto const y_diff_total = top.pos().y() - bot.pos().y();
-  auto const y_diff_curr = y - bot.pos().y();
-  return InterpVertex(bot, top, y_diff_curr / y_diff_total);
-}
-
 }  // namespace details
 }  // namespace sren

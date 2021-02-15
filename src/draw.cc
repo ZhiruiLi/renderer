@@ -22,18 +22,42 @@ void SwapXY(Vector2 *p) {
   p->set_y(x);
 }
 
-void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
+inline Vertex InterpVertex(Vertex v1, Vertex v2, float t) {
+  auto const z1 = v1.pos().z();
+  auto const z2 = v2.pos().z();
+  v1.pos().set_z(1 / z1);
+  v2.pos().set_z(1 / z2);
+  v1.uv() /= z1;
+  v2.uv() /= z2;
+  auto const interp_pos = InterpVector(v1.pos(), v2.pos(), t);
+  return {
+      interp_pos,
+      InterpColor(v1.color(), v2.color(), t),
+      InterpVector(v1.uv(), v2.uv(), t) / interp_pos.z(),
+      InterpVector(v1.normal(), v2.normal(), t),
+  };
+}
+
+inline Vertex CalcRenderPoint(Vertex const &top, Vertex const &bot, float y) {
+  auto const y_diff_total = top.pos().y() - bot.pos().y();
+  auto const y_diff_curr = y - bot.pos().y();
+  return InterpVertex(bot, top, y_diff_curr / y_diff_total);
+}
+void RenderOneLine(Trapezoid trap, float y, Polygon const &poly,
                    RenderStyle style, FrameBuffer *fb) {
   auto left = CalcRenderPoint(trap.left.top, trap.left.bottom, y);
-  auto const right = CalcRenderPoint(trap.right.top, trap.right.bottom, y);
+  auto right = CalcRenderPoint(trap.right.top, trap.right.bottom, y);
   auto const width = right.pos().x() - left.pos().x();
-  auto const step = (right - left) / width;
+  auto step = (right - left) / width;
   for (float x = left.pos().x(); x < right.pos().x(); x++) {
     left += step;
     auto const &pos = left.pos();
-    auto const color =
-        style == kRenderColor ? left.color() : poly.Diffuse(left.uv());
-    fb->Set(pos.x(), pos.y(), pos.z(), color);
+    if (style & kRenderTexture) {
+      fb->Set(pos.x(), pos.y(), pos.z(), poly.Diffuse(left.uv()));
+    }
+    if (style & kRenderColor) {
+      fb->Set(pos.x(), pos.y(), pos.z(), left.color());
+    }
   }
 }
 
@@ -146,6 +170,8 @@ void Triangle(Vector4 p0, Vector4 p1, Vector4 p2, Color const &c,
     if (pa.x() > pb.x()) {
       std::swap(pa, pb);
     }
+    pa.set_z(1 / pa.z());
+    pb.set_z(1 / pb.z());
     auto const delta_z = (pb.z() - pa.z()) / (pb.x() - pa.x());
     auto z = pa.z();
     for (int j = pa.x(); j <= pb.x(); j++) {
@@ -157,20 +183,21 @@ void Triangle(Vector4 p0, Vector4 p1, Vector4 p2, Color const &c,
 
 // 画三角形
 void Triangle(Polygon const &poly, RenderStyle style, FrameBuffer *fb) {
-  if (style == kRenderWireframe) {
+  if (style & (kRenderWireframe | kRenderTexture)) {
+    std::array<Trapezoid, 2> traps{};
+    int const count = trapezoids::CutTriangle(
+        {poly.Vertex(0), poly.Vertex(1), poly.Vertex(2)}, &traps);
+    if (count >= 1) {
+      RenderTrapezoid(traps[0], poly, style, fb);
+    }
+    if (count >= 2) {
+      RenderTrapezoid(traps[1], poly, style, fb);
+    }
+  }
+  if (style & kRenderWireframe) {
     Line(poly.Vertex(0).pos(), poly.Vertex(1).pos(), fb->foreground(), fb);
     Line(poly.Vertex(1).pos(), poly.Vertex(2).pos(), fb->foreground(), fb);
     Line(poly.Vertex(0).pos(), poly.Vertex(2).pos(), fb->foreground(), fb);
-    return;
-  }
-  std::array<Trapezoid, 2> traps{};
-  int const count = trapezoids::CutTriangle(
-      {poly.Vertex(0), poly.Vertex(1), poly.Vertex(2)}, &traps);
-  if (count >= 1) {
-    RenderTrapezoid(traps[0], poly, style, fb);
-  }
-  if (count >= 2) {
-    RenderTrapezoid(traps[1], poly, style, fb);
   }
 }
 
