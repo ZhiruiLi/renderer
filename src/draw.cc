@@ -3,7 +3,6 @@
 #include <array>
 
 #include "color.h"
-#include "draw_helper.h"
 #include "frame_buffer.h"
 #include "trapezoid.h"
 #include "vector.h"
@@ -29,12 +28,12 @@ inline Vertex InterpVertex(Vertex v1, Vertex v2, float t) {
   v2.pos().set_z(1 / z2);
   v1.uv() /= z1;
   v2.uv() /= z2;
-  auto const interp_pos = InterpVector(v1.pos(), v2.pos(), t);
+  auto const interp_pos = Interp(v1.pos(), v2.pos(), t);
   return {
       interp_pos,
-      InterpColor(v1.color(), v2.color(), t),
-      InterpVector(v1.uv(), v2.uv(), t) / interp_pos.z(),
-      InterpVector(v1.normal(), v2.normal(), t),
+      Interp(v1.color(), v2.color(), t),
+      Interp(v1.uv(), v2.uv(), t) / interp_pos.z(),
+      Interp(v1.normal(), v2.normal(), t),
   };
 }
 

@@ -104,6 +104,8 @@ struct Vector {
   reference back() { return data_[N - 1]; }
   const_reference back() const { return data_[N - 1]; }
 
+  constexpr std::size_t size() const { return N; }
+
   template <std::size_t N1 = N>
   std::enable_if_t<details::HasX(N1), T> x() const {
     return data_[0];

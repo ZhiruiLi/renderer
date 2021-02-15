@@ -10,6 +10,24 @@
 
 namespace sren {
 
+namespace details {
+
+// 计算插值：t 为 [0, 1] 之间的数值
+inline float Interp(float x1, float x2, float t) { return x1 + (x2 - x1) * t; }
+
+// 计算类容器对象的插值
+template <class C>
+inline C Interp(C const &c1, C const &c2, typename C::value_type t) {
+  assert(c1.size() == c2.size());
+  C ret{};
+  for (int i = 0; i < c1.size(); i++) {
+    ret[i] = Interp(c1[i], c2[i], t);
+  }
+  return ret;
+}
+
+}  // namespace details
+
 namespace draw {
 
 enum RenderStyle {

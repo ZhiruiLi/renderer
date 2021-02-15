@@ -122,6 +122,8 @@ class Color {
   const_reverse_iterator rgba_crbegin() const { return rgba_rbegin(); }
   const_reverse_iterator rgba_crend() const { return rgba_rend(); }
 
+  constexpr std::size_t size() const { return 4; }
+
   value_type r() const { return data_[0]; }
   void set_r(value_type r) { data_[0] = r; }
   value_type g() const { return data_[1]; }
