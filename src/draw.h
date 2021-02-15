@@ -12,6 +12,12 @@ namespace sren {
 
 namespace draw {
 
+enum RenderStyle {
+  kRenderWireframe = 0x1,
+  kRenderColor = 0x2,
+  kRenderTexture = 0x4,
+};
+
 // 画点
 void Pixel(Vector4 p, Color const &c, FrameBuffer *fb);
 
@@ -22,7 +28,7 @@ void Line(Vector4 p0, Vector4 p1, Color const &c, FrameBuffer *fb);
 void Triangle(Vector4 p0, Vector4 p1, Vector4 p2, Color const &c,
               FrameBuffer *fb);
 
-void Triangle(Polygon const &poly, FrameBuffer *fb);
+void Triangle(Polygon const &poly, unsigned int render_style, FrameBuffer *fb);
 
 }  // namespace draw
 

@@ -119,7 +119,9 @@ Vector3 Model::TextureNormal(Vector2 const &uv) const {
   Color c =
       normalmap_.Get(uv[0] * normalmap_.width(), uv[1] * normalmap_.height());
   Vector3 res;
-  for (int i = 0; i < 3; i++) res[2 - i] = c[i] / 255. * 2 - 1;
+  for (int i = 0; i < 3; i++) {
+    res[i] = c[i] * 2 - 1;
+  }
   return res;
 }
 

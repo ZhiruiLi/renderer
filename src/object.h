@@ -49,6 +49,31 @@ class Object {
   std::vector<Polygon> &polygons() { return polygons_; };
   std::vector<Polygon> const &polygons() const { return polygons_; };
 
+  Color Diffuse(Vector2 const &uv) const {
+    return diffuse_map_.Get(uv[0] * diffuse_map_.width(),
+                            uv[1] * diffuse_map_.height());
+  }
+  double Specular(Vector2 const &uv) const {
+    return specular_map_.Get(uv[0] * specular_map_.width(),
+                             uv[1] * specular_map_.height())[0];
+  }
+  Vector3 TextureNormal(Vector2 const &uv) const {
+    auto c = normal_map_.Get(uv[0] * normal_map_.width(),
+                             uv[1] * normal_map_.height());
+    Vector3 ret;
+    for (int i = 0; i < 3; i++) {
+      ret[i] = c[i] * 2 - 1;
+    }
+    return ret;
+  }
+
+  TGAImage &diffuse_map() { return diffuse_map_; };
+  TGAImage const &diffuse_map() const { return diffuse_map_; };
+  TGAImage &normal_map() { return normal_map_; };
+  TGAImage const &normal_map() const { return normal_map_; };
+  TGAImage &specular_map() { return specular_map_; };
+  TGAImage const &specular_map() const { return specular_map_; };
+
  private:
   int id_{};
   std::string name_{};
@@ -74,6 +99,11 @@ class Object {
   std::vector<Vector4> normals_{};
   // 物体的面
   std::vector<Polygon> polygons_{};
+
+  // 纹理
+  TGAImage diffuse_map_{};
+  TGAImage normal_map_{};
+  TGAImage specular_map_{};
 };
 
 void InitObjectData(Model const &m, Vector3 world_pos, Object *obj);

@@ -29,6 +29,7 @@ class Polygon {
   void set_state(PolygonState state) { state_ = state; };
 
   Vertex Vertex(int i) const;
+  Color Diffuse(Vector2 const &uv) const;
 
  private:
   PolygonState state_{};
