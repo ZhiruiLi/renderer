@@ -68,7 +68,9 @@ void RenderPipeline(Object *obj, FrameBuffer *fb) {
     // auto const color = simple_colors[i % 6];
     // draw::Triangle(poly.Vertex(0).pos(), poly.Vertex(1).pos(),
     //                poly.Vertex(2).pos(), color, fb);
-    draw::Triangle(poly, draw::kRenderTexture, fb);
+    draw::Triangle(
+        poly, draw::RenderStyle(draw::kRenderTexture | draw::kRenderWireframe),
+        fb);
     i++;
   }
 }
