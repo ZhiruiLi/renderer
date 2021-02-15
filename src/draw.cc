@@ -31,11 +31,9 @@ void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
   for (float x = left.pos().x(); x < right.pos().x(); x++) {
     left += step;
     auto const &pos = left.pos();
-    if (style == kRenderColor) {
-      fb->Set(pos.x(), pos.y(), pos.z(), left.color());
-    } else {
-      fb->Set(pos.x(), pos.y(), pos.z(), poly.Diffuse(left.uv()));
-    }
+    auto const color =
+        style == kRenderColor ? left.color() : poly.Diffuse(left.uv());
+    fb->Set(pos.x(), pos.y(), pos.z(), color);
   }
 }
 
