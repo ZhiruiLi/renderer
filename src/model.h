@@ -59,6 +59,13 @@ class Model {
   std::vector<Vector2> const &uvs() const { return uvs_; }
   std::vector<Vector3> &normals() { return normals_; }
   std::vector<Vector3> const &normals() const { return normals_; }
+
+  TGAImage &diffuse_map() { return diffusemap_; };
+  TGAImage const &diffuse_map() const { return diffusemap_; };
+  TGAImage &normal_map() { return normalmap_; };
+  TGAImage const &normal_map() const { return normalmap_; };
+  TGAImage &specular_map() { return specularmap_; };
+  TGAImage const &specular_map() const { return specularmap_; };
 };
 
 }  // namespace sren

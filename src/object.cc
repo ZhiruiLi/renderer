@@ -5,6 +5,9 @@ namespace sren {
 void InitObjectData(Model const &m, Vector3 world_pos, Object *obj) {
   obj->world_pos() = world_pos;
   obj->colors() = m.colors();
+  obj->diffuse_map() = m.diffuse_map();
+  obj->specular_map() = m.specular_map();
+  obj->normal_map() = m.normal_map();
 
   obj->vertexs().clear();
   obj->uvs().clear();
