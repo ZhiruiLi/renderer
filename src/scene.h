@@ -39,8 +39,8 @@ class Scene {
   Camera camera_{};
   std::vector<DirLight> dir_lights_{};
   std::vector<PointLight> point_lights_{};
-  Color foreground_{};
-  Color background_{};
+  Color foreground_{colors::White()};
+  Color background_{colors::Black()};
   std::vector<Object> objects_{};
   unsigned int render_style_{kRenderTexture};
 };

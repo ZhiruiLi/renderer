@@ -5,6 +5,7 @@
 #include "color.h"
 #include "frame_buffer.h"
 #include "render_style.h"
+#include "scene.h"
 #include "trapezoid.h"
 #include "vector.h"
 
@@ -45,7 +46,7 @@ inline Vertex CalcRenderPoint(Vertex const &top, Vertex const &bot, float y) {
 }
 
 void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
-                   unsigned int render_style, FrameBuffer *fb) {
+                   Scene const &scene, FrameBuffer *fb) {
   auto left = CalcRenderPoint(trap.left.top, trap.left.bottom, y);
   auto right = CalcRenderPoint(trap.right.top, trap.right.bottom, y);
   auto const width = right.pos().x() - left.pos().x();
@@ -53,20 +54,20 @@ void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
   for (float x = left.pos().x(); x < right.pos().x(); x++) {
     left += step;
     auto const &pos = left.pos();
-    if (render_style & kRenderTexture) {
+    if (scene.render_style() & kRenderTexture) {
       fb->Set(pos.x(), pos.y(), pos.z(), poly.Diffuse(left.uv()));
     }
-    if (render_style & kRenderColor) {
+    if (scene.render_style() & kRenderColor) {
       fb->Set(pos.x(), pos.y(), pos.z(), left.color());
     }
   }
 }
 
 void RenderTrapezoid(Trapezoid const &trap, Polygon const &poly,
-                     unsigned int render_style, FrameBuffer *fb) {
+                     Scene const &scene, FrameBuffer *fb) {
   for (float y = trap.bottom; y < trap.top; y++) {
     if (y >= 0 && y < fb->height()) {
-      RenderOneLine(trap, y, poly, render_style, fb);
+      RenderOneLine(trap, y, poly, scene, fb);
     }
     if (y >= fb->height()) {
       break;
@@ -145,60 +146,22 @@ void Line(Vector4 p0, Vector4 p1, Color const &c, FrameBuffer *fb) {
 }
 
 // 画三角形
-void Triangle(Vector4 p0, Vector4 p1, Vector4 p2, Color const &c,
-              FrameBuffer *fb) {
-  if (AlmostEqual(p0.y(), p1.y()) && AlmostEqual(p0.y(), p2.y())) {
-    return;
-  }
-  if (p0.y() > p1.y()) {
-    std::swap(p0, p1);
-  }
-  if (p0.y() > p2.y()) {
-    std::swap(p0, p2);
-  }
-  if (p1.y() > p2.y()) {
-    std::swap(p1, p2);
-  }
-  auto const total_height = int(p2.y() - p0.y());
-  for (int i = 0; i < total_height; i++) {
-    bool const second_half = i > p1.y() - p0.y() || p1.y() == p0.y();
-    int const segment_height = second_half ? p2.y() - p1.y() : p1.y() - p0.y();
-    float const alpha = (float)i / total_height;
-    float const beta =
-        (float)(i - (second_half ? p1.y() - p0.y() : 0)) / segment_height;
-    auto pa = p0 + (p2 - p0) * alpha;
-    auto pb = second_half ? p1 + (p2 - p1) * beta : p0 + (p1 - p0) * beta;
-    if (pa.x() > pb.x()) {
-      std::swap(pa, pb);
-    }
-    pa.set_z(1 / pa.z());
-    pb.set_z(1 / pb.z());
-    auto const delta_z = (pb.z() - pa.z()) / (pb.x() - pa.x());
-    auto z = pa.z();
-    for (int j = pa.x(); j <= pb.x(); j++) {
-      fb->Set(j, p0.y() + i, z, c);
-      z += delta_z;
-    }
-  }
-}
-
-// 画三角形
-void Triangle(Polygon const &poly, unsigned int render_style, FrameBuffer *fb) {
-  if (render_style & (kRenderWireframe | kRenderTexture)) {
+void Triangle(Polygon const &poly, Scene const &scene, FrameBuffer *fb) {
+  if (scene.render_style() & (kRenderWireframe | kRenderTexture)) {
     std::array<Trapezoid, 2> traps{};
     int const count = trapezoids::CutTriangle(
         {poly.Vertex(0), poly.Vertex(1), poly.Vertex(2)}, &traps);
     if (count >= 1) {
-      RenderTrapezoid(traps[0], poly, render_style, fb);
+      RenderTrapezoid(traps[0], poly, scene, fb);
     }
     if (count >= 2) {
-      RenderTrapezoid(traps[1], poly, render_style, fb);
+      RenderTrapezoid(traps[1], poly, scene, fb);
     }
   }
-  if (render_style & kRenderWireframe) {
-    Line(poly.Vertex(0).pos(), poly.Vertex(1).pos(), fb->foreground(), fb);
-    Line(poly.Vertex(1).pos(), poly.Vertex(2).pos(), fb->foreground(), fb);
-    Line(poly.Vertex(0).pos(), poly.Vertex(2).pos(), fb->foreground(), fb);
+  if (scene.render_style() & kRenderWireframe) {
+    Line(poly.Vertex(0).pos(), poly.Vertex(1).pos(), scene.foreground(), fb);
+    Line(poly.Vertex(1).pos(), poly.Vertex(2).pos(), scene.foreground(), fb);
+    Line(poly.Vertex(0).pos(), poly.Vertex(2).pos(), scene.foreground(), fb);
   }
 }
 

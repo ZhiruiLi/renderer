@@ -32,7 +32,7 @@ void Scene::RenderOneObject(Object *obj, FrameBuffer *fb) {
     Homogenize(*fb, &trans_v);
   }
   for (auto const &poly : obj->polygons()) {
-    draw::Triangle(poly, render_style_, fb);
+    draw::Triangle(poly, *this, fb);
   }
 }
 

@@ -10,6 +10,8 @@
 
 namespace sren {
 
+class Scene;
+
 namespace details {
 
 // 计算插值：t 为 [0, 1] 之间的数值
@@ -37,10 +39,7 @@ void Pixel(Vector4 p, Color const &c, FrameBuffer *fb);
 void Line(Vector4 p0, Vector4 p1, Color const &c, FrameBuffer *fb);
 
 // 画三角形
-void Triangle(Vector4 p0, Vector4 p1, Vector4 p2, Color const &c,
-              FrameBuffer *fb);
-
-void Triangle(Polygon const &poly, unsigned int render_style, FrameBuffer *fb);
+void Triangle(Polygon const &poly, Scene const &scene, FrameBuffer *fb);
 
 }  // namespace draw
 
