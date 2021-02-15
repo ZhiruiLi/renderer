@@ -28,7 +28,7 @@ void Line(Vector4 p0, Vector4 p1, Color const &c, FrameBuffer *fb);
 void Triangle(Vector4 p0, Vector4 p1, Vector4 p2, Color const &c,
               FrameBuffer *fb);
 
-void Triangle(Polygon const &poly, unsigned int render_style, FrameBuffer *fb);
+void Triangle(Polygon const &poly, RenderStyle style, FrameBuffer *fb);
 
 }  // namespace draw
 
