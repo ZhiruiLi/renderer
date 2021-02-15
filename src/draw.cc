@@ -42,7 +42,8 @@ inline Vertex CalcRenderPoint(Vertex const &top, Vertex const &bot, float y) {
   auto const y_diff_curr = y - bot.pos().y();
   return InterpVertex(bot, top, y_diff_curr / y_diff_total);
 }
-void RenderOneLine(Trapezoid trap, float y, Polygon const &poly,
+
+void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
                    unsigned int render_style, FrameBuffer *fb) {
   auto left = CalcRenderPoint(trap.left.top, trap.left.bottom, y);
   auto right = CalcRenderPoint(trap.right.top, trap.right.bottom, y);
