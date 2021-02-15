@@ -4,6 +4,7 @@
 
 #include "color.h"
 #include "frame_buffer.h"
+#include "render_style.h"
 #include "trapezoid.h"
 #include "vector.h"
 

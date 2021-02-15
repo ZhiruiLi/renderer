@@ -91,7 +91,7 @@ TEST(TestMatrix4x4, WorldTransform_MoveVectorToGivenPos) {
   Vector4 expected(1, 2, 3, 1);
   Vector4 source(-5, -4, -3, 1);
   Vector3 world_pos(6, 6, 6);
-  auto const trans_matrix = matrixs::WorldTransform(world_pos);
+  auto const trans_matrix = matrixs::ModelTransform(world_pos);
   auto const result = source * trans_matrix;
   ASSERT_EQ(result, expected) << result;
 }

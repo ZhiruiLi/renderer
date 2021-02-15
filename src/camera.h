@@ -31,12 +31,9 @@ class Camera {
   float far_clip() const { return far_clip_; }
   float fov_radian_v() const { return fov_radian_v_; }
   float fov_radian_h() const { return fov_radian_v_ * aspect_; }
+  Vector3 direction() const { return (target_ - pos_).Normalize(); }
 
  private:
-  Vector3 CalcViewDirection() const { return (target_ - pos_).Normalize(); }
-  Matrix4x4 CalcViewMatrix() const;
-  Matrix4x4 CalcProjectionMatrix() const;
-
   Vector3 pos_{0, 0, 1};
   Vector3 target_{0, 0, 0};
   Vector3 up_{0, 1, 0};

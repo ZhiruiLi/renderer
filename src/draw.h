@@ -30,12 +30,6 @@ inline C Interp(C const &c1, C const &c2, typename C::value_type t) {
 
 namespace draw {
 
-enum RenderStyle {
-  kRenderWireframe = 0x1,
-  kRenderColor = 0x2,
-  kRenderTexture = 0x4,
-};
-
 // 画点
 void Pixel(Vector4 p, Color const &c, FrameBuffer *fb);
 
