@@ -62,11 +62,13 @@ void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
     auto const &pos = left.pos();
     if (scene.render_style() & kRenderTexture) {
       auto uv = left.uv() / left.pos().z();
-      auto color = colors::SafeMul(poly.TextureDiffuse(uv), left.light());
+      auto light = left.light() / left.pos().z();
+      auto color = colors::SafeMul(poly.TextureDiffuse(uv), light);
       fb->Set(pos.x(), pos.y(), pos.z(), color);
     }
     if (scene.render_style() & kRenderColor) {
-      auto color = colors::SafeMul(left.color(), left.light());
+      auto light = left.light() / left.pos().z();
+      auto color = colors::SafeMul(left.color(), light);
       fb->Set(pos.x(), pos.y(), pos.z(), color);
     }
   }

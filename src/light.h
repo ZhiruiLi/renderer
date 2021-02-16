@@ -31,18 +31,17 @@ class DirLight {
   Color &specular() { return specular_; }
   Color const &specular() const { return specular_; }
 
-  Color IlluminateOne(Vertex const &v, LightCoefficient const &coeff,
-                      Polygon *poly) const {
-    Vector4 light_dir = -direction_.Normalize();
-    float const diffuse_str = std::max(v.normal() * light_dir, 0.0f);
+  Color IlluminateOne(Vertex const &v, LightCoefficient const &coeff) const {
     Color const ambient = ambient_ * coeff.ambient;
+    Vector4 const light_dir = -direction_.Normalize();
+    float const diffuse_str = std::max(v.normal() * light_dir, 0.0f);
     Color const diffuse = diffuse_ * diffuse_str * coeff.diffuse;
     return ambient + diffuse;
   }
 
   void Illuminate(LightCoefficient const &coeff, Polygon *poly) const {
     for (int i = 0; i < 3; i++) {
-      poly->SetLight(i, IlluminateOne(poly->Vertex(i), coeff, poly));
+      poly->SetLight(i, IlluminateOne(poly->Vertex(i), coeff));
     }
   }
 

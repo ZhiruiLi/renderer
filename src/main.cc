@@ -86,7 +86,7 @@ int main(void) {
   auto &camera = scene.camera();
   camera.SetLookAt({0, 0, 0}, {0, 0, 5});
   camera.SetPerspective(Radian(90.0f), kAspect);
-  scene.dir_lights().emplace_back(DirLight(Vector4(0, 0, 10), colors::White(),
+  scene.dir_lights().emplace_back(DirLight(Vector4(5, 0, 5), colors::White(),
                                            colors::White(), colors::White()));
 
   // Model model("../../asserts/cube/cube.obj");
