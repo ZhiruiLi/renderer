@@ -49,11 +49,11 @@ class Object {
   std::vector<Polygon> &polygons() { return polygons_; };
   std::vector<Polygon> const &polygons() const { return polygons_; };
 
-  Color Diffuse(Vector2 const &uv) const {
+  Color TextureDiffuse(Vector2 const &uv) const {
     return diffuse_map_.Get(uv[0] * diffuse_map_.width(),
                             uv[1] * diffuse_map_.height());
   }
-  double Specular(Vector2 const &uv) const {
+  double TextureSpecular(Vector2 const &uv) const {
     return specular_map_.Get(uv[0] * specular_map_.width(),
                              uv[1] * specular_map_.height())[0];
   }

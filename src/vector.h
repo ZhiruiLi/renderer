@@ -192,6 +192,9 @@ struct Vector {
     return AlmostEqual(rhs, std::numeric_limits<T>::epsilon());
   }
 
+  // 矢量反向
+  Vector operator-() { return Zero() - *this; }
+
   // 矢量比较相等
   friend bool operator==(Vector const& lhs, Vector const& rhs) {
     for (int i = 0; i < N; i++) {

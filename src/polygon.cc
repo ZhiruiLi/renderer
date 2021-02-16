@@ -1,6 +1,8 @@
 #include "polygon.h"
 
+#include "color.h"
 #include "object.h"
+#include "vector.h"
 
 namespace sren {
 
@@ -13,6 +15,12 @@ Vertex Polygon::Vertex(int i) const {
   };
 }
 
-Color Polygon::Diffuse(Vector2 const &uv) const { return object_->Diffuse(uv); }
+Color Polygon::TextureDiffuse(Vector2 const &uv) const {
+  return object_->TextureDiffuse(uv);
+}
+
+Vector3 Polygon::TextureNormal(Vector2 const &uv) const {
+  return object_->TextureNormal(uv);
+}
 
 }  // namespace sren

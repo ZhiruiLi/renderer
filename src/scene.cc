@@ -1,6 +1,7 @@
 #include "scene.h"
 
 #include "draw.h"
+#include "matrix.h"
 
 namespace sren {
 
@@ -21,6 +22,12 @@ void Homogenize(FrameBuffer const &fb, Vector4 *v) {
   v->set_w(1.0f);
 }
 
+void FixZ(Matrix4x4 const &proj, Vector4 *v) {
+  auto const a = proj[3][2];
+  auto const b = proj[2][2];
+  v->set_z((v->z() - b) / a);
+}
+
 }  // namespace
 
 void Scene::RenderOneObject(Object *obj, FrameBuffer *fb) {
@@ -30,6 +37,7 @@ void Scene::RenderOneObject(Object *obj, FrameBuffer *fb) {
   ApplyToAll(camera_.transform_matrix(), &obj->trans_vertexs());
   for (auto &trans_v : obj->trans_vertexs()) {
     Homogenize(*fb, &trans_v);
+    FixZ(camera_.projection_matrix(), &trans_v);
   }
   for (auto const &poly : obj->polygons()) {
     draw::Triangle(poly, *this, fb);

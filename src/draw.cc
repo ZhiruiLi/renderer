@@ -23,13 +23,30 @@ void SwapXY(Vector2 *p) {
   p->set_y(x);
 }
 
+// Color CalcDirLight(Polygon const &poly, Vector2 const &uv,
+//                    DirLight const &light, Scene const &scene) {
+//   auto const diffuse_color = poly.Diffuse(uv);
+//   Vector3 light_dir = -light.direction().Normalize();
+//   // 漫反射着色
+//   float diff = std::max(norm_dir * light_dir, 0.0f);
+//
+//   // 合并结果
+//   Vector3 ambient =
+//       light.ambient * scene.ambient_strength() *
+//   Vector3 diffuse =
+//       light.diffuse * diff * Vector3(texture(material.diffuse, TexCoords));
+//   return (ambient + diffuse + specular);
+// }
+//
+// inline void IlluminateDirLight(Scene const &scene, Color *c) {
+//   for (auto const &light : scene.dir_lights()) {
+//     light.Illuminate(scene.ambient_strength(), c);
+//   }
+// }
+
 inline Vertex InterpVertex(Vertex v1, Vertex v2, float t) {
-  auto const z1 = v1.pos().z();
-  auto const z2 = v2.pos().z();
-  v1.pos().set_z(1 / z1);
-  v2.pos().set_z(1 / z2);
-  v1.uv() /= z1;
-  v2.uv() /= z2;
+  v1.uv() *= v1.pos().z();
+  v2.uv() *= v2.pos().z();
   auto const interp_pos = Interp(v1.pos(), v2.pos(), t);
   return {
       interp_pos,
@@ -45,35 +62,25 @@ inline Vertex CalcRenderPoint(Vertex const &top, Vertex const &bot, float y) {
   return InterpVertex(bot, top, y_diff_curr / y_diff_total);
 }
 
-// Vector3 CalcDirLight(DirLight light, Vector3 normal, Vector3 viewDir) {
-//     Vector3 lightDir = normalize(-light.direction);
-//     // 漫反射着色
-//     float diff = max(dot(normal, lightDir), 0.0);
-//     // 镜面光着色
-//     Vector3 reflectDir = reflect(-lightDir, normal);
-//     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-//     // 合并结果
-//     Vector3 ambient  = light.ambient  * Vector3(texture(material.diffuse,
-//     TexCoords)); Vector3 diffuse  = light.diffuse  * diff *
-//     Vector3(texture(material.diffuse, TexCoords)); Vector3 specular =
-//     light.specular * spec * Vector3(texture(material.specular, TexCoords));
-//     return (ambient + diffuse + specular);
-// }
-
 void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
                    Scene const &scene, FrameBuffer *fb) {
   auto left = CalcRenderPoint(trap.left.top, trap.left.bottom, y);
   auto right = CalcRenderPoint(trap.right.top, trap.right.bottom, y);
+  left.uv() *= left.pos().z();
+  right.uv() *= right.pos().z();
   auto const width = right.pos().x() - left.pos().x();
   auto step = (right - left) / width;
   for (float x = left.pos().x(); x < right.pos().x(); x++) {
     left += step;
     auto const &pos = left.pos();
     if (scene.render_style() & kRenderTexture) {
-      fb->Set(pos.x(), pos.y(), pos.z(), poly.Diffuse(left.uv()));
+      auto uv = left.uv() / left.pos().z();
+      auto color = poly.TextureDiffuse(uv);
+      fb->Set(pos.x(), pos.y(), pos.z(), color);
     }
     if (scene.render_style() & kRenderColor) {
-      fb->Set(pos.x(), pos.y(), pos.z(), left.color());
+      auto color = left.color();
+      fb->Set(pos.x(), pos.y(), pos.z(), color);
     }
   }
 }

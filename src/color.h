@@ -221,12 +221,17 @@ class Color {
   }
 
   // 颜色和颜色相乘，调制
-  friend Color operator*(Color const& lhs, Color const& rhs) {
-    Color ret;
+  Color& operator*=(Color const& rhs) {
     for (int i = 0; i < 4; i++) {
-      ret[i] = lhs[i] * rhs[i];
+      data_[i] *= rhs[i];
     }
-    return ret;
+    return *this;
+  }
+
+  // 颜色和颜色相乘，调制
+  friend Color operator*(Color lhs, Color const& rhs) {
+    lhs *= rhs;
+    return lhs;
   }
 
   // 颜色对常量除法，调制
