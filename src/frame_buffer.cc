@@ -1,8 +1,7 @@
 #include "frame_buffer.h"
 
-#include <strings.h>
-
 #include <algorithm>
+#include <cstring>
 #include <limits>
 #include <memory>
 
@@ -52,7 +51,7 @@ void FrameBuffer::Resize(int width, int height) {
 }
 
 void FrameBuffer::Clear() {
-  bzero(data_.get(), size());
+  memset(data_.get(), 0, size());
   std::fill(z_buffer_.get(), z_buffer_.get() + width_ * height_,
             std::numeric_limits<float>::min());
 }
