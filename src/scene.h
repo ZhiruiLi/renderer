@@ -29,9 +29,11 @@ class Scene {
   Color const &background() const { return background_; }
   std::vector<Object> &objects() { return objects_; }
   std::vector<Object> const &objects() const { return objects_; }
+  LightCoefficient &light_coefficient() { return light_coefficient_; }
+  LightCoefficient const &light_coefficient() const {
+    return light_coefficient_;
+  }
 
-  void set_ambient_strength(float s) { ambient_strength_ = s; }
-  float ambient_strength() const { return ambient_strength_; }
   void set_render_style(unsigned int s) { render_style_ = s; }
   unsigned int render_style() const { return render_style_; }
 
@@ -45,7 +47,7 @@ class Scene {
   Color background_{colors::Black()};
   std::vector<Object> objects_{};
   unsigned int render_style_{kRenderTexture};
-  float ambient_strength_{};
+  LightCoefficient light_coefficient_{};
 };
 
 }  // namespace sren

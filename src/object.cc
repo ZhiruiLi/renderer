@@ -28,6 +28,7 @@ void InitObjectData(Model const &m, Vector3 world_pos, Object *obj) {
                                  m.VertexNormalIndexs(i));
   }
   obj->trans_vertexs() = obj->vertexs();
+  obj->trans_normals() = obj->normals();
 }
 
 }  // namespace sren

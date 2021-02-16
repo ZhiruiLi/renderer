@@ -23,32 +23,11 @@ void SwapXY(Vector2 *p) {
   p->set_y(x);
 }
 
-Color CalcDirLight(Polygon const &poly, Vector2 const &uv,
-                   DirLight const &light, float ambient_strength) {
-  auto const diffuse_color = poly.TextureDiffuse(uv);
-  Vector3 light_dir = -light.direction().Normalize();
-  auto const norm = poly.TextureNormal(uv);
-  float const diffuse_strength = std::max(norm * light_dir, 0.0f);
-  Color const ambient = light.ambient() * ambient_strength * diffuse_color;
-  Color const diffuse = light.diffuse() * diffuse_strength * diffuse_color;
-  // Color const diffuse = colors::Black();
-  return ambient + diffuse;
-}
-
-inline Color Illuminate(Polygon const &poly, Vector2 const &uv,
-                        Scene const &scene) {
-  Color acc{};
-  for (auto const &light : scene.dir_lights()) {
-    acc = colors::SafeAdd(
-        acc, CalcDirLight(poly, uv, light, scene.ambient_strength()));
-  }
-  return acc;
-}
-
 void PreInterpFix(Vertex *v) {
   v->color() *= v->pos().z();
   v->uv() *= v->pos().z();
   v->normal() *= v->pos().z();
+  v->light() *= v->pos().z();
 }
 
 inline Vertex InterpVertex(Vertex v1, Vertex v2, float t) {
@@ -60,6 +39,7 @@ inline Vertex InterpVertex(Vertex v1, Vertex v2, float t) {
       Interp(v1.color(), v2.color(), t) / interp_pos.z(),
       Interp(v1.uv(), v2.uv(), t) / interp_pos.z(),
       Interp(v1.normal(), v2.normal(), t) / interp_pos.z(),
+      Interp(v1.light(), v2.light(), t) / interp_pos.z(),
   };
 }
 
@@ -82,12 +62,11 @@ void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
     auto const &pos = left.pos();
     if (scene.render_style() & kRenderTexture) {
       auto uv = left.uv() / left.pos().z();
-      auto color = Illuminate(poly, uv, scene);
-      // auto color = poly.TextureDiffuse(uv);
+      auto color = colors::SafeMul(poly.TextureDiffuse(uv), left.light());
       fb->Set(pos.x(), pos.y(), pos.z(), color);
     }
     if (scene.render_style() & kRenderColor) {
-      auto color = left.color();
+      auto color = colors::SafeMul(left.color(), left.light());
       fb->Set(pos.x(), pos.y(), pos.z(), color);
     }
   }

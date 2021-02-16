@@ -10,11 +10,7 @@ TEST(TrapezoidsTest, CutTriangle_SplitTriangleIntoTrapezoids_2Left) {
   auto const p0 = Vector4(1, -1, 0, 0);
   auto const p1 = Vector4(0, 0, 0, 0);
   auto const p2 = Vector4(1, 1, 0, 0);
-  std::array<Vertex, 3> verts = {
-      Vertex(p2, {}, {}, {}),
-      Vertex(p0, {}, {}, {}),
-      Vertex(p1, {}, {}, {}),
-  };
+  std::array<Vertex, 3> verts = {Vertex(p2), Vertex(p0), Vertex(p1)};
   std::array<Trapezoid, 2> traps{};
   auto const count = trapezoids::CutTriangle(verts, &traps);
   ASSERT_EQ(count, 2);
@@ -36,11 +32,7 @@ TEST(TrapezoidsTest, CutTriangle_SplitTriangleIntoTrapezoids_2Right) {
   auto const p0 = Vector4(0, -1, 0, 0);
   auto const p1 = Vector4(1, 1, 0, 0);
   auto const p2 = Vector4(-2, 3, 0, 0);
-  std::array<Vertex, 3> verts = {
-      Vertex(p2, {}, {}, {}),
-      Vertex(p0, {}, {}, {}),
-      Vertex(p1, {}, {}, {}),
-  };
+  std::array<Vertex, 3> verts = {Vertex(p2), Vertex(p0), Vertex(p1)};
   std::array<Trapezoid, 2> traps{};
   auto const count = trapezoids::CutTriangle(verts, &traps);
   ASSERT_EQ(count, 2);
@@ -62,11 +54,7 @@ TEST(TrapezoidsTest, CutTriangle_SplitTriangleIntoTrapezoids_1FlatTop) {
   auto const p0 = Vector4(1, 0, 0, 0);
   auto const p1 = Vector4(3, 2, 0, 0);
   auto const p2 = Vector4(-5, 2, 0, 0);
-  std::array<Vertex, 3> verts = {
-      Vertex(p2, {}, {}, {}),
-      Vertex(p0, {}, {}, {}),
-      Vertex(p1, {}, {}, {}),
-  };
+  std::array<Vertex, 3> verts = {Vertex(p2), Vertex(p0), Vertex(p1)};
   std::array<Trapezoid, 2> traps{};
   auto const count = trapezoids::CutTriangle(verts, &traps);
   ASSERT_EQ(count, 1);
@@ -83,11 +71,7 @@ TEST(TrapezoidsTest, CutTriangle_SplitTriangleIntoTrapezoids_1FlatBottom) {
   auto const p0 = Vector4(8, 1, 0, 0);
   auto const p1 = Vector4(-1, 1, 0, 0);
   auto const p2 = Vector4(1, 5, 0, 0);
-  std::array<Vertex, 3> verts = {
-      Vertex(p2, {}, {}, {}),
-      Vertex(p0, {}, {}, {}),
-      Vertex(p1, {}, {}, {}),
-  };
+  std::array<Vertex, 3> verts = {Vertex(p2), Vertex(p0), Vertex(p1)};
   std::array<Trapezoid, 2> traps{};
   auto const count = trapezoids::CutTriangle(verts, &traps);
   ASSERT_EQ(count, 1);

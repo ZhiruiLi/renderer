@@ -32,8 +32,16 @@ void FixZ(Matrix4x4 const &proj, Vector4 *v) {
 
 void Scene::RenderOneObject(Object *obj, FrameBuffer *fb) {
   obj->trans_vertexs() = obj->vertexs();
-  ApplyToAll(matrixs::RotateTransform(obj->rotation()), &obj->trans_vertexs());
+  obj->trans_normals() = obj->normals();
+  auto const rot_matrix = matrixs::RotateTransform(obj->rotation());
+  ApplyToAll(rot_matrix, &obj->trans_vertexs());
+  ApplyToAll(rot_matrix, &obj->trans_normals());
   ApplyToAll(matrixs::ModelTransform(obj->world_pos()), &obj->trans_vertexs());
+  for (auto const &light : dir_lights_) {
+    for (auto &poly : obj->polygons()) {
+      light.Illuminate(light_coefficient_, &poly);
+    }
+  }
   ApplyToAll(camera_.transform_matrix(), &obj->trans_vertexs());
   for (auto &trans_v : obj->trans_vertexs()) {
     Homogenize(*fb, &trans_v);

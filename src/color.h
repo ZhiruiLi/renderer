@@ -325,6 +325,14 @@ inline Color SafeSub(Color const& lhs, Color const& rhs) {
   return ret;
 }
 
+inline Color SafeMul(Color const& lhs, Color const& rhs) {
+  Color ret{};
+  for (int i = 0; i < 4; i++) {
+    ret[i] = Clamp(0.0f, 1.0f, lhs[i] * rhs[i]);
+  }
+  return ret;
+}
+
 inline Color SafeMul(Color const& c, float s) {
   if (s < 0.0f) {
     return c;

@@ -8,9 +8,10 @@ namespace sren {
 class Vertex {
  public:
   Vertex() = default;
+  Vertex(Vector4 const &pos) : pos_(pos) {}
   Vertex(Vector4 const &pos, Color const &color, Vector2 const &uv,
-         Vector4 const &normal)
-      : pos_{pos}, color_{color}, uv_{uv}, normal_{normal} {}
+         Vector4 const &normal, Color const &light)
+      : pos_(pos), color_(color), uv_(uv), normal_(normal), light_(light) {}
 
   Vector4 const &pos() const { return pos_; }
   Vector4 &pos() { return pos_; }
@@ -20,10 +21,13 @@ class Vertex {
   Vector2 &uv() { return uv_; }
   Vector4 const &normal() const { return normal_; }
   Vector4 &normal() { return normal_; }
+  Color &light() { return light_; }
+  Color const &light() const { return light_; }
 
   friend bool operator==(Vertex const &lhs, Vertex const &rhs) {
     return lhs.pos() == rhs.pos() && lhs.color() == rhs.color() &&
-           lhs.uv() == rhs.uv() && lhs.normal() == rhs.normal();
+           lhs.uv() == rhs.uv() && lhs.normal() == rhs.normal() &&
+           lhs.light() == rhs.light();
   }
 
   friend bool operator!=(Vertex const &lhs, Vertex const &rhs) {
@@ -35,6 +39,7 @@ class Vertex {
     color_ += rhs.color();
     uv_ += rhs.uv();
     normal_ += rhs.normal();
+    light_ += rhs.light();
     return *this;
   }
 
@@ -48,6 +53,7 @@ class Vertex {
     color_ -= rhs.color();
     uv_ -= rhs.uv();
     normal_ -= rhs.normal();
+    light_ -= rhs.light();
     return *this;
   }
 
@@ -61,6 +67,7 @@ class Vertex {
     color_ *= s;
     uv_ *= s;
     normal_ *= s;
+    light_ *= s;
     return *this;
   }
 
@@ -74,6 +81,7 @@ class Vertex {
     color_ /= s;
     uv_ /= s;
     normal_ /= s;
+    light_ /= s;
     return *this;
   }
 
@@ -87,6 +95,7 @@ class Vertex {
   Color color_{};
   Vector2 uv_{};
   Vector4 normal_{};
+  Color light_{};
 };
 
 }  // namespace sren

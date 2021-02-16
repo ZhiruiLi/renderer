@@ -32,11 +32,15 @@ class Polygon {
   Color TextureDiffuse(Vector2 const &uv) const;
   Vector3 TextureNormal(Vector2 const &uv) const;
 
+  Polygon &SetLight(int i, Color const &c);
+  Color const &Light(int i) const;
+
  private:
   PolygonState state_{};
   std::array<int, 3> vertex_indexs_{};
   std::array<int, 3> uv_indexs_{};
   std::array<int, 3> norm_indexs_{};
+  std::array<Color, 3> lights_{};
   Object *object_{};
 };
 

@@ -40,10 +40,10 @@ void HandleKey(Window *window, Scene *scene) {
     if (IsKeyActive(Key::kDown)) {
       world_pos.set_y(world_pos.y() - 0.1);
     }
-    if (IsKeyActive(Key::kI)) {
+    if (IsKeyActive(Key::kQ)) {
       world_pos.set_z(world_pos.z() + 0.1);
     }
-    if (IsKeyActive(Key::kO)) {
+    if (IsKeyActive(Key::kE)) {
       world_pos.set_z(world_pos.z() - 0.1);
     }
     if (IsKeyActive(Key::kA)) {
@@ -59,6 +59,19 @@ void HandleKey(Window *window, Scene *scene) {
       rotation.set_x(rotation.x() + 0.1);
     }
   }
+  auto &light_dir = scene->dir_lights().back().direction();
+  if (IsKeyActive(Key::kJ)) {
+    light_dir.set_y(light_dir.y() - 0.1);
+  }
+  if (IsKeyActive(Key::kL)) {
+    light_dir.set_y(light_dir.y() + 0.1);
+  }
+  if (IsKeyActive(Key::kI)) {
+    light_dir.set_x(light_dir.x() - 0.1);
+  }
+  if (IsKeyActive(Key::kK)) {
+    light_dir.set_x(light_dir.x() + 0.1);
+  }
 }
 
 constexpr int kWidth = 800;
@@ -68,16 +81,17 @@ constexpr float kAspect = float(kWidth) / float(kHeight);
 int main(void) {
   Window window("Test", kWidth, kHeight);
   Scene scene{};
-  scene.set_ambient_strength(0.1f);
+  scene.light_coefficient().ambient = 0.1f;
+  scene.light_coefficient().diffuse = 1.0f;
   auto &camera = scene.camera();
   camera.SetLookAt({0, 0, 0}, {0, 0, 5});
   camera.SetPerspective(Radian(90.0f), kAspect);
-  scene.dir_lights().emplace_back(Vector3{0, -5, -5}, colors::White(),
-                                  colors::White(), colors::White());
+  scene.dir_lights().emplace_back(DirLight(Vector4(0, 0, 10), colors::White(),
+                                           colors::White(), colors::White()));
 
-  Model model("../../asserts/cube/cube.obj");
+  // Model model("../../asserts/cube/cube.obj");
   // Model model("../../asserts/diablo3/diablo3_pose.obj");
-  // Model model("../../asserts/african_head/african_head.obj");
+  Model model("../../asserts/african_head/african_head.obj");
   scene.objects().emplace_back(101, "MyObj");
   auto &obj = scene.objects().back();
   InitObjectData(model, {0, 0, 5}, &obj);

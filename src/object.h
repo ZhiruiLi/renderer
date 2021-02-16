@@ -46,6 +46,8 @@ class Object {
   std::vector<Vector2> const &uvs() const { return uvs_; }
   std::vector<Vector4> &normals() { return normals_; }
   std::vector<Vector4> const &normals() const { return normals_; }
+  std::vector<Vector4> &trans_normals() { return trans_normals_; }
+  std::vector<Vector4> const &trans_normals() const { return trans_normals_; }
   std::vector<Polygon> &polygons() { return polygons_; };
   std::vector<Polygon> const &polygons() const { return polygons_; };
 
@@ -97,6 +99,8 @@ class Object {
   std::vector<Vector2> uvs_{};
   // 物体相关的法线
   std::vector<Vector4> normals_{};
+  // 变换后物体的法线
+  std::vector<Vector4> trans_normals_{};
   // 物体的面
   std::vector<Polygon> polygons_{};
 
