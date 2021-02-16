@@ -797,7 +797,7 @@ void init_texture(device_t *device) {
  * 5. 透视坐标到屏幕坐标的变换
  * 6. 渲染几何体
  */
-int main1(void) {
+int main(void) {
   device_t device;
   int states[] = {RENDER_STATE_TEXTURE, RENDER_STATE_COLOR,
                   RENDER_STATE_WIREFRAME};
@@ -807,11 +807,10 @@ int main1(void) {
   float pos = 3.5;
 
   Window window("Test", 800, 600);
-  device_init(&device, 800, 600, nullptr);
+  device_init(&device, window.frame_width(), window.frame_height(), nullptr);
   camera_at_zero(&device, 3, 0, 0);
   init_texture(&device);
   device.render_state = RENDER_STATE_TEXTURE;
-
   window.set_main_loop([&](FrameBuffer *fb) {
     fb->Clear();
     device_clear(&device, 1);
@@ -825,8 +824,8 @@ int main1(void) {
     camera_at_zero(&device, pos, 0, 0);
     draw_box(&device, alpha);
 
-    for (int i = 0; i < 800; i++) {
-      for (int j = 0; j < 600; j++) {
+    for (int i = 0; i < fb->width(); i++) {
+      for (int j = 0; j < fb->height(); j++) {
         fb->Set(i, j, Color::RGBA(device.framebuffer[i][j]));
       }
     }

@@ -21,6 +21,8 @@ class Window {
   void Close();
 
   void set_main_loop(LoopFunc func) { main_loop_ = std::move(func); }
+  int frame_width() const { return frame_buffer_.width(); }
+  int frame_height() const { return frame_buffer_.height(); }
 
  private:
   GLFWwindow* glfw_window_{};
