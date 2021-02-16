@@ -69,7 +69,7 @@ void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
   left.uv() *= left.pos().z();
   right.uv() *= right.pos().z();
   auto const width = right.pos().x() - left.pos().x();
-  auto step = (right - left) / width;
+  auto const step = (right - left) / width;
   for (float x = left.pos().x(); x < right.pos().x(); x++) {
     left += step;
     auto const &pos = left.pos();
