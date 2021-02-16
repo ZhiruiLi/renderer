@@ -9,11 +9,11 @@
 #include "draw.h"
 #include "frame_buffer.h"
 #include "key.h"
+#include "math.h"
 #include "matrix.h"
 #include "model.h"
 #include "object.h"
 #include "scene.h"
-#include "src/math.h"
 #include "vector.h"
 #include "window.h"
 
