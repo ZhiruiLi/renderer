@@ -72,7 +72,7 @@ int main(void) {
   camera.SetLookAt({0, 0, 0}, {0, 0, 5});
   camera.SetPerspective(Radian(90.0f), kAspect);
 
-  Model model("../asserts/cube/cube.obj");
+  Model model("../../asserts/cube/cube.obj");
   scene.objects().emplace_back(101, "MyObj");
   auto &obj = scene.objects().back();
   InitObjectData(model, {0, 0, 5}, &obj);
