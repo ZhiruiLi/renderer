@@ -76,6 +76,7 @@ int main(void) {
                                   colors::White(), colors::White());
 
   Model model("../../asserts/cube/cube.obj");
+  // Model model("../../asserts/african_head/african_head.obj");
   scene.objects().emplace_back(101, "MyObj");
   auto &obj = scene.objects().back();
   InitObjectData(model, {0, 0, 5}, &obj);
