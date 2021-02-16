@@ -3,9 +3,9 @@ command=cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .. && make -j10
 cwd=$(VIM_ROOT)
 
 [execute]
-command=cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .. && make -j10 && cd src && renderer.app/Contents/MacOS/renderer
+command=cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .. && make -j10 && cd src && ./renderer.app/Contents/MacOS/renderer
 cwd=$(VIM_ROOT)
 
 [test]
-command=cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .. && make -j10 && make test
+command=cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .. && make -j10 && cd tests && ./tests
 cwd=$(VIM_ROOT)

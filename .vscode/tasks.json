@@ -4,7 +4,7 @@
 		{
 			"type": "shell",
 			"label": "编译执行",
-			"command": "cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .. && make -j10 && src/renderer.app/Contents/MacOS/renderer",
+			"command": "cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .. && make -j10 && cd src && ./renderer.app/Contents/MacOS/renderer",
 			"options": {
 				"cwd": "${workspaceFolder}"
 			},
@@ -19,7 +19,7 @@
 		{
 			"type": "shell",
 			"label": "测试",
-			"command": "cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .. && make -j10 && tests/tests",
+			"command": "cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .. && make -j10 && cd tests && ./tests",
 			"options": {
 				"cwd": "${workspaceFolder}"
 			},

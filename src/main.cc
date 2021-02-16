@@ -89,9 +89,9 @@ int main(void) {
   scene.dir_lights().emplace_back(DirLight(Vector4(5, 0, 5), colors::White(),
                                            colors::White(), colors::White()));
 
-  // Model model("../../asserts/cube/cube.obj");
+  Model model("../../asserts/cube/cube.obj");
   // Model model("../../asserts/diablo3/diablo3_pose.obj");
-  Model model("../../asserts/african_head/african_head.obj");
+  // Model model("../../asserts/african_head/african_head.obj");
   scene.objects().emplace_back(101, "MyObj");
   auto &obj = scene.objects().back();
   InitObjectData(model, {0, 0, 5}, &obj);
