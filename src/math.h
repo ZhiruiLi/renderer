@@ -40,4 +40,9 @@ inline T Clamp(T lo, T hi, T target) {
   return std::min(hi, std::max(lo, target));
 }
 
+template <class T>
+inline T Radian(T angle) {
+  return angle / T(180) * T(kPI);
+}
+
 }  // namespace sren

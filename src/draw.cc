@@ -45,6 +45,21 @@ inline Vertex CalcRenderPoint(Vertex const &top, Vertex const &bot, float y) {
   return InterpVertex(bot, top, y_diff_curr / y_diff_total);
 }
 
+// Vector3 CalcDirLight(DirLight light, Vector3 normal, Vector3 viewDir) {
+//     Vector3 lightDir = normalize(-light.direction);
+//     // 漫反射着色
+//     float diff = max(dot(normal, lightDir), 0.0);
+//     // 镜面光着色
+//     Vector3 reflectDir = reflect(-lightDir, normal);
+//     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+//     // 合并结果
+//     Vector3 ambient  = light.ambient  * Vector3(texture(material.diffuse,
+//     TexCoords)); Vector3 diffuse  = light.diffuse  * diff *
+//     Vector3(texture(material.diffuse, TexCoords)); Vector3 specular =
+//     light.specular * spec * Vector3(texture(material.specular, TexCoords));
+//     return (ambient + diffuse + specular);
+// }
+
 void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
                    Scene const &scene, FrameBuffer *fb) {
   auto left = CalcRenderPoint(trap.left.top, trap.left.bottom, y);
