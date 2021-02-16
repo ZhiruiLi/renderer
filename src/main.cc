@@ -72,10 +72,11 @@ int main(void) {
   auto &camera = scene.camera();
   camera.SetLookAt({0, 0, 0}, {0, 0, 5});
   camera.SetPerspective(Radian(90.0f), kAspect);
-  scene.dir_lights().emplace_back(Vector3{0, 0, -5}, colors::White(),
+  scene.dir_lights().emplace_back(Vector3{0, -5, -5}, colors::White(),
                                   colors::White(), colors::White());
 
   Model model("../../asserts/cube/cube.obj");
+  // Model model("../../asserts/diablo3/diablo3_pose.obj");
   // Model model("../../asserts/african_head/african_head.obj");
   scene.objects().emplace_back(101, "MyObj");
   auto &obj = scene.objects().back();

@@ -23,36 +23,43 @@ void SwapXY(Vector2 *p) {
   p->set_y(x);
 }
 
-// Color CalcDirLight(Polygon const &poly, Vector2 const &uv,
-//                    DirLight const &light, Scene const &scene) {
-//   auto const diffuse_color = poly.Diffuse(uv);
-//   Vector3 light_dir = -light.direction().Normalize();
-//   // 漫反射着色
-//   float diff = std::max(norm_dir * light_dir, 0.0f);
-//
-//   // 合并结果
-//   Vector3 ambient =
-//       light.ambient * scene.ambient_strength() *
-//   Vector3 diffuse =
-//       light.diffuse * diff * Vector3(texture(material.diffuse, TexCoords));
-//   return (ambient + diffuse + specular);
-// }
-//
-// inline void IlluminateDirLight(Scene const &scene, Color *c) {
-//   for (auto const &light : scene.dir_lights()) {
-//     light.Illuminate(scene.ambient_strength(), c);
-//   }
-// }
+Color CalcDirLight(Polygon const &poly, Vector2 const &uv,
+                   DirLight const &light, float ambient_strength) {
+  auto const diffuse_color = poly.TextureDiffuse(uv);
+  Vector3 light_dir = -light.direction().Normalize();
+  auto const norm = poly.TextureNormal(uv);
+  float const diffuse_strength = std::max(norm * light_dir, 0.0f);
+  Color const ambient = light.ambient() * ambient_strength * diffuse_color;
+  Color const diffuse = light.diffuse() * diffuse_strength * diffuse_color;
+  // Color const diffuse = colors::Black();
+  return ambient + diffuse;
+}
+
+inline Color Illuminate(Polygon const &poly, Vector2 const &uv,
+                        Scene const &scene) {
+  Color acc{};
+  for (auto const &light : scene.dir_lights()) {
+    acc = colors::SafeAdd(
+        acc, CalcDirLight(poly, uv, light, scene.ambient_strength()));
+  }
+  return acc;
+}
+
+void PreInterpFix(Vertex *v) {
+  v->color() *= v->pos().z();
+  v->uv() *= v->pos().z();
+  v->normal() *= v->pos().z();
+}
 
 inline Vertex InterpVertex(Vertex v1, Vertex v2, float t) {
-  v1.uv() *= v1.pos().z();
-  v2.uv() *= v2.pos().z();
+  PreInterpFix(&v1);
+  PreInterpFix(&v2);
   auto const interp_pos = Interp(v1.pos(), v2.pos(), t);
   return {
       interp_pos,
-      Interp(v1.color(), v2.color(), t),
+      Interp(v1.color(), v2.color(), t) / interp_pos.z(),
       Interp(v1.uv(), v2.uv(), t) / interp_pos.z(),
-      Interp(v1.normal(), v2.normal(), t),
+      Interp(v1.normal(), v2.normal(), t) / interp_pos.z(),
   };
 }
 
@@ -66,8 +73,8 @@ void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
                    Scene const &scene, FrameBuffer *fb) {
   auto left = CalcRenderPoint(trap.left.top, trap.left.bottom, y);
   auto right = CalcRenderPoint(trap.right.top, trap.right.bottom, y);
-  left.uv() *= left.pos().z();
-  right.uv() *= right.pos().z();
+  PreInterpFix(&left);
+  PreInterpFix(&right);
   auto const width = right.pos().x() - left.pos().x();
   auto const step = (right - left) / width;
   for (float x = left.pos().x(); x < right.pos().x(); x++) {
@@ -75,7 +82,8 @@ void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
     auto const &pos = left.pos();
     if (scene.render_style() & kRenderTexture) {
       auto uv = left.uv() / left.pos().z();
-      auto color = poly.TextureDiffuse(uv);
+      auto color = Illuminate(poly, uv, scene);
+      // auto color = poly.TextureDiffuse(uv);
       fb->Set(pos.x(), pos.y(), pos.z(), color);
     }
     if (scene.render_style() & kRenderColor) {
