@@ -65,7 +65,7 @@ constexpr int kWidth = 800;
 constexpr int kHeight = 600;
 constexpr float kAspect = float(kWidth) / float(kHeight);
 
-int main1(void) {
+int main(void) {
   Window window("Test", kWidth, kHeight);
   Scene scene{};
   auto &camera = scene.camera();

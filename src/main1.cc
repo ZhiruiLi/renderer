@@ -797,7 +797,7 @@ void init_texture(device_t *device) {
  * 5. 透视坐标到屏幕坐标的变换
  * 6. 渲染几何体
  */
-int main(void) {
+int main1(void) {
   device_t device;
   int states[] = {RENDER_STATE_TEXTURE, RENDER_STATE_COLOR,
                   RENDER_STATE_WIREFRAME};
