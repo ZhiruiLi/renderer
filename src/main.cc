@@ -22,12 +22,6 @@ using namespace sren;
 
 Vector3 const kObjectPos = {0, 0, 0};
 Vector3 const kCameraPos = {0, 0, 5};
-Vector3 const kCameraRotateX = {1, 0, 0};
-Vector3 const kCameraRotateY = {0, 1, 0};
-Quaternionf const kCameraRotatePXQ = Quaternionf::Rotate(kCameraRotateX, 0.1f);
-Quaternionf const kCameraRotatePYQ = Quaternionf::Rotate(kCameraRotateY, 0.1f);
-Quaternionf const kCameraRotateMXQ = Quaternionf::Rotate(kCameraRotateX, -0.1f);
-Quaternionf const kCameraRotateMYQ = Quaternionf::Rotate(kCameraRotateY, -0.1f);
 
 bool IsKeyActive(Key k) { return IsKeyPress(k) || IsKeyHold(k); }
 
@@ -36,26 +30,10 @@ void HandleKey(Window *window, Scene *scene) {
     window->Close();
   }
 
-  // // move cam
-  // auto cam_pos = scene->camera().pos();
-  // if (IsKeyActive(Key::kRight)) {
-  //   cam_pos = kCameraRotatePYQ.RotateVector(cam_pos);
-  // }
-  // if (IsKeyActive(Key::kLeft)) {
-  //   cam_pos = kCameraRotateMYQ.RotateVector(cam_pos);
-  // }
-  // if (IsKeyActive(Key::kUp)) {
-  //   cam_pos = kCameraRotatePXQ.RotateVector(cam_pos);
-  // }
-  // if (IsKeyActive(Key::kDown)) {
-  //   cam_pos = kCameraRotateMXQ.RotateVector(cam_pos);
-  // }
-  // scene->camera().SetLookAt(cam_pos, scene->camera().target());
-  // // move cam
-
   for (auto &obj : scene->objects()) {
     auto &world_pos = obj.world_pos();
     auto &rotation = obj.rotation();
+
     if (IsKeyActive(Key::kRight)) {
       world_pos.set_x(world_pos.x() + 0.1);
     }
@@ -68,12 +46,14 @@ void HandleKey(Window *window, Scene *scene) {
     if (IsKeyActive(Key::kDown)) {
       world_pos.set_y(world_pos.y() - 0.1);
     }
+
     if (IsKeyActive(Key::kQ)) {
       world_pos.set_z(world_pos.z() + 0.1);
     }
     if (IsKeyActive(Key::kE)) {
       world_pos.set_z(world_pos.z() - 0.1);
     }
+
     if (IsKeyActive(Key::kA)) {
       rotation.set_y(rotation.y() - 0.1);
     }
