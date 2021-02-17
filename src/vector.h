@@ -5,9 +5,9 @@
 #include <cassert>
 #include <cmath>
 #include <cstddef>
-#include <iostream>
 #include <iterator>
 #include <limits>
+#include <ostream>
 #include <type_traits>
 
 #include "math.h"
