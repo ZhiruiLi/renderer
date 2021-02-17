@@ -39,7 +39,7 @@ void Scene::RenderOneObject(Object *obj, FrameBuffer *fb) {
   ApplyToAll(matrixs::ModelTransform(obj->world_pos()), &obj->trans_vertexs());
   for (auto const &light : dir_lights_) {
     for (auto &poly : obj->polygons()) {
-      light.Illuminate(Vector4(camera_.pos(), 1.0f), light_coefficient_, &poly);
+      light.Illuminate(camera_.pos(), light_coefficient_, &poly);
     }
   }
   ApplyToAll(camera_.transform_matrix(), &obj->trans_vertexs());
