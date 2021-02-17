@@ -32,8 +32,8 @@ class Camera {
   float fov_radian_v() const { return fov_radian_v_; }
   float fov_radian_h() const { return fov_radian_v_ * aspect_; }
   Vector3 direction() const { return (target_ - pos_).Normalize(); }
-  Vector3& pos() { return pos_; }
   Vector3 const& pos() const { return pos_; }
+  Vector3 const& target() const { return target_; }
 
  private:
   Vector3 pos_{0, 0, 1};

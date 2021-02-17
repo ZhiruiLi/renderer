@@ -13,11 +13,21 @@
 #include "matrix.h"
 #include "model.h"
 #include "object.h"
+#include "quaternion.h"
 #include "scene.h"
 #include "vector.h"
 #include "window.h"
 
 using namespace sren;
+
+Vector3 const kObjectPos = {0, 0, 0};
+Vector3 const kCameraPos = {0, 0, 5};
+Vector3 const kCameraRotateX = {1, 0, 0};
+Vector3 const kCameraRotateY = {0, 1, 0};
+Quaternionf const kCameraRotatePXQ = Quaternionf::Rotate(kCameraRotateX, 0.1f);
+Quaternionf const kCameraRotatePYQ = Quaternionf::Rotate(kCameraRotateY, 0.1f);
+Quaternionf const kCameraRotateMXQ = Quaternionf::Rotate(kCameraRotateX, -0.1f);
+Quaternionf const kCameraRotateMYQ = Quaternionf::Rotate(kCameraRotateY, -0.1f);
 
 bool IsKeyActive(Key k) { return IsKeyPress(k) || IsKeyHold(k); }
 
@@ -25,6 +35,24 @@ void HandleKey(Window *window, Scene *scene) {
   if (IsKeyPress(Key::kEscape)) {
     window->Close();
   }
+
+  // // move cam
+  // auto cam_pos = scene->camera().pos();
+  // if (IsKeyActive(Key::kRight)) {
+  //   cam_pos = kCameraRotatePYQ.RotateVector(cam_pos);
+  // }
+  // if (IsKeyActive(Key::kLeft)) {
+  //   cam_pos = kCameraRotateMYQ.RotateVector(cam_pos);
+  // }
+  // if (IsKeyActive(Key::kUp)) {
+  //   cam_pos = kCameraRotatePXQ.RotateVector(cam_pos);
+  // }
+  // if (IsKeyActive(Key::kDown)) {
+  //   cam_pos = kCameraRotateMXQ.RotateVector(cam_pos);
+  // }
+  // scene->camera().SetLookAt(cam_pos, scene->camera().target());
+  // // move cam
+
   for (auto &obj : scene->objects()) {
     auto &world_pos = obj.world_pos();
     auto &rotation = obj.rotation();
@@ -83,10 +111,10 @@ int main(void) {
   Scene scene{};
   scene.light_coefficient().ambient = 0.1f;
   scene.light_coefficient().diffuse = 1.0f;
-  scene.light_coefficient().specular = 0.5f;
+  scene.light_coefficient().specular = 1.0f;
   scene.light_coefficient().shininess = 32.0f;
   auto &camera = scene.camera();
-  camera.SetLookAt({0, 0, 0}, {0, 0, 5});
+  camera.SetLookAt(kCameraPos, kObjectPos);
   camera.SetPerspective(Radian(90.0f), kAspect);
   scene.dir_lights().emplace_back(DirLight(Vector3(3, -3, 3), colors::White(),
                                            colors::White(), colors::White()));
@@ -96,7 +124,7 @@ int main(void) {
   // Model model("../../asserts/african_head/african_head.obj");
   scene.objects().emplace_back(101, "MyObj");
   auto &obj = scene.objects().back();
-  InitObjectData(model, {0, 0, 5}, &obj);
+  InitObjectData(model, kObjectPos, &obj);
   window.set_main_loop([&](FrameBuffer *fb) {
     HandleKey(&window, &scene);
     scene.Render(fb);

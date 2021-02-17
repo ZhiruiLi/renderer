@@ -53,7 +53,8 @@ class Quaternion {
 
   static Quaternion Rotate(Vector<T, 3> const& axis, T theta) {
     auto const half_theta = theta / 2;
-    return Quaternion(std::cos(half_theta), axis * std::sin(half_theta));
+    return Quaternion(std::cos(half_theta), axis * std::sin(half_theta))
+        .Normalize();
   }
 
   static Quaternion Fill(T value) {
@@ -227,7 +228,7 @@ class Quaternion {
   }
 
   // 四元数乘法
-  friend T operator*(Quaternion const& lhs, Quaternion const& rhs) {
+  friend Quaternion operator*(Quaternion const& lhs, Quaternion const& rhs) {
     return Quaternion(lhs.a() * rhs.a() - lhs.b() * rhs.b() -
                           lhs.c() * rhs.c() - lhs.d() * rhs.d(),
                       lhs.b() * rhs.a() + lhs.a() * rhs.b() -
@@ -259,7 +260,9 @@ class Quaternion {
   }
 
   // 计算平方和
-  T SquareMagnitude() const { return (*this) * (*this); }
+  T SquareMagnitude() const {
+    return a() * a() + b() * b() + c() * c() + d() * d();
+  }
 
   // 计算长度
   T Magnitude() const { return std::sqrtf(SquareMagnitude()); }
@@ -356,7 +359,7 @@ class Quaternion {
 
   Vector<T, 3> ImagPart() const { return {b(), c(), d()}; }
 
-  Vector<T, 3> RotateVector(Vector<T, 3> const& v) {
+  Vector<T, 3> RotateVector(Vector<T, 3> const& v) const {
     return ((*this) * Pure(v) * Conjugation()).ImagPart();
   }
 
