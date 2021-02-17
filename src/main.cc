@@ -15,6 +15,7 @@
 #include "object.h"
 #include "quaternion.h"
 #include "scene.h"
+#include "src/light.h"
 #include "vector.h"
 #include "window.h"
 
@@ -23,6 +24,12 @@ using namespace sren;
 Vector3 const kObjectPos = {0, 0, 0};
 Vector3 const kCameraPos = {0, 0, 5};
 Vector3 const kLightDir = {-3, -3, -3};
+LightCoefficient const kLightCoefficient = {
+    0.1f,   // ambient
+    1.0f,   // diffuse
+    1.0f,   // specular
+    32.0f,  // shininess
+};
 
 bool IsKeyActive(Key k) { return IsKeyPress(k) || IsKeyHold(k); }
 
@@ -90,10 +97,7 @@ constexpr float kAspect = float(kWidth) / float(kHeight);
 int main(void) {
   Window window("Test", kWidth, kHeight);
   Scene scene{};
-  scene.light_coefficient().ambient = 0.1f;
-  scene.light_coefficient().diffuse = 1.0f;
-  scene.light_coefficient().specular = 1.0f;
-  scene.light_coefficient().shininess = 32.0f;
+  scene.light_coefficient() = kLightCoefficient;
   auto &camera = scene.camera();
   camera.SetLookAt(kCameraPos, kObjectPos);
   camera.SetPerspective(Radian(90.0f), kAspect);
