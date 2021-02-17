@@ -3,6 +3,7 @@
 
 #include <GLFW/glfw3.h>
 
+#include <chrono>
 #include <iostream>
 
 #include "frame_buffer.h"
@@ -41,8 +42,17 @@ Window::Window(std::string_view title, int width, int height) {
 
 Window::~Window() { glfwTerminate(); }
 
+std::chrono::time_point<std::chrono::system_clock> Window::now() {
+  return std::chrono::system_clock::now();
+}
+
 void Window::Run() {
+  last_update_time_ = now();
   while (!glfwWindowShouldClose(glfw_window_)) {
+    current_time_ = now();
+    auto const delta_dura = current_time_ - last_update_time_;
+    delta_time_ = std::chrono::duration_cast<FloatSeconds>(delta_dura).count();
+
     // 检查事件
     glfwPollEvents();
 

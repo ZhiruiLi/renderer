@@ -22,6 +22,7 @@ using namespace sren;
 
 Vector3 const kObjectPos = {0, 0, 0};
 Vector3 const kCameraPos = {0, 0, 5};
+Vector3 const kLightDir = {-3, -3, -3};
 
 bool IsKeyActive(Key k) { return IsKeyPress(k) || IsKeyHold(k); }
 
@@ -96,8 +97,8 @@ int main(void) {
   auto &camera = scene.camera();
   camera.SetLookAt(kCameraPos, kObjectPos);
   camera.SetPerspective(Radian(90.0f), kAspect);
-  scene.dir_lights().emplace_back(DirLight(Vector3(3, -3, 3), colors::White(),
-                                           colors::White(), colors::White()));
+  scene.dir_lights().emplace_back(
+      DirLight(kLightDir, colors::White(), colors::White(), colors::White()));
 
   Model model("../../asserts/cube/cube.obj");
   // Model model("../../asserts/diablo3/diablo3_pose.obj");
