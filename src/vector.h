@@ -193,7 +193,7 @@ struct Vector {
   }
 
   // 矢量反向
-  Vector operator-() { return Zero() - *this; }
+  friend Vector operator-(Vector const& v) { return Zero() - v; }
 
   // 矢量比较相等
   friend bool operator==(Vector const& lhs, Vector const& rhs) {

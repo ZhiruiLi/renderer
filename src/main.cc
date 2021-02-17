@@ -83,10 +83,12 @@ int main(void) {
   Scene scene{};
   scene.light_coefficient().ambient = 0.1f;
   scene.light_coefficient().diffuse = 1.0f;
+  scene.light_coefficient().specular = 0.5f;
+  scene.light_coefficient().shininess = 25.0f;
   auto &camera = scene.camera();
   camera.SetLookAt({0, 0, 0}, {0, 0, 5});
   camera.SetPerspective(Radian(90.0f), kAspect);
-  scene.dir_lights().emplace_back(DirLight(Vector4(5, 0, 5), colors::White(),
+  scene.dir_lights().emplace_back(DirLight(Vector4(3, -3, 3), colors::White(),
                                            colors::White(), colors::White()));
 
   Model model("../../asserts/cube/cube.obj");
