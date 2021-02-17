@@ -28,6 +28,13 @@ class Polygon {
   PolygonState state() const { return state_; };
   void set_state(PolygonState state) { state_ = state; };
 
+  Vector3 FaceNormal() const { return FaceDirection().Normalize(); }
+
+  Vector3 FaceDirection() const {
+    return (Vertex(1).pos().AsVector3() - Vertex(0).pos().AsVector3()) ^
+           (Vertex(2).pos().AsVector3() - Vertex(0).pos().AsVector3());
+  }
+
   Vertex Vertex(int i) const;
   Color TextureDiffuse(Vector2 const &uv) const;
   Vector3 TextureNormal(Vector2 const &uv) const;

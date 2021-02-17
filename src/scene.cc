@@ -1,11 +1,23 @@
 #include "scene.h"
 
+#include "camera.h"
 #include "draw.h"
 #include "matrix.h"
+#include "polygon.h"
 
 namespace sren {
 
 namespace {
+
+auto const kNdcCameraVector = Vector3(0, 0, 1);
+
+void BackFaceCuting(Polygon *poly) {
+  if (poly->FaceNormal() * kNdcCameraVector < 0) {
+    poly->set_state(PolygonState::kActive);
+  } else {
+    poly->set_state(PolygonState::kBackface);
+  }
+}
 
 void ApplyToAll(Matrix4x4 const &m, std::vector<Vector4> *vertexs) {
   auto &vs = *vertexs;
@@ -47,8 +59,11 @@ void Scene::RenderOneObject(Object *obj, FrameBuffer *fb) {
     Homogenize(*fb, &trans_v);
     FixZ(camera_.projection_matrix(), &trans_v);
   }
-  for (auto const &poly : obj->polygons()) {
-    draw::Triangle(poly, *this, fb);
+  for (auto &poly : obj->polygons()) {
+    BackFaceCuting(&poly);
+    if (poly.state() == PolygonState::kActive) {
+      draw::Triangle(poly, *this, fb);
+    }
   }
 }
 

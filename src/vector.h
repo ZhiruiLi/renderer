@@ -271,11 +271,27 @@ struct Vector {
   template <std::size_t N1 = N>
   friend std::enable_if_t<N1 == 3, Vector> operator^(Vector const& lhs,
                                                      Vector const& rhs) {
-    Vector v{};
-    v.set_x(lhs.y() * rhs.z() - lhs.z() * rhs.y());
-    v.set_y(lhs.z() * rhs.x() - lhs.x() * rhs.z());
-    v.set_z(lhs.x() * rhs.y() - lhs.y() * rhs.x());
-    return v;
+    return {
+        lhs.y() * rhs.z() - lhs.z() * rhs.y(),
+        lhs.z() * rhs.x() - lhs.x() * rhs.z(),
+        lhs.x() * rhs.y() - lhs.y() * rhs.x(),
+    };
+  }
+
+  template <std::size_t N1 = N>
+  std::enable_if_t<N1 == 4, Vector<T, 3>> AsVector3() const {
+    return {x(), y(), z()};
+  }
+
+  // 四维矢量叉乘
+  template <std::size_t N1 = N>
+  friend std::enable_if_t<N1 == 4, Vector> operator^(Vector const& lhs,
+                                                     Vector const& rhs) {
+    return {
+        lhs.y() * rhs.z() - lhs.z() * rhs.y(),
+        lhs.z() * rhs.x() - lhs.x() * rhs.z(),
+        lhs.x() * rhs.y() - lhs.y() * rhs.x(),
+    };
   }
 
   // 矢量对常量的除法
