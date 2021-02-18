@@ -15,6 +15,9 @@ class Data2D {
         data_(std::move(data)) {}
 
   std::uint8_t const *Get(int x, int y) const {
+    if (x < 0 || y < 0 || x >= width_ || y >= height_) {
+      return data_.data();
+    }
     return data() + (x + y * width_) * bytespp_;
   }
 
