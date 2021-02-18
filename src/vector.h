@@ -9,6 +9,7 @@
 #include <limits>
 #include <ostream>
 #include <type_traits>
+#include <vector>
 
 #include "math.h"
 
