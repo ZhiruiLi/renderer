@@ -13,19 +13,6 @@ namespace sren {
 
 namespace {
 
-//   TGAColor(Color const &c)
-//       : b(c.b()), g(c.g()), r(c.r()), a(c.a()), bytespp(4) {}
-// Color ToColor() const {
-//     switch (bytespp) {
-//       case 1:
-//         return Color::RGB(b, b, b);
-//       case 3:
-//         return Color::RGB(r, g, b);
-//     }
-//     return Color::RGBA(r, g, b, a);
-//   }
-//
-
 #pragma pack(push, 1)
 struct TGA_Header {
   std::uint8_t idlength{};
