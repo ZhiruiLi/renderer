@@ -389,6 +389,7 @@ bool LoadTgaImage(std::string const &path, Data2D *data2d) {
   if (!img.read_tga_file(path)) {
     return false;
   }
+  img.flip_vertically();
   for (int x = 0; x < img.width; x++) {
     for (int y = 0; y < img.height; y++) {
       auto const idx = (x + y * img.width) * img.bytespp;
