@@ -42,7 +42,7 @@ class Transform {
 
   Matrix4x4 const &model_matrix() const {
     if (model_matrix_cache_.is_dirty()) {
-      model_matrix_cache_.set_data(world_matrix() * rotate_matrix());
+      model_matrix_cache_.set_data(rotate_matrix() * world_matrix());
     }
     return model_matrix_cache_.data();
   }

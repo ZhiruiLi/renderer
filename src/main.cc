@@ -130,9 +130,9 @@ int main(void) {
 
   scene.objects().emplace_back(101, "MyObj");
   auto &obj = scene.objects().back();
-  // LoadData("cube/cube", &scene.objects().back());
+  LoadData("cube/cube", &scene.objects().back());
   // LoadData("diablo3/diablo3_pose", &scene.objects().back());
-  LoadData("african_head/african_head", &scene.objects().back());
+  // LoadData("african_head/african_head", &scene.objects().back());
   window.set_main_loop([&](Window *window) {
     HandleKey(window, &scene);
     scene.Render(&window->frame_buffer());

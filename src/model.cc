@@ -36,19 +36,19 @@ std::array<int, 3> Model::normal_indexs(int iface) const {
 }
 
 FaceDataIndex const &Model::face_index(int iface, int nthvert) const {
-  return face_indexs_[iface * 3 + nthvert];
+  return face_indexs_.at(iface * 3 + nthvert);
 }
 
 Vector3 Model::vertex(int iface, int nthvert) const {
-  return vertexs_[face_index(iface, nthvert).vertex];
+  return vertexs_.at(face_index(iface, nthvert).vertex);
 }
 
 Vector2 Model::uv(int iface, int nthvert) const {
-  return uvs_[face_index(iface, nthvert).uv];
+  return uvs_.at(face_index(iface, nthvert).uv);
 }
 
 Vector3 Model::normal(int iface, int nthvert) const {
-  return normals_[face_index(iface, nthvert).normal];
+  return normals_.at(face_index(iface, nthvert).normal);
 }
 
 }  // namespace sren

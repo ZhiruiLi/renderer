@@ -43,11 +43,11 @@ void FixZ(Matrix4x4 const &proj, Vector4 *v) {
 }  // namespace
 
 void Scene::RenderOneObject(Object *obj, FrameBuffer *fb) {
-  obj->ResetTransVertexs();
   obj->ResetTransNormals();
+  obj->ResetTransVertexs();
   auto const &transform = obj->transform();
+  ApplyToAll(transform.rotate_matrix(), &obj->trans_normals());
   ApplyToAll(transform.model_matrix(), &obj->trans_vertexs());
-  ApplyToAll(transform.model_matrix(), &obj->trans_normals());
   for (auto const &light : dir_lights_) {
     for (auto &poly : obj->polygons()) {
       light.Illuminate(camera_.pos(), light_coefficient_, &poly);
