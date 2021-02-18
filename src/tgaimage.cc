@@ -65,20 +65,17 @@ class TGAImage {
   int height;
   int bytespp;
 
-  bool load_rle_data(std::ifstream &in);
-  bool unload_rle_data(std::ofstream &out) const;
+  bool ReadData(std::ifstream &in);
+  bool WriteData(std::ofstream &out) const;
 
-  bool read_tga_file(const std::string filename);
-  bool write_tga_file(const std::string filename, const bool vflip = true,
-                      const bool rle = true) const;
+  bool ReadFile(const std::string filename);
+  bool WriteFile(const std::string filename, const bool vflip = true,
+                 const bool rle = true) const;
   void flip_horizontally();
   void flip_vertically();
   void scale(const int w, const int h);
   TGAColor get(const int x, const int y) const;
   void set(const int x, const int y, const TGAColor &c);
-  int get_width() const;
-  int get_height() const;
-  int get_bytespp();
   std::uint8_t *buffer();
   void clear();
 };
@@ -87,7 +84,7 @@ TGAImage::TGAImage() : data(), width(0), height(0), bytespp(0) {}
 TGAImage::TGAImage(const int w, const int h, const int bpp)
     : data(w * h * bpp, 0), width(w), height(h), bytespp(bpp) {}
 
-bool TGAImage::read_tga_file(const std::string filename) {
+bool TGAImage::ReadFile(const std::string filename) {
   std::ifstream in;
   in.open(filename, std::ios::binary);
   if (!in.is_open()) {
@@ -122,7 +119,7 @@ bool TGAImage::read_tga_file(const std::string filename) {
       return false;
     }
   } else if (10 == header.datatypecode || 11 == header.datatypecode) {
-    if (!load_rle_data(in)) {
+    if (!ReadData(in)) {
       in.close();
       std::cerr << "an error occured while reading the data\n";
       return false;
@@ -139,7 +136,7 @@ bool TGAImage::read_tga_file(const std::string filename) {
   return true;
 }
 
-bool TGAImage::load_rle_data(std::ifstream &in) {
+bool TGAImage::ReadData(std::ifstream &in) {
   size_t pixelcount = width * height;
   size_t currentpixel = 0;
   size_t currentbyte = 0;
@@ -188,8 +185,8 @@ bool TGAImage::load_rle_data(std::ifstream &in) {
   return true;
 }
 
-bool TGAImage::write_tga_file(const std::string filename, const bool vflip,
-                              const bool rle) const {
+bool TGAImage::WriteFile(const std::string filename, const bool vflip,
+                         const bool rle) const {
   std::uint8_t developer_area_ref[4] = {0, 0, 0, 0};
   std::uint8_t extension_area_ref[4] = {0, 0, 0, 0};
   std::uint8_t footer[18] = {'T', 'R', 'U', 'E', 'V', 'I', 'S', 'I', 'O',
@@ -224,7 +221,7 @@ bool TGAImage::write_tga_file(const std::string filename, const bool vflip,
       return false;
     }
   } else {
-    if (!unload_rle_data(out)) {
+    if (!WriteData(out)) {
       out.close();
       std::cerr << "can't unload rle data\n";
       return false;
@@ -256,7 +253,7 @@ bool TGAImage::write_tga_file(const std::string filename, const bool vflip,
 
 // TODO: it is not necessary to break a raw chunk for two equal pixels (for the
 // matter of the resulting size)
-bool TGAImage::unload_rle_data(std::ofstream &out) const {
+bool TGAImage::WriteData(std::ofstream &out) const {
   const std::uint8_t max_chunk_length = 128;
   size_t npixels = width * height;
   size_t curpix = 0;
@@ -303,12 +300,6 @@ void TGAImage::set(int x, int y, const TGAColor &c) {
   if (!data.size() || x < 0 || y < 0 || x >= width || y >= height) return;
   memcpy(data.data() + (x + y * width) * bytespp, c.bgra, bytespp);
 }
-
-int TGAImage::get_bytespp() { return bytespp; }
-
-int TGAImage::get_width() const { return width; }
-
-int TGAImage::get_height() const { return height; }
 
 void TGAImage::flip_horizontally() {
   if (!data.size()) return;
@@ -386,7 +377,7 @@ void TGAImage::scale(int w, int h) {
 
 bool LoadTgaImage(std::string const &path, Data2D *data2d) {
   TGAImage img{};
-  if (!img.read_tga_file(path)) {
+  if (!img.ReadFile(path)) {
     return false;
   }
   img.flip_vertically();
