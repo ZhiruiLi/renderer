@@ -4,25 +4,23 @@
 
 namespace sren {
 
-Camera& Camera::SetLookAt(Vector3 const& pos, Vector3 const& target,
-                          Vector3 const& up) {
+void Camera::SetLookAt(Vector3 const& pos, Vector3 const& target,
+                       Vector3 const& up) {
   pos_ = pos;
   target_ = target;
   up_ = up;
   view_matrix_cache_.mark_dirty();
   transform_matrix_cache_.mark_dirty();
-  return *this;
 }
 
-Camera& Camera::SetPerspective(float fov_radian_v, float aspect,
-                               float near_clip, float far_clip) {
+void Camera::SetPerspective(float fov_radian_v, float aspect, float near_clip,
+                            float far_clip) {
   fov_radian_v_ = fov_radian_v;
   aspect_ = aspect;
   near_clip_ = near_clip;
   far_clip_ = far_clip;
   projection_matrix_cache_.mark_dirty();
   transform_matrix_cache_.mark_dirty();
-  return *this;
 }
 
 Matrix4x4 const& Camera::view_matrix() const {

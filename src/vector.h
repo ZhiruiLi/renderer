@@ -112,9 +112,8 @@ struct Vector {
   }
 
   template <std::size_t N1 = N>
-  std::enable_if_t<details::HasX(N1), Vector>& set_x(T x) {
+  std::enable_if_t<details::HasX(N1)> set_x(T x) {
     data_[0] = x;
-    return *this;
   }
 
   template <std::size_t N1 = N>
@@ -123,9 +122,8 @@ struct Vector {
   }
 
   template <std::size_t N1 = N>
-  std::enable_if_t<details::HasY(N1), Vector>& set_y(T y) {
+  std::enable_if_t<details::HasY(N1)> set_y(T y) {
     data_[1] = y;
-    return *this;
   }
 
   template <std::size_t N1 = N>
@@ -134,9 +132,8 @@ struct Vector {
   }
 
   template <std::size_t N1 = N>
-  std::enable_if_t<details::HasZ(N1), Vector>& set_z(T z) {
+  std::enable_if_t<details::HasZ(N1)> set_z(T z) {
     data_[2] = z;
-    return *this;
   }
 
   template <std::size_t N1 = N>
@@ -145,40 +142,29 @@ struct Vector {
   }
 
   template <std::size_t N1 = N>
-  std::enable_if_t<details::HasW(N1), Vector>& set_w(T w) {
+  std::enable_if_t<details::HasW(N1)> set_w(T w) {
     data_[3] = w;
-    return *this;
   }
 
-  Vector& Set(T const* data) {
+  void Set(T const* data) {
     for (int i = 0; i < N; i++) {
       data_[i] = data[i];
     }
-    return *this;
   }
 
   template <std::size_t N1 = N, class = std::enable_if_t<N1 == 2>>
-  Vector& Set(T vx, T vy) {
-    set_x(vx);
-    set_y(vy);
-    return *this;
+  void Set(T x, T y) {
+    data_ = {x, y};
   }
 
   template <std::size_t N1 = N, class = std::enable_if_t<N1 == 3>>
-  Vector& Set(T vx, T vy, T vz) {
-    set_x(vx);
-    set_y(vy);
-    set_z(vz);
-    return *this;
+  void Set(T x, T y, T z) {
+    data_ = {x, y, z};
   }
 
   template <std::size_t N1 = N, class = std::enable_if_t<N1 == 4>>
-  Vector& Set(T vx, T vy, T vz, T vw = 1.0f) {
-    set_x(vx);
-    set_y(vy);
-    set_z(vz);
-    set_w(vw);
-    return *this;
+  void Set(T x, T y, T z, T w = 1.0f) {
+    data_ = {x, y, z, w};
   }
 
   // 两个矢量几乎相等
@@ -309,7 +295,7 @@ struct Vector {
   }
 
   // 矢量输出到 ostream
-  friend std::ostream& operator<<(std::ostream& out, const Vector& v) {
+  friend std::ostream& operator<<(std::ostream& out, Vector const& v) {
     out << "[";
     if (N > 0) {
       out << v[0];
@@ -333,11 +319,10 @@ struct Vector {
   }
 
   // 对矢量的每一项都取倒数
-  Vector& SetInverse() {
+  void SetInverse() {
     for (int i = 0; i < N; i++) {
       data_[i] = 1.0f / data_[i];
     }
-    return *this;
   }
 
   // 复制矢量并对矢量的每一项都取倒数
@@ -348,11 +333,10 @@ struct Vector {
   }
 
   // 对矢量的每一项都取绝对值
-  Vector& SetAbs() {
+  void SetAbs() {
     for (int i = 0; i < N; i++) {
       data_[i] = std::abs(data_[i]);
     }
-    return *this;
   }
 
   // 复制矢量并对矢量的每一项都取绝对值
@@ -363,9 +347,9 @@ struct Vector {
   }
 
   // 将矢量归一化
-  Vector& SetNormalize() {
+  void SetNormalize() {
     auto const m = SquareMagnitude();
-    return (*this) *= SafeInverseSqrt(m);
+    (*this) *= SafeInverseSqrt(m);
   }
 
   // 复制矢量并将矢量归一化
@@ -375,11 +359,10 @@ struct Vector {
   }
 
   // 对应位置缩放
-  Vector& SetScale(Vector const& rhs) {
+  void SetScale(Vector const& rhs) {
     for (int i = 0; i < N; i++) {
       data_[i] *= rhs[i];
     }
-    return *this;
   }
 
   // 对应位置缩放

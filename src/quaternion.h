@@ -104,46 +104,27 @@ class Quaternion {
 
   T a() const { return data_[0]; }
 
-  Quaternion& set_a(T a) {
-    data_[0] = a;
-    return *this;
-  }
+  void set_a(T a) { data_[0] = a; }
 
   T b() const { return data_[1]; }
 
-  Quaternion& set_b(T b) {
-    data_[1] = b;
-    return *this;
-  }
+  void set_b(T b) { data_[1] = b; }
 
   T c() const { return data_[2]; }
 
-  Quaternion& set_c(T c) {
-    data_[2] = c;
-    return *this;
-  }
+  void set_c(T c) { data_[2] = c; }
 
   T d() const { return data_[3]; }
 
-  Quaternion set_d(T d) {
-    data_[3] = d;
-    return *this;
-  }
+  void set_d(T d) { data_[3] = d; }
 
-  Quaternion& Set(T const* data) {
+  void Set(T const* data) {
     for (int i = 0; i < N; i++) {
       data_[i] = data[i];
     }
-    return *this;
   }
 
-  Quaternion& Set(T a, T b, T c, T d) {
-    set_a(a);
-    set_b(b);
-    set_c(c);
-    set_d(d);
-    return *this;
-  }
+  void Set(T a, T b, T c, T d) { data_ = {a, b, c, d}; }
 
   // 两个四元数几乎相等
   bool AlmostEqual(Quaternion const& rhs, T epsilon) const {
@@ -268,11 +249,10 @@ class Quaternion {
   T Magnitude() const { return std::sqrtf(SquareMagnitude()); }
 
   // 对四元数的每一项都取倒数
-  Quaternion& SetInverse() {
+  void SetInverse() {
     for (int i = 0; i < N; i++) {
       data_[i] = 1.0f / data_[i];
     }
-    return *this;
   }
 
   // 复制四元数并对四元数的每一项都取倒数
@@ -283,11 +263,10 @@ class Quaternion {
   }
 
   // 对四元数的每一项都取绝对值
-  Quaternion& SetAbs() {
+  void SetAbs() {
     for (int i = 0; i < N; i++) {
       data_[i] = std::abs(data_[i]);
     }
-    return *this;
   }
 
   // 复制四元数并对四元数的每一项都取绝对值
@@ -298,9 +277,9 @@ class Quaternion {
   }
 
   // 将四元数归一化
-  Quaternion& SetNormalize() {
+  void SetNormalize() {
     auto const m = SquareMagnitude();
-    return (*this) *= SafeInverseSqrt(m);
+    (*this) *= SafeInverseSqrt(m);
   }
 
   // 复制四元数并将四元数归一化
@@ -310,11 +289,10 @@ class Quaternion {
   }
 
   // 对应位置缩放
-  Quaternion& SetScale(Quaternion const& rhs) {
+  void SetScale(Quaternion const& rhs) {
     for (int i = 0; i < N; i++) {
       data_[i] *= rhs[i];
     }
-    return *this;
   }
 
   // 对应位置缩放
@@ -350,11 +328,10 @@ class Quaternion {
   Quaternion Conjugation() const { return Quaternion(a(), -b(), -c(), -d()); }
 
   // 将四元数设为共轭
-  Quaternion& SetConjugation() {
+  void SetConjugation() {
     for (int i = 1; i < N; i++) {
       data_[i] = -data_[i];
     }
-    return *this;
   }
 
   Vector<T, 3> ImagPart() const { return {b(), c(), d()}; }

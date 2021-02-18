@@ -11,19 +11,18 @@ class Camera {
   Camera() = default;
   ~Camera() {}
 
-  Camera& SetLookAt(Vector3 const& pos, Vector3 const& target) {
-    return SetLookAt(pos, target, {0, 1, 0});
+  void SetLookAt(Vector3 const& pos, Vector3 const& target) {
+    SetLookAt(pos, target, {0, 1, 0});
   }
 
-  Camera& SetLookAt(Vector3 const& pos, Vector3 const& target,
-                    Vector3 const& up);
+  void SetLookAt(Vector3 const& pos, Vector3 const& target, Vector3 const& up);
 
-  Camera& SetPerspective(float fov_radian_v, float aspect) {
-    return SetPerspective(fov_radian_v, aspect, near_clip(), far_clip());
+  void SetPerspective(float fov_radian_v, float aspect) {
+    SetPerspective(fov_radian_v, aspect, near_clip(), far_clip());
   }
 
-  Camera& SetPerspective(float fov_radian_v, float aspect, float near_clip,
-                         float far_clip);
+  void SetPerspective(float fov_radian_v, float aspect, float near_clip,
+                      float far_clip);
 
   Matrix4x4 const& view_matrix() const;
   Matrix4x4 const& projection_matrix() const;
