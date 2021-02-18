@@ -324,7 +324,7 @@ using Matrix4x4 = Matrix<float, 4, 4>;
 namespace matrixs {
 
 template <class T>
-inline Matrix<T, 4, 4> ModelTransform(Vector<T, 3> const &pos) {
+inline Matrix<T, 4, 4> WorldTransform(Vector<T, 3> const &pos) {
   return Matrix<T, 4, 4>({{
       {1, 0, 0, 0},
       {0, 1, 0, 0},

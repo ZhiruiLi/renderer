@@ -6,29 +6,18 @@
 
 namespace sren {
 
-Vertex Polygon::Vertex(int i) const {
+Vertex Polygon::vertex(int i) const {
   return {
-      object_->trans_vertexs()[vertex_indexs_[i]],
-      object_->colors()[vertex_indexs_[i]],
-      object_->uvs()[uv_indexs_[i]],
-      object_->trans_normals()[norm_indexs_[i]],
+      object_->trans_vertexs()[face_indexs_[i].vertex],
+      object_->model().colors()[face_indexs_[i].vertex],
+      object_->model().uvs()[face_indexs_[i].uv],
+      object_->trans_normals()[face_indexs_[i].normal],
       lights_[i],
   };
 }
 
-Color Polygon::TextureDiffuse(Vector2 const &uv) const {
-  return object_->TextureDiffuse(uv);
-}
-
-Vector3 Polygon::TextureNormal(Vector2 const &uv) const {
-  return object_->TextureNormal(uv);
-}
-
-Polygon &Polygon::SetLight(int i, Color const &c) {
-  lights_[i] = c;
-  return *this;
-}
-
-Color const &Polygon::Light(int i) const { return lights_[i]; }
+Material const &Polygon::material() const { return object_->material(); }
+void Polygon::set_light(int i, Color const &c) { lights_[i] = c; }
+Color const &Polygon::light(int i) const { return lights_[i]; }
 
 }  // namespace sren

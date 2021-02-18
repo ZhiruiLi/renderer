@@ -34,13 +34,11 @@ inline Vertex InterpVertex(Vertex v1, Vertex v2, float t) {
   PreInterpFix(&v1);
   PreInterpFix(&v2);
   auto const interp_pos = Interp(v1.pos(), v2.pos(), t);
-  return {
-      interp_pos,
-      Interp(v1.color(), v2.color(), t) / interp_pos.z(),
-      Interp(v1.uv(), v2.uv(), t) / interp_pos.z(),
-      Interp(v1.normal(), v2.normal(), t) / interp_pos.z(),
-      Interp(v1.light(), v2.light(), t) / interp_pos.z(),
-  };
+  auto const interp_color = Interp(v1.color(), v2.color(), t) / interp_pos.z();
+  auto const interp_uv = Interp(v1.uv(), v2.uv(), t) / interp_pos.z();
+  auto const interp_norm = Interp(v1.normal(), v2.normal(), t) / interp_pos.z();
+  auto const interp_light = Interp(v1.light(), v2.light(), t) / interp_pos.z();
+  return {interp_pos, interp_color, interp_uv, interp_norm, interp_light};
 }
 
 inline Vertex CalcRenderPoint(Vertex const &top, Vertex const &bot, float y) {
@@ -63,7 +61,7 @@ void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
     if (scene.render_style() & kRenderTexture) {
       auto uv = left.uv() / left.pos().z();
       auto light = left.light() / left.pos().z();
-      auto color = colors::SafeMul(poly.TextureDiffuse(uv), light);
+      auto color = colors::SafeMul(poly.material().Diffuse(uv), light);
       fb->Set(pos.x(), pos.y(), pos.z(), color);
     }
     if (scene.render_style() & kRenderColor) {
@@ -161,7 +159,7 @@ void Triangle(Polygon const &poly, Scene const &scene, FrameBuffer *fb) {
   if (scene.render_style() & (kRenderWireframe | kRenderTexture)) {
     std::array<Trapezoid, 2> traps{};
     int const count = trapezoids::CutTriangle(
-        {poly.Vertex(0), poly.Vertex(1), poly.Vertex(2)}, &traps);
+        {poly.vertex(0), poly.vertex(1), poly.vertex(2)}, &traps);
     if (count >= 1) {
       RenderTrapezoid(traps[0], poly, scene, fb);
     }
@@ -170,9 +168,9 @@ void Triangle(Polygon const &poly, Scene const &scene, FrameBuffer *fb) {
     }
   }
   if (scene.render_style() & kRenderWireframe) {
-    Line(poly.Vertex(0).pos(), poly.Vertex(1).pos(), scene.foreground(), fb);
-    Line(poly.Vertex(1).pos(), poly.Vertex(2).pos(), scene.foreground(), fb);
-    Line(poly.Vertex(0).pos(), poly.Vertex(2).pos(), scene.foreground(), fb);
+    Line(poly.vertex(0).pos(), poly.vertex(1).pos(), scene.foreground(), fb);
+    Line(poly.vertex(1).pos(), poly.vertex(2).pos(), scene.foreground(), fb);
+    Line(poly.vertex(0).pos(), poly.vertex(2).pos(), scene.foreground(), fb);
   }
 }
 

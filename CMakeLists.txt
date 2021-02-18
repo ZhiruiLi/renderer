@@ -3,6 +3,7 @@ project(renderer C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE Debug)
 include_directories(".")
+include_directories(thirdparty/glfw-3.3.2/include)
 
 add_subdirectory(thirdparty/glfw-3.3.2)
 add_subdirectory(src)

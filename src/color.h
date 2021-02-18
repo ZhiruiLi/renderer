@@ -6,13 +6,20 @@
 #include <cstdint>
 #include <iterator>
 
+#include "data2d.h"
 #include "math.h"
+#include "src/key.h"
 #include "vector.h"
 
 namespace sren {
 
 class Color {
  public:
+  enum Format {
+    kGrayScale = 1,
+    kRGB = 3,
+    kRGBA = 4,
+  };
   using value_type = float;
   using reference = value_type&;
   using const_reference = value_type const&;
@@ -37,6 +44,10 @@ class Color {
   Color(Vector4 const& rgba) : Color(rgba[0], rgba[1], rgba[2], rgba[3]) {}
   Color(value_type r, value_type g, value_type b, value_type a = 1.0f)
       : data_{r, g, b, a} {}
+
+  static Color Gray(uint32_t gray_hex) {
+    return Color(Normalize(gray_hex), Normalize(gray_hex), Normalize(gray_hex));
+  }
 
   static Color RGB(uint32_t rgb_hex) {
     return Color(Normalize(Shift(rgb_hex, 16)), Normalize(Shift(rgb_hex, 8)),
@@ -345,6 +356,21 @@ inline Color SafeMul(Color const& c, float s) {
     }
   }
   return Color(c.r() * s, c.g() * s, c.b() * s, c.a() * s);
+}
+
+inline Color GetFromData2D(Data2D const& data, Vector2 const& uv) {
+  int const x = uv.x() * data.width();
+  int const y = uv.y() * data.height();
+  auto const buff = data.Get(x, y);
+  switch (data.bytespp()) {
+    case Color::kGrayScale:
+      return Color::Gray(buff[0]);
+    case Color::kRGB:
+      return Color::RGB(buff[0], buff[1], buff[2]);
+    case Color::kRGBA:
+      return Color::RGBA(buff[0], buff[1], buff[2], buff[3]);
+  }
+  return Color{};
 }
 
 }  // namespace colors

@@ -24,6 +24,13 @@ inline Vector3 Reflect(Vector3 const &light, Vector3 const &norm) {
 
 }  // namespace details
 
+/**
+ * Light(Color, ambient_coff, diffuse_coff, spec_coff) {
+ *   ambient = c * ambient_coff;
+ *   diffuse = c * diffuse_coff;
+ *   spec = c * spec_coff;
+ * }
+ */
 class DirLight {
  public:
   DirLight() = default;
@@ -82,7 +89,7 @@ class DirLight {
   void Illuminate(Vector3 camera_pos, LightCoefficient const &coeff,
                   Polygon *poly) const {
     for (int i = 0; i < 3; i++) {
-      poly->SetLight(i, IlluminateOne(poly->Vertex(i), camera_pos, coeff));
+      poly->set_light(i, IlluminateOne(poly->vertex(i), camera_pos, coeff));
     }
   }
 

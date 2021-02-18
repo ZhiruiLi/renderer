@@ -460,6 +460,15 @@ inline std::enable_if_t<details::HasX(N) && details::HasY(N), bool> LeftOfLine(
   return false;
 }
 
+template <class T>
+void CopyFrom3To4(std::vector<Vector<T, 3>> const& from,
+                  std::vector<Vector<T, 4>>* to) {
+  to->resize(from.size());
+  for (int i = 0; i < from.size(); i++) {
+    (*to)[i] = Vector<T, 4>(from[i], 1.0f);
+  }
+}
+
 }  // namespace vectors
 
 }  // namespace sren

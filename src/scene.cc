@@ -12,7 +12,7 @@ namespace {
 auto const kNdcCameraVector = Vector3(0, 0, 1);
 
 void BackFaceCuting(Polygon *poly) {
-  if (poly->FaceNormal() * kNdcCameraVector < 0) {
+  if (poly->normal() * kNdcCameraVector < 0) {
     poly->set_state(PolygonState::kActive);
   } else {
     poly->set_state(PolygonState::kBackface);
@@ -43,12 +43,11 @@ void FixZ(Matrix4x4 const &proj, Vector4 *v) {
 }  // namespace
 
 void Scene::RenderOneObject(Object *obj, FrameBuffer *fb) {
-  obj->trans_vertexs() = obj->vertexs();
-  obj->trans_normals() = obj->normals();
-  auto const rot_matrix = matrixs::RotateTransform(obj->rotation());
-  ApplyToAll(rot_matrix, &obj->trans_vertexs());
-  ApplyToAll(rot_matrix, &obj->trans_normals());
-  ApplyToAll(matrixs::ModelTransform(obj->world_pos()), &obj->trans_vertexs());
+  obj->ResetTransVertexs();
+  obj->ResetTransNormals();
+  auto const &transform = obj->transform();
+  ApplyToAll(transform.model_matrix(), &obj->trans_vertexs());
+  ApplyToAll(transform.model_matrix(), &obj->trans_normals());
   for (auto const &light : dir_lights_) {
     for (auto &poly : obj->polygons()) {
       light.Illuminate(camera_.pos(), light_coefficient_, &poly);
