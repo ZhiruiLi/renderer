@@ -1,5 +1,6 @@
 #pragma once
 
+#include "cache.h"
 #include "matrix.h"
 #include "vector.h"
 
@@ -43,12 +44,9 @@ class Camera {
   float aspect_ = 1.0f;
   float near_clip_{0.1f};
   float far_clip_{10000.0f};
-  mutable bool view_dirty_ = true;
-  mutable bool projection_dirty_ = true;
-  mutable bool transform_dirty_ = true;
-  mutable Matrix4x4 view_matrix_{};
-  mutable Matrix4x4 projection_matrix_{};
-  mutable Matrix4x4 transform_matrix_{};
+  mutable Cache<Matrix4x4> view_matrix_cache_{};
+  mutable Cache<Matrix4x4> projection_matrix_cache_{};
+  mutable Cache<Matrix4x4> transform_matrix_cache_{};
 };
 
 }  // namespace sren
