@@ -25,7 +25,7 @@ void Camera::SetPerspective(float fov_radian_v, float aspect, float near_clip,
 
 Matrix4x4 const& Camera::view_matrix() const {
   if (view_matrix_cache_.is_dirty()) {
-    view_matrix_cache_.set_data(matrixs::ViewTransform(pos_, target_));
+    view_matrix_cache_.set_data(matrixs::ViewTransform(pos_, target_, up_));
   }
   return view_matrix_cache_.data();
 }
