@@ -71,13 +71,13 @@ class TGAImage {
   bool ReadFile(const std::string filename);
   bool WriteFile(const std::string filename, const bool vflip = true,
                  const bool rle = true) const;
-  void flip_horizontally();
-  void flip_vertically();
-  void scale(const int w, const int h);
-  TGAColor get(const int x, const int y) const;
-  void set(const int x, const int y, const TGAColor &c);
+  void FlipHorizontally();
+  void FlipVertically();
+  void Scale(const int w, const int h);
+  TGAColor Get(const int x, const int y) const;
+  void Set(const int x, const int y, const TGAColor &c);
   std::uint8_t *buffer();
-  void clear();
+  void Clear();
 };
 
 TGAImage::TGAImage() : data(), width(0), height(0), bytespp(0) {}
@@ -129,8 +129,8 @@ bool TGAImage::ReadFile(const std::string filename) {
     std::cerr << "unknown file format " << (int)header.datatypecode << "\n";
     return false;
   }
-  if (!(header.imagedescriptor & 0x20)) flip_vertically();
-  if (header.imagedescriptor & 0x10) flip_horizontally();
+  if (!(header.imagedescriptor & 0x20)) FlipVertically();
+  if (header.imagedescriptor & 0x10) FlipHorizontally();
   std::cerr << width << "x" << height << "/" << bytespp * 8 << "\n";
   in.close();
   return true;
@@ -291,30 +291,30 @@ bool TGAImage::WriteData(std::ofstream &out) const {
   return true;
 }
 
-TGAColor TGAImage::get(const int x, const int y) const {
+TGAColor TGAImage::Get(const int x, const int y) const {
   if (!data.size() || x < 0 || y < 0 || x >= width || y >= height) return {};
   return TGAColor(data.data() + (x + y * width) * bytespp, bytespp);
 }
 
-void TGAImage::set(int x, int y, const TGAColor &c) {
+void TGAImage::Set(int x, int y, const TGAColor &c) {
   if (!data.size() || x < 0 || y < 0 || x >= width || y >= height) return;
   memcpy(data.data() + (x + y * width) * bytespp, c.bgra, bytespp);
 }
 
-void TGAImage::flip_horizontally() {
+void TGAImage::FlipHorizontally() {
   if (!data.size()) return;
   int half = width >> 1;
   for (int i = 0; i < half; i++) {
     for (int j = 0; j < height; j++) {
-      TGAColor c1 = get(i, j);
-      TGAColor c2 = get(width - 1 - i, j);
-      set(i, j, c2);
-      set(width - 1 - i, j, c1);
+      TGAColor c1 = Get(i, j);
+      TGAColor c2 = Get(width - 1 - i, j);
+      Set(i, j, c2);
+      Set(width - 1 - i, j, c1);
     }
   }
 }
 
-void TGAImage::flip_vertically() {
+void TGAImage::FlipVertically() {
   if (!data.size()) return;
   size_t bytes_per_line = width * bytespp;
   std::vector<std::uint8_t> line(bytes_per_line, 0);
@@ -332,11 +332,11 @@ void TGAImage::flip_vertically() {
 
 std::uint8_t *TGAImage::buffer() { return data.data(); }
 
-void TGAImage::clear() {
+void TGAImage::Clear() {
   data = std::vector<std::uint8_t>(width * height * bytespp, 0);
 }
 
-void TGAImage::scale(int w, int h) {
+void TGAImage::Scale(int w, int h) {
   if (w <= 0 || h <= 0 || !data.size()) return;
   std::vector<std::uint8_t> tdata(w * h * bytespp, 0);
   int nscanline = 0;
@@ -380,7 +380,7 @@ bool LoadTgaImage(std::string const &path, Data2D *data2d) {
   if (!img.ReadFile(path)) {
     return false;
   }
-  img.flip_vertically();
+  img.FlipVertically();
   for (int x = 0; x < img.width; x++) {
     for (int y = 0; y < img.height; y++) {
       auto const idx = (x + y * img.width) * img.bytespp;
