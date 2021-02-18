@@ -16,7 +16,7 @@ class Data2D {
 
   std::uint8_t const *Get(int x, int y) const {
     if (x < 0 || y < 0 || x >= width_ || y >= height_) {
-      return data_.data();
+      return data();
     }
     return data() + (x + y * width_) * bytespp_;
   }
