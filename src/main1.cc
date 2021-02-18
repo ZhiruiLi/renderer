@@ -807,15 +807,17 @@ int main1(void) {
   float pos = 3.5;
 
   Window window("Test", 800, 600);
-  device_init(&device, window.frame_width(), window.frame_height(), nullptr);
+  auto &fb = window.frame_buffer();
+  device_init(&device, fb.width(), fb.height(), nullptr);
   camera_at_zero(&device, 3, 0, 0);
   init_texture(&device);
   device.render_state = RENDER_STATE_TEXTURE;
-  window.set_main_loop([&](FrameBuffer *fb) {
-    fb->Clear();
+  window.set_main_loop([&](Window *window) {
+    auto &fb = window->frame_buffer();
+    fb.Clear();
     device_clear(&device, 1);
 
-    if (IsKeyPress(Key::kEscape)) window.Close();
+    if (IsKeyPress(Key::kEscape)) window->Close();
     if (IsKeyPress(Key::kUp) || IsKeyHold(Key::kUp)) pos -= 0.1f;
     if (IsKeyPress(Key::kDown) || IsKeyHold(Key::kDown)) pos += 0.1f;
     if (IsKeyPress(Key::kLeft) || IsKeyHold(Key::kLeft)) alpha += 0.1f;
@@ -824,9 +826,9 @@ int main1(void) {
     camera_at_zero(&device, pos, 0, 0);
     draw_box(&device, alpha);
 
-    for (int i = 0; i < fb->width(); i++) {
-      for (int j = 0; j < fb->height(); j++) {
-        fb->Set(i, j, Color::RGBA(device.framebuffer[i][j]));
+    for (int i = 0; i < fb.width(); i++) {
+      for (int j = 0; j < fb.height(); j++) {
+        fb.Set(i, j, Color::RGBA(device.framebuffer[i][j]));
       }
     }
   });
