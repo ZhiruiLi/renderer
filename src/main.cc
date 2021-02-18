@@ -133,9 +133,9 @@ int main(void) {
   LoadData("cube/cube", &scene.objects().back());
   // LoadData("diablo3/diablo3_pose", &scene.objects().back());
   // LoadData("african_head/african_head", &scene.objects().back());
-  window.set_main_loop([&](FrameBuffer *fb) {
-    HandleKey(&window, &scene);
-    scene.Render(fb);
+  window.set_main_loop([&](Window *window) {
+    HandleKey(window, &scene);
+    scene.Render(&window->frame_buffer());
   });
   window.Run();
   return 0;

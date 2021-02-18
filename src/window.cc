@@ -57,7 +57,7 @@ void Window::Run() {
     glfwPollEvents();
 
     if (main_loop_) {
-      main_loop_(&frame_buffer_);
+      main_loop_(this);
     }
 
     // 在每个新的渲染迭代开始的时候清屏，否则仍会看见上一迭代的渲染结果。
