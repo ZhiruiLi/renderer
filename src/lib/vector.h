@@ -11,6 +11,7 @@
 #include <type_traits>
 #include <vector>
 
+#include "data2d.h"
 #include "math.h"
 
 namespace sren {
@@ -445,12 +446,19 @@ inline std::enable_if_t<details::HasX(N) && details::HasY(N), bool> LeftOfLine(
 }
 
 template <class T>
-void CopyFrom3To4(std::vector<Vector<T, 3>> const& from,
-                  std::vector<Vector<T, 4>>* to) {
+inline void CopyFrom3To4(std::vector<Vector<T, 3>> const& from,
+                         std::vector<Vector<T, 4>>* to) {
   to->resize(from.size());
   for (int i = 0; i < from.size(); i++) {
     (*to)[i] = Vector<T, 4>(from[i], 1.0f);
   }
+}
+
+inline Vector3 GetFromData2D(Data2D const& data, Vector2 const& uv) {
+  int const x = uv.x() * data.width();
+  int const y = uv.y() * data.height();
+  auto const buff = data.Get(x, y);
+  return Vector3(buff[0], buff[1], buff[2]);
 }
 
 }  // namespace vectors

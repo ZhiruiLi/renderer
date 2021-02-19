@@ -113,13 +113,13 @@ class Lights {
                       Vector3 const &camera_pos, DirLight const &light) const {
     auto const &diffuse = material.Diffuse(vertex.uv());
     auto const &specular = material.Specular(vertex.uv());
-    auto const normal = details::Normal(vertex);
+    auto const shininess = material.shininess();
+    auto const norm = details::Normal(vertex);
     auto const pos = details::Position(vertex);
     auto const c1 = diffuse * light.IlluminateAmbient();
-    auto const c2 = diffuse * light.IlluminateDiffuse(normal);
+    auto const c2 = diffuse * light.IlluminateDiffuse(norm);
     auto const c3 =
-        specular *
-        light.IlluminateSpecular(pos, normal, material.shininess(), camera_pos);
+        specular * light.IlluminateSpecular(pos, norm, shininess, camera_pos);
     return c1 + c2 + c3;
   }
 

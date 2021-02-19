@@ -8,8 +8,10 @@ namespace sren {
 class Material {
  public:
   Material() = default;
-  Material(Data2D diffuse, Data2D specular)
-      : diffuse_map_(std::move(diffuse)), specular_map_(std::move(specular)) {}
+  Material(Data2D diffuse, Data2D specular, Data2D normal)
+      : diffuse_map_(std::move(diffuse)),
+        specular_map_(std::move(specular)),
+        normal_map_(std::move(normal)) {}
 
   Data2D &diffuse_map() { return diffuse_map_; }
   Data2D const &diffuse_map() const { return diffuse_map_; }
@@ -24,15 +26,19 @@ class Material {
     return colors::GetFromData2D(diffuse_map_, uv);
   }
 
-  double Specular(Vector2 const &uv) const {
+  float Specular(Vector2 const &uv) const {
     return colors::GetFromData2D(specular_map_, uv)[0];
+  }
+
+  Vector3 Normal(Vector2 const &uv) const {
+    return vectors::GetFromData2D(normal_map_, uv);
   }
 
  private:
   Data2D diffuse_map_{};
   Data2D specular_map_{};
   Data2D normal_map_{};
-  float shininess_{};
+  float shininess_{32.0f};
 };
 
 };  // namespace sren
