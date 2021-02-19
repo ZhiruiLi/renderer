@@ -7,8 +7,8 @@
 #include <iterator>
 
 #include "data2d.h"
+#include "key.h"
 #include "math.h"
-#include "src/key.h"
 #include "vector.h"
 
 namespace sren {

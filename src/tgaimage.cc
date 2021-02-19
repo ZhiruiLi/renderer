@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "color.h"
-#include "src/data2d.h"
+#include "data2d.h"
 
 namespace sren {
 

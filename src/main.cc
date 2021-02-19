@@ -6,6 +6,7 @@
 
 #include "camera.h"
 #include "color.h"
+#include "data2d.h"
 #include "draw.h"
 #include "frame_buffer.h"
 #include "key.h"
@@ -17,7 +18,6 @@
 #include "object.h"
 #include "quaternion.h"
 #include "scene.h"
-#include "src/data2d.h"
 #include "tgaimage.h"
 #include "vector.h"
 #include "window.h"
