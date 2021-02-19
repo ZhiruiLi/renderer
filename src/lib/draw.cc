@@ -48,7 +48,7 @@ inline Vertex CalcRenderPoint(Vertex const &top, Vertex const &bot, float y) {
 }
 
 void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
-                   Scene const &scene, FrameBuffer *fb) {
+                   FrameBuffer *fb) {
   auto left = CalcRenderPoint(trap.left.top, trap.left.bottom, y);
   auto right = CalcRenderPoint(trap.right.top, trap.right.bottom, y);
   PreInterpFix(&left);
@@ -58,13 +58,13 @@ void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
   for (float x = left.pos().x(); x < right.pos().x(); x++) {
     left += step;
     auto const &pos = left.pos();
-    if (scene.render_style() & kRenderTexture) {
+    if (poly.render_style() & kRenderTexture) {
       auto uv = left.uv() / left.pos().z();
       auto light = left.light() / left.pos().z();
       auto color = colors::SafeMul(poly.material().Diffuse(uv), light);
       fb->Set(pos.x(), pos.y(), pos.z(), color);
     }
-    if (scene.render_style() & kRenderColor) {
+    if (poly.render_style() & kRenderColor) {
       auto light = left.light() / left.pos().z();
       auto color = colors::SafeMul(left.color(), light);
       fb->Set(pos.x(), pos.y(), pos.z(), color);
@@ -73,10 +73,10 @@ void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
 }
 
 void RenderTrapezoid(Trapezoid const &trap, Polygon const &poly,
-                     Scene const &scene, FrameBuffer *fb) {
+                     FrameBuffer *fb) {
   for (float y = trap.bottom; y < trap.top; y++) {
     if (y >= 0 && y < fb->height()) {
-      RenderOneLine(trap, y, poly, scene, fb);
+      RenderOneLine(trap, y, poly, fb);
     }
     if (y >= fb->height()) {
       break;
@@ -156,18 +156,18 @@ void Line(Vector4 p0, Vector4 p1, Color const &c, FrameBuffer *fb) {
 
 // 画三角形
 void Triangle(Polygon const &poly, Scene const &scene, FrameBuffer *fb) {
-  if (scene.render_style() & (kRenderWireframe | kRenderTexture)) {
+  if (poly.render_style() & (kRenderWireframe | kRenderTexture)) {
     std::array<Trapezoid, 2> traps{};
     int const count = trapezoids::CutTriangle(
         {poly.vertex(0), poly.vertex(1), poly.vertex(2)}, &traps);
     if (count >= 1) {
-      RenderTrapezoid(traps[0], poly, scene, fb);
+      RenderTrapezoid(traps[0], poly, fb);
     }
     if (count >= 2) {
-      RenderTrapezoid(traps[1], poly, scene, fb);
+      RenderTrapezoid(traps[1], poly, fb);
     }
   }
-  if (scene.render_style() & kRenderWireframe) {
+  if (poly.render_style() & kRenderWireframe) {
     Line(poly.vertex(0).pos(), poly.vertex(1).pos(), scene.foreground(), fb);
     Line(poly.vertex(1).pos(), poly.vertex(2).pos(), scene.foreground(), fb);
     Line(poly.vertex(0).pos(), poly.vertex(2).pos(), scene.foreground(), fb);

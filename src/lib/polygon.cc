@@ -17,7 +17,11 @@ Vertex Polygon::vertex(int i) const {
 }
 
 Material const &Polygon::material() const { return object_->material(); }
+
 void Polygon::set_light(int i, Color const &c) { lights_[i] = c; }
+
 Color const &Polygon::light(int i) const { return lights_[i]; }
+
+unsigned int Polygon::render_style() const { return object_->render_style(); }
 
 }  // namespace sren

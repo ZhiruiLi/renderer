@@ -2,6 +2,7 @@
 
 #include <array>
 
+#include "lib/render_style.h"
 #include "material.h"
 #include "model.h"
 #include "vertex.h"
@@ -29,6 +30,7 @@ class Polygon {
   Material const &material() const;
   void set_light(int i, Color const &c);
   Color const &light(int i) const;
+  unsigned int render_style() const;
 
   Vector3 normal() const { return direction().Normalize(); }
 

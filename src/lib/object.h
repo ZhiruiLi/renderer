@@ -9,6 +9,7 @@
 #include "material.h"
 #include "model.h"
 #include "polygon.h"
+#include "render_style.h"
 #include "transform.h"
 #include "vector.h"
 
@@ -43,8 +44,8 @@ class Object {
   std::vector<Polygon> &polygons() { return polygons_; };
   std::vector<Polygon> const &polygons() const { return polygons_; };
 
-  void set_model(Model const &model) {
-    model_ = model;
+  void set_model(Model model) {
+    model_ = std::move(model);
     polygons_.clear();
     for (int i = 0; i < model_.nfaces(); i++) {
       polygons_.emplace_back(this, std::array<FaceDataIndex, 3>{
@@ -58,12 +59,13 @@ class Object {
   Model const &model() const { return model_; }
 
   Material &material() { return material_; }
-
   Material const &material() const { return material_; }
 
   Transform &transform() { return transform_; }
-
   Transform const &transform() const { return transform_; }
+
+  void set_render_style(unsigned int s) { render_style_ = s; }
+  unsigned int render_style() const { return render_style_; }
 
  private:
   int id_{};
@@ -83,6 +85,8 @@ class Object {
   std::vector<Vector4> trans_normals_{};
   // 物体的面
   std::vector<Polygon> polygons_{};
+  // 渲染风格
+  unsigned int render_style_{kRenderTexture};
 };
 
 }  // namespace sren

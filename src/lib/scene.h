@@ -7,7 +7,6 @@
 #include "frame_buffer.h"
 #include "light.h"
 #include "object.h"
-#include "render_style.h"
 
 namespace sren {
 
@@ -34,9 +33,6 @@ class Scene {
     return light_coefficient_;
   }
 
-  void set_render_style(unsigned int s) { render_style_ = s; }
-  unsigned int render_style() const { return render_style_; }
-
  private:
   void RenderOneObject(Object *obj, FrameBuffer *fb);
 
@@ -46,7 +42,6 @@ class Scene {
   Color foreground_{colors::White()};
   Color background_{colors::Black()};
   std::vector<Object> objects_{};
-  unsigned int render_style_{kRenderTexture};
   LightCoefficient light_coefficient_{};
 };
 
