@@ -2,11 +2,24 @@ cmake_minimum_required(VERSION 3.10)
 project(renderer C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE Debug)
+
+
+find_package(OpenGL REQUIRED)
+include_directories(${OpenGL_INCLUDE_DIRS})
+link_directories(${OpenGL_LIBRARY_DIRS})
+add_definitions(${OpenGL_DEFINITIONS})
+if(NOT OPENGL_FOUND)
+  message(ERROR "OPENGL not found!")
+endif(NOT OPENGL_FOUND)
+
+add_definitions(-DGL_SILENCE_DEPRECATION)
+
 include_directories(thirdparty/glfw/include)
 include_directories(thirdparty/stb/include)
-include_directories(".")
+include_directories(src)
 
 add_subdirectory(thirdparty/glfw)
+add_subdirectory(src/lib)
 add_subdirectory(src)
 option(PACKAGE_TESTS "Build the tests" ON)
 if(PACKAGE_TESTS)

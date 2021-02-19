@@ -1,4 +1,4 @@
-#include "src/trapezoid.h"
+#include "lib/trapezoid.h"
 
 #include <array>
 

@@ -4,10 +4,10 @@
 #include <iostream>
 #include <limits>
 
-#include "color.h"
-#include "frame_buffer.h"
-#include "key.h"
-#include "window.h"
+#include "lib/color.h"
+#include "lib/frame_buffer.h"
+#include "lib/key.h"
+#include "lib/window.h"
 
 using namespace sren;
 

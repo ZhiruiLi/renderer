@@ -1,29 +1,10 @@
-#pragma once
-
-#include <algorithm>
-#include <array>
-
-#include "math.h"
-#include "vertex.h"
+#include "trapezoid.h"
 
 namespace sren {
 
-struct Trapezoid {
-  struct Edge {
-    Vertex top{};
-    Vertex bottom{};
-  };
-  float top{};
-  float bottom{};
-  Edge left{};
-  Edge right{};
-};
-
 namespace trapezoids {
 
-// TODO: 这个函数暂时放在头文件里，因为测试用例暂时还不链接 src 中的内容
-inline int CutTriangle(std::array<Vertex, 3> verts,
-                       std::array<Trapezoid, 2> *traps) {
+int CutTriangle(std::array<Vertex, 3> verts, std::array<Trapezoid, 2> *traps) {
   std::sort(verts.begin(), verts.end(), [](auto const &a, auto const &b) {
     return a.pos().y() < b.pos().y();
   });
@@ -79,6 +60,6 @@ inline int CutTriangle(std::array<Vertex, 3> verts,
   return 2;
 }
 
-}  // namespace trapezoids
+} // namespace trapezoids
 
-}  // namespace sren
+} // namespace trapezoids

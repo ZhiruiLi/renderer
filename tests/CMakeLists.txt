@@ -11,7 +11,7 @@ set_target_properties(gmock_main PROPERTIES FOLDER thirdparty)
 
 macro(package_add_test TESTNAME)
   add_executable(${TESTNAME} ${ARGN})
-  target_link_libraries(${TESTNAME} gtest gmock gtest_main)
+  target_link_libraries(${TESTNAME} lib gtest gmock gtest_main)
   gtest_discover_tests(${TESTNAME}
     WORKING_DIRECTORY ${PROJECT_DIR}
     PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${PROJECT_DIR}"

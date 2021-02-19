@@ -1,4 +1,5 @@
-#include "src/draw.h"
+#include "lib/draw.h"
+
 #include "test.h"
 
 using namespace sren;
