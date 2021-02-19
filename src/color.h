@@ -17,6 +17,7 @@ class Color {
  public:
   enum Format {
     kGrayScale = 1,
+    kGrayAlpha = 2,
     kRGB = 3,
     kRGBA = 4,
   };
@@ -45,8 +46,17 @@ class Color {
   Color(value_type r, value_type g, value_type b, value_type a = 1.0f)
       : data_{r, g, b, a} {}
 
-  static Color Gray(uint32_t gray_hex) {
-    return Color(Normalize(gray_hex), Normalize(gray_hex), Normalize(gray_hex));
+  static Color Gray(uint32_t g) {
+    return Color(Normalize(g), Normalize(g), Normalize(g));
+  }
+
+  static Color GrayAlpha(uint32_t ga_hex) {
+    auto const g = Normalize(Shift(ga_hex, 8));
+    return Color(g, g, g, Normalize(Shift(ga_hex, 0)));
+  }
+
+  static Color GrayAlpha(uint32_t g, uint32_t a) {
+    return Color(Normalize(g), Normalize(g), Normalize(g), Normalize(a));
   }
 
   static Color RGB(uint32_t rgb_hex) {
@@ -362,9 +372,11 @@ inline Color GetFromData2D(Data2D const& data, Vector2 const& uv) {
   int const x = uv.x() * data.width();
   int const y = uv.y() * data.height();
   auto const buff = data.Get(x, y);
-  switch (data.bytespp()) {
+  switch (data.bytestep()) {
     case Color::kGrayScale:
       return Color::Gray(buff[0]);
+    case Color::kGrayAlpha:
+      return Color::GrayAlpha(buff[0], buff[1]);
     case Color::kRGB:
       return Color::RGB(buff[0], buff[1], buff[2]);
     case Color::kRGBA:

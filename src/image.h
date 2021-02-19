@@ -6,6 +6,6 @@
 
 namespace sren {
 
-bool LoadTgaImage(std::string const &path, Data2D *data);
+bool LoadImage(std::string const &path, Data2D *data);
 
 }  // namespace sren

@@ -9,6 +9,7 @@
 #include "data2d.h"
 #include "draw.h"
 #include "frame_buffer.h"
+#include "image.h"
 #include "key.h"
 #include "light.h"
 #include "math.h"
@@ -18,7 +19,6 @@
 #include "object.h"
 #include "quaternion.h"
 #include "scene.h"
-#include "tgaimage.h"
 #include "vector.h"
 #include "window.h"
 
@@ -111,9 +111,9 @@ void LoadData(std::string const &name, Object *obj) {
   auto const model_ok = LoadObjFile(obj_filename, &model);
   obj->set_model(model);
   auto &material = obj->material();
-  auto const tex_ok = LoadTgaImage(tex_filename, &material.diffuse_map());
-  auto const spec_ok = LoadTgaImage(spec_filename, &material.specular_map());
-  auto const norm_ok = LoadTgaImage(norm_filename, &material.normal_map());
+  auto const tex_ok = LoadImage(tex_filename, &material.diffuse_map());
+  auto const spec_ok = LoadImage(spec_filename, &material.specular_map());
+  auto const norm_ok = LoadImage(norm_filename, &material.normal_map());
   std::cout << "load result: model-" << model_ok << ", tex-" << tex_ok
             << ", spec-" << spec_ok << ", norm-" << norm_ok << std::endl;
 }
@@ -130,9 +130,9 @@ int main(void) {
 
   scene.objects().emplace_back(101, "MyObj");
   auto &obj = scene.objects().back();
-  LoadData("cube/cube", &scene.objects().back());
+  // LoadData("cube/cube", &scene.objects().back());
+  LoadData("african_head/african_head", &scene.objects().back());
   // LoadData("diablo3/diablo3_pose", &scene.objects().back());
-  // LoadData("african_head/african_head", &scene.objects().back());
   window.set_main_loop([&](Window *window) {
     HandleKey(window, &scene);
     scene.Render(&window->frame_buffer());
