@@ -48,11 +48,6 @@ void Scene::RenderOneObject(Object *obj, FrameBuffer *fb) {
   auto const &transform = obj->transform();
   ApplyToAll(transform.rotate_matrix(), &obj->trans_normals());
   ApplyToAll(transform.model_matrix(), &obj->trans_vertexs());
-  for (auto const &light : dir_lights_) {
-    for (auto &poly : obj->polygons()) {
-      light.Illuminate(camera_.pos(), light_coefficient_, &poly);
-    }
-  }
   ApplyToAll(camera_.transform_matrix(), &obj->trans_vertexs());
   for (auto &trans_v : obj->trans_vertexs()) {
     Homogenize(*fb, &trans_v);

@@ -27,7 +27,6 @@ void PreInterpFix(Vertex *v) {
   v->color() *= v->pos().z();
   v->uv() *= v->pos().z();
   v->normal() *= v->pos().z();
-  v->light() *= v->pos().z();
 }
 
 inline Vertex InterpVertex(Vertex v1, Vertex v2, float t) {
@@ -37,8 +36,7 @@ inline Vertex InterpVertex(Vertex v1, Vertex v2, float t) {
   auto const interp_color = Interp(v1.color(), v2.color(), t) / interp_pos.z();
   auto const interp_uv = Interp(v1.uv(), v2.uv(), t) / interp_pos.z();
   auto const interp_norm = Interp(v1.normal(), v2.normal(), t) / interp_pos.z();
-  auto const interp_light = Interp(v1.light(), v2.light(), t) / interp_pos.z();
-  return {interp_pos, interp_color, interp_uv, interp_norm, interp_light};
+  return {interp_pos, interp_color, interp_uv, interp_norm};
 }
 
 inline Vertex CalcRenderPoint(Vertex const &top, Vertex const &bot, float y) {
@@ -48,6 +46,7 @@ inline Vertex CalcRenderPoint(Vertex const &top, Vertex const &bot, float y) {
 }
 
 void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
+                   Vector3 const &camera_pos, Lights const &lights,
                    FrameBuffer *fb) {
   auto left = CalcRenderPoint(trap.left.top, trap.left.bottom, y);
   auto right = CalcRenderPoint(trap.right.top, trap.right.bottom, y);
@@ -57,26 +56,24 @@ void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
   auto const step = (right - left) / width;
   for (float x = left.pos().x(); x < right.pos().x(); x++) {
     left += step;
-    auto const &pos = left.pos();
+    auto vert = left;
+    vert.uv() /= left.pos().z();
     if (poly.render_style() & kRenderTexture) {
-      auto uv = left.uv() / left.pos().z();
-      auto light = left.light() / left.pos().z();
-      auto color = colors::SafeMul(poly.material().Diffuse(uv), light);
-      fb->Set(pos.x(), pos.y(), pos.z(), color);
+      auto const color = lights.Illuminate(vert, poly.material(), camera_pos);
+      fb->Set(vert.pos().x(), vert.pos().y(), vert.pos().z(), color);
     }
     if (poly.render_style() & kRenderColor) {
-      auto light = left.light() / left.pos().z();
-      auto color = colors::SafeMul(left.color(), light);
-      fb->Set(pos.x(), pos.y(), pos.z(), color);
+      auto const color = lights.Illuminate(vert, left.color(), camera_pos);
+      fb->Set(vert.pos().x(), vert.pos().y(), vert.pos().z(), color);
     }
   }
 }
 
 void RenderTrapezoid(Trapezoid const &trap, Polygon const &poly,
-                     FrameBuffer *fb) {
+                     Scene const &scene, FrameBuffer *fb) {
   for (float y = trap.bottom; y < trap.top; y++) {
     if (y >= 0 && y < fb->height()) {
-      RenderOneLine(trap, y, poly, fb);
+      RenderOneLine(trap, y, poly, scene.camera().pos(), scene.lights(), fb);
     }
     if (y >= fb->height()) {
       break;
@@ -161,10 +158,10 @@ void Triangle(Polygon const &poly, Scene const &scene, FrameBuffer *fb) {
     int const count = trapezoids::CutTriangle(
         {poly.vertex(0), poly.vertex(1), poly.vertex(2)}, &traps);
     if (count >= 1) {
-      RenderTrapezoid(traps[0], poly, fb);
+      RenderTrapezoid(traps[0], poly, scene, fb);
     }
     if (count >= 2) {
-      RenderTrapezoid(traps[1], poly, fb);
+      RenderTrapezoid(traps[1], poly, scene, fb);
     }
   }
   if (poly.render_style() & kRenderWireframe) {

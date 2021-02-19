@@ -25,13 +25,12 @@
 using namespace sren;
 
 Vector3 const kObjectPos = {0, 0, 0};
-Vector3 const kCameraPos = {0, 0, 5};
+Vector3 const kCameraPos = {0, 0, 2};
 Vector3 const kLightDir = {-3, -3, -3};
-LightCoefficient const kLightCoefficient = {
-    0.1f,   // ambient
-    1.0f,   // diffuse
-    1.0f,   // specular
-    32.0f,  // shininess
+LightCoefficient const kCoefficient = {
+    0.1f,  // ambient
+    1.0f,  // diffuse
+    1.0f,  // specular
 };
 
 bool IsKeyActive(Key k) { return IsKeyPress(k) || IsKeyHold(k); }
@@ -81,7 +80,7 @@ void HandleKey(Window *window, Scene *scene) {
     obj.transform().set_world_pos(world_pos);
     obj.transform().set_rotation(rotation);
   }
-  auto &light_dir = scene->dir_lights().back().direction();
+  auto &light_dir = scene->lights().dir_lights().back().direction();
   if (IsKeyActive(Key::kJ)) {
     light_dir.set_y(light_dir.y() - 0.1);
   }
@@ -100,12 +99,12 @@ constexpr int kWidth = 800;
 constexpr int kHeight = 600;
 constexpr float kAspect = float(kWidth) / float(kHeight);
 
-void LoadData(std::string const &name, Object *obj) {
+void LoadData(std::string const &name, std::string const &suffix, Object *obj) {
   auto const prefix = "../../asserts/" + name;
   auto const obj_filename = prefix + ".obj";
-  auto const tex_filename = prefix + "_diffuse.tga";
-  auto const spec_filename = prefix + "_spec.tga";
-  auto const norm_filename = prefix + "_nm_tangent.tga";
+  auto const tex_filename = prefix + "_diffuse." + suffix;
+  auto const spec_filename = prefix + "_spec." + suffix;
+  auto const norm_filename = prefix + "_nm_tangent." + suffix;
 
   Model model{};
   auto const model_ok = LoadObjFile(obj_filename, &model);
@@ -121,18 +120,17 @@ void LoadData(std::string const &name, Object *obj) {
 int main(void) {
   Window window("Test", kWidth, kHeight);
   Scene scene{};
-  scene.light_coefficient() = kLightCoefficient;
   auto &camera = scene.camera();
   camera.SetLookAt(kCameraPos, kObjectPos);
   camera.SetPerspective(Radian(90.0f), kAspect);
-  scene.dir_lights().emplace_back(
-      DirLight(kLightDir, colors::White(), colors::White(), colors::White()));
+  auto &dir_lights = scene.lights().dir_lights();
+  dir_lights.emplace_back(kLightDir, colors::White(), kCoefficient);
 
   scene.objects().emplace_back(101, "MyObj");
   auto &obj = scene.objects().back();
-  // LoadData("cube/cube", &scene.objects().back());
-  LoadData("african_head/african_head", &scene.objects().back());
-  // LoadData("diablo3/diablo3_pose", &scene.objects().back());
+  LoadData("cube/cube", "png", &scene.objects().back());
+  // LoadData("african_head/african_head", "tga", &scene.objects().back());
+  // LoadData("diablo3/diablo3_pose", "tga", &scene.objects().back());
   window.set_main_loop([&](Window *window) {
     HandleKey(window, &scene);
     scene.Render(&window->frame_buffer());

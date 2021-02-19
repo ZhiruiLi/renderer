@@ -28,8 +28,6 @@ class Polygon {
   void set_state(PolygonState state) { state_ = state; };
   Vertex vertex(int i) const;
   Material const &material() const;
-  void set_light(int i, Color const &c);
-  Color const &light(int i) const;
   unsigned int render_style() const;
 
   Vector3 normal() const { return direction().Normalize(); }
@@ -42,7 +40,6 @@ class Polygon {
 
   PolygonState state_{};
   std::array<FaceDataIndex, 3> face_indexs_{};
-  std::array<Color, 3> lights_{};
   Object *object_{};
 };
 
