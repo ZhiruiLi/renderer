@@ -60,6 +60,6 @@ int CutTriangle(std::array<Vertex, 3> verts, std::array<Trapezoid, 2> *traps) {
   return 2;
 }
 
-} // namespace trapezoids
+}  // namespace trapezoids
 
-} // namespace trapezoids
+}  // namespace sren

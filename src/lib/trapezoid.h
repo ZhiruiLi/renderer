@@ -23,6 +23,6 @@ namespace trapezoids {
 
 int CutTriangle(std::array<Vertex, 3> verts, std::array<Trapezoid, 2> *traps);
 
-} // namespace trapezoids
+}  // namespace trapezoids
 
-} // namespace sren
+}  // namespace sren
