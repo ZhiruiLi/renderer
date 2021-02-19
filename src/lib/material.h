@@ -38,7 +38,7 @@ class Material {
   Data2D diffuse_map_{};
   Data2D specular_map_{};
   Data2D normal_map_{};
-  float shininess_{32.0f};
+  float shininess_{32};
 };
 
 };  // namespace sren

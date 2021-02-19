@@ -9,12 +9,18 @@ class Vertex {
  public:
   Vertex() = default;
   Vertex(Vector4 const &pos) : pos_(pos) {}
-  Vertex(Vector4 const &pos, Color const &color, Vector2 const &uv,
-         Vector4 const &normal)
-      : pos_(pos), color_(color), uv_(uv), normal_(normal) {}
+  Vertex(Vector4 const &pos, Vector4 const &world_pos, Color const &color,
+         Vector2 const &uv, Vector4 const &normal)
+      : pos_(pos),
+        world_pos_(world_pos),
+        color_(color),
+        uv_(uv),
+        normal_(normal) {}
 
   Vector4 const &pos() const { return pos_; }
   Vector4 &pos() { return pos_; }
+  Vector4 const &world_pos() const { return world_pos_; }
+  Vector4 &world_pos() { return world_pos_; }
   Color const &color() const { return color_; }
   Color &color() { return color_; }
   Vector2 const &uv() const { return uv_; }
@@ -33,6 +39,7 @@ class Vertex {
 
   Vertex &operator+=(Vertex const &rhs) {
     pos_ += rhs.pos();
+    world_pos_ += rhs.world_pos();
     color_ += rhs.color();
     uv_ += rhs.uv();
     normal_ += rhs.normal();
@@ -46,6 +53,7 @@ class Vertex {
 
   Vertex &operator-=(Vertex const &rhs) {
     pos_ -= rhs.pos();
+    world_pos_ -= rhs.world_pos();
     color_ -= rhs.color();
     uv_ -= rhs.uv();
     normal_ -= rhs.normal();
@@ -59,6 +67,7 @@ class Vertex {
 
   Vertex &operator*=(float s) {
     pos_ *= s;
+    world_pos_ *= s;
     color_ *= s;
     uv_ *= s;
     normal_ *= s;
@@ -72,6 +81,7 @@ class Vertex {
 
   Vertex &operator/=(float s) {
     pos_ /= s;
+    world_pos_ /= s;
     color_ /= s;
     uv_ /= s;
     normal_ /= s;
@@ -85,6 +95,7 @@ class Vertex {
 
  private:
   Vector4 pos_{};
+  Vector4 world_pos_{};
   Color color_{};
   Vector2 uv_{};
   Vector4 normal_{};

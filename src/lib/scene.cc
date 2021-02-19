@@ -43,11 +43,13 @@ void FixZ(Matrix4x4 const &proj, Vector4 *v) {
 }  // namespace
 
 void Scene::RenderOneObject(Object *obj, FrameBuffer *fb) {
+  obj->ResetWorldVertexs();
   obj->ResetTransNormals();
   obj->ResetTransVertexs();
   auto const &transform = obj->transform();
   ApplyToAll(transform.rotate_matrix(), &obj->trans_normals());
   ApplyToAll(transform.model_matrix(), &obj->trans_vertexs());
+  ApplyToAll(transform.model_matrix(), &obj->world_vertexs());
   ApplyToAll(camera_.transform_matrix(), &obj->trans_vertexs());
   for (auto &trans_v : obj->trans_vertexs()) {
     Homogenize(*fb, &trans_v);

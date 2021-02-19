@@ -33,10 +33,11 @@ inline Vertex InterpVertex(Vertex v1, Vertex v2, float t) {
   PreInterpFix(&v1);
   PreInterpFix(&v2);
   auto const interp_pos = Interp(v1.pos(), v2.pos(), t);
+  auto const interp_wpos = Interp(v1.world_pos(), v2.world_pos(), t);
   auto const interp_color = Interp(v1.color(), v2.color(), t) / interp_pos.z();
   auto const interp_uv = Interp(v1.uv(), v2.uv(), t) / interp_pos.z();
   auto const interp_norm = Interp(v1.normal(), v2.normal(), t) / interp_pos.z();
-  return {interp_pos, interp_color, interp_uv, interp_norm};
+  return {interp_pos, interp_wpos, interp_color, interp_uv, interp_norm};
 }
 
 inline Vertex CalcRenderPoint(Vertex const &top, Vertex const &bot, float y) {

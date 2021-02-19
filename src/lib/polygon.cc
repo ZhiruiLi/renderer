@@ -9,6 +9,7 @@ namespace sren {
 Vertex Polygon::vertex(int i) const {
   return {
       object_->trans_vertexs()[face_indexs_[i].vertex],
+      object_->world_vertexs()[face_indexs_[i].vertex],
       object_->model().colors()[face_indexs_[i].vertex],
       object_->model().uvs()[face_indexs_[i].uv],
       object_->trans_normals()[face_indexs_[i].normal],

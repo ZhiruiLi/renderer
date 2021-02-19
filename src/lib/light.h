@@ -27,7 +27,7 @@ inline Vector3 Normal(Vertex const &v) {
 }
 
 inline Vector3 Position(Vertex const &v) {
-  return {v.pos().x(), v.pos().y(), v.pos().z()};
+  return {v.world_pos().x(), v.world_pos().y(), v.world_pos().z()};
 }
 
 }  // namespace details

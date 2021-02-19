@@ -30,6 +30,9 @@ class Object {
   int attribute() const { return attribute_; }
   void set_attribute(int attribute) { attribute_ = attribute; }
 
+  void ResetWorldVertexs() {
+    vectors::CopyFrom3To4(model_.vertexs(), &world_vertexs_);
+  }
   void ResetTransVertexs() {
     vectors::CopyFrom3To4(model_.vertexs(), &trans_vertexs_);
   }
@@ -37,6 +40,8 @@ class Object {
     vectors::CopyFrom3To4(model_.normals(), &trans_normals_);
   }
 
+  std::vector<Vector4> &world_vertexs() { return world_vertexs_; }
+  std::vector<Vector4> const &world_vertexs() const { return world_vertexs_; }
   std::vector<Vector4> &trans_vertexs() { return trans_vertexs_; }
   std::vector<Vector4> const &trans_vertexs() const { return trans_vertexs_; }
   std::vector<Vector4> &trans_normals() { return trans_normals_; }
@@ -79,6 +84,8 @@ class Object {
   Material material_{};
   // 物体的模型信息
   Model model_{};
+  // 世界坐标下物体的位置
+  std::vector<Vector4> world_vertexs_{};
   // 变换后物体的顶点
   std::vector<Vector4> trans_vertexs_{};
   // 变换后物体顶点的法线
