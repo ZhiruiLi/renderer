@@ -1,7 +1,8 @@
 #pragma once
 
 #include <array>
-#include <memory>
+#include <cstdint>
+#include <vector>
 
 #include "color.h"
 
@@ -10,12 +11,8 @@ namespace sren {
 class FrameBuffer {
  public:
   FrameBuffer() = default;
-  FrameBuffer(int width, int height)
-      : width_(width),
-        height_(height),
-        data_(std::make_unique<unsigned char[]>(size())),
-        z_buffer_(std::make_unique<float[]>(width * height)) {
-    Clear();
+  FrameBuffer(int width, int height) : width_(width), height_(height) {
+    Resize(width, height);
   }
 
   ~FrameBuffer() = default;
@@ -27,15 +24,15 @@ class FrameBuffer {
 
   int width() const { return width_; }
   int height() const { return height_; }
-  int size() const { return width_ * height_ * 4; }
-  void *data() { return data_ ? data_.get() : nullptr; }
-  void const *data() const { return data_ ? data_.get() : nullptr; }
+  int size() const { return data_.size(); }
+  std::uint8_t *data() { return data_.data(); }
+  std::uint8_t const *data() const { return data_.data(); }
 
  private:
   int width_{};
   int height_{};
-  std::unique_ptr<unsigned char[]> data_{};
-  std::unique_ptr<float[]> z_buffer_{};
+  std::vector<std::uint8_t> data_{};
+  std::vector<float> z_buffer_{};
 };
 
 }  // namespace sren

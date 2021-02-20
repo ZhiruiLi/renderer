@@ -86,14 +86,13 @@ struct Matrix {
     return data_[i][j];
   }
 
-  Matrix &Set(int i, int j, T v) {
+  void Set(int i, int j, T v) {
     assert(i >= 0 && i < N && j >= 0 && j < M);
     data_[i][j] = v;
-    return *this;
   }
 
   // 将矩阵设为 0 矩阵
-  Matrix &SetZero() { return SetAll(0.0f); }
+  void SetZero() { SetAll(0.0f); }
 
   // 获取 0 矩阵
   static Matrix const &Zero() {
@@ -102,13 +101,12 @@ struct Matrix {
   }
 
   // 将矩阵每个值都设为给定值
-  Matrix &SetAll(T x) {
+  void SetAll(T x) {
     for (int i = 0; i < N; i++) {
       for (int j = 0; j < M; j++) {
         data_[i][j] = x;
       }
     }
-    return *this;
   }
 
   // 获取单位矩阵
@@ -287,13 +285,12 @@ struct Matrix {
 
   // 将矩阵转置，只对方阵有效
   template <std::size_t N1 = N, std::size_t M1 = M>
-  std::enable_if_t<N1 == M1, Matrix> &SetTransform() {
+  std::enable_if_t<N1 == M1> SetTransform() {
     for (int i = 0; i < N; i++) {
       for (int j = 0; j < M; j++) {
         std::swap(data_[i][j], data_[j][i]);
       }
     }
-    return *this;
   }
 
   // 计算转置矩阵

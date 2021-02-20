@@ -1,9 +1,7 @@
 #include "frame_buffer.h"
 
 #include <algorithm>
-#include <cstring>
 #include <limits>
-#include <memory>
 
 #include "math.h"
 
@@ -30,7 +28,7 @@ void FrameBuffer::Set(float fx, float fy, float z, Color const &color) {
     return;
   }
   auto const idx = x + y * width_;
-  auto &bufz = (z_buffer_.get())[idx];
+  auto &bufz = z_buffer_[idx];
   if (bufz > z) {
     return;
   }
@@ -45,14 +43,14 @@ void FrameBuffer::Set(float fx, float fy, float z, Color const &color) {
 void FrameBuffer::Resize(int width, int height) {
   width_ = width;
   height_ = height;
-  data_ = std::make_unique<unsigned char[]>(size());
-  z_buffer_ = std::make_unique<float[]>(width * height);
+  data_.resize(width * height * 4);
+  z_buffer_.resize(width * height);
   Clear();
 }
 
 void FrameBuffer::Clear() {
-  memset(data_.get(), 0, size());
-  std::fill(z_buffer_.get(), z_buffer_.get() + width_ * height_,
+  std::fill(data_.begin(), data_.end(), 0);
+  std::fill(z_buffer_.begin(), z_buffer_.end(),
             std::numeric_limits<float>::min());
 }
 
