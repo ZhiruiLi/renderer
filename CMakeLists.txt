@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.10)
 project(renderer C CXX)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_BUILD_TYPE Debug)
 # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
 
 if(MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14")
 endif(MSVC)
 
 find_package(OpenGL REQUIRED)
