@@ -5,6 +5,10 @@ set(CMAKE_BUILD_TYPE Debug)
 # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
 
+if(MSVC)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
+endif(MSVC)
+
 find_package(OpenGL REQUIRED)
 include_directories(${OpenGL_INCLUDE_DIRS})
 link_directories(${OpenGL_LIBRARY_DIRS})
