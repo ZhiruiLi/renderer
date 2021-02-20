@@ -27,15 +27,6 @@ Window::Window(std::string const& title, int width, int height) {
 
   glfwMakeContextCurrent(glfw_window_);
   glfwSetKeyCallback(glfw_window_, details::HandleKey);
-
-  // 注意在 retina 屏幕下，由于存在缩放，所以像素和 window 大小并不是一对一的
-  // 例如 200% 缩放的情况下，对于一个屏幕上的一个单位点，需要渲染四个像素
-  // https://stackoverflow.com/questions/36672935/why-retina-screen-coordinate-value-is-twice-the-value-of-pixel-value
-  int bwidth{};
-  int bheight{};
-  glfwGetFramebufferSize(glfw_window_, &bwidth, &bheight);
-  glViewport(0, 0, bwidth, bheight);
-  frame_buffer_.Resize(bwidth, bheight);
 }
 
 Window::~Window() { glfwTerminate(); }
@@ -54,16 +45,25 @@ void Window::Run() {
     // 检查事件
     glfwPollEvents();
 
-    if (main_loop_) {
-      main_loop_(this);
-    }
-
     // 在每个新的渲染迭代开始的时候清屏，否则仍会看见上一迭代的渲染结果。
     // glClear 接受一个 Buffer Bit 来指定要清空的缓冲，
     // 包括：GL_COLOR_BUFFER_BIT，GL_DEPTH_BUFFER_BIT 和 GL_STENCIL_BUFFER_BIT
     // 这个操作还能防止屏幕闪烁，参考
     // https://stackoverflow.com/questions/27678819/crazy-flashing-window-opengl-glfw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // 注意在 retina 屏幕下，由于存在缩放，所以像素和 window 大小并不是一对一的
+    // 例如 200% 缩放的情况下，对于一个屏幕上的一个单位点，需要渲染四个像素
+    // https://stackoverflow.com/questions/36672935/why-retina-screen-coordinate-value-is-twice-the-value-of-pixel-value
+    int bwidth{};
+    int bheight{};
+    glfwGetFramebufferSize(glfw_window_, &bwidth, &bheight);
+    glViewport(0, 0, bwidth, bheight);
+    frame_buffer_.Resize(bwidth, bheight);
+
+    if (main_loop_) {
+      main_loop_(this);
+    }
 
     glDrawPixels(frame_buffer_.width(), frame_buffer_.height(), GL_RGBA,
                  GL_UNSIGNED_BYTE, frame_buffer_.data());
