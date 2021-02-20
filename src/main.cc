@@ -131,6 +131,7 @@ int main(void) {
   LoadData("cube/cube", "png", &scene.objects().back());
   // LoadData("african_head/african_head", "tga", &scene.objects().back());
   // LoadData("diablo3/diablo3_pose", "tga", &scene.objects().back());
+  obj.transform().set_world_pos(kObjectPos);
   window.set_main_loop([&](Window *window) {
     HandleKey(window, &scene);
     scene.Render(&window->frame_buffer());
