@@ -13,8 +13,6 @@ if(NOT OPENGL_FOUND)
   message(ERROR "OPENGL not found!")
 endif(NOT OPENGL_FOUND)
 
-add_definitions(-DGL_SILENCE_DEPRECATION)
-
 include_directories(thirdparty/glfw/include)
 include_directories(thirdparty/stb/include)
 include_directories(src)

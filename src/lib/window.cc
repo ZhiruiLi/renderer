@@ -1,7 +1,5 @@
-// GLFW
+#define GL_SILENCE_DEPRECATION 1
 #include "window.h"
-
-#include <GLFW/glfw3.h>
 
 #include <chrono>
 #include <iostream>
