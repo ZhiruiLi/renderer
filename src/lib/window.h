@@ -1,5 +1,7 @@
 #pragma once
 
+// GLEW
+#include <GL/glew.h>
 // GLFW
 #include <GLFW/glfw3.h>
 

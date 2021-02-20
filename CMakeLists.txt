@@ -17,13 +17,18 @@ if(NOT OPENGL_FOUND)
   message(ERROR "OPENGL not found!")
 endif(NOT OPENGL_FOUND)
 
-include_directories(thirdparty/glfw/include)
-include_directories(thirdparty/stb)
-include_directories(src)
+include_directories(thirdparty/glew-cmake/include)
+add_subdirectory(thirdparty/glew-cmake)
 
+include_directories(thirdparty/glfw/include)
 add_subdirectory(thirdparty/glfw)
+
+include_directories(thirdparty/stb)
+
+include_directories(src)
 add_subdirectory(src/lib)
 add_subdirectory(src)
+
 option(PACKAGE_TESTS "Build the tests" ON)
 if(PACKAGE_TESTS)
   enable_testing()
