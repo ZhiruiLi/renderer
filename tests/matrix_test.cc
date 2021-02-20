@@ -1,5 +1,8 @@
 #include "lib/matrix.h"
 
+#include <gtest/gtest.h>
+
+#include "lib/vector.h"
 #include "test.h"
 
 using namespace sren;
@@ -94,4 +97,11 @@ TEST(TestMatrix4x4, WorldTransform_MoveVectorToGivenPos) {
   auto const trans_matrix = matrixs::WorldTransform(world_pos);
   auto const result = source * trans_matrix;
   ASSERT_EQ(result, expected) << result;
+  auto const id_matrix = matrixs::WorldTransform(Vector3(0.0f, 0.0f, 0.0f));
+  ASSERT_TRUE(id_matrix.IsIdentity()) << id_matrix;
+}
+
+TEST(TestMatrix4x4, RotateTransform_MoveVectorToRotatedPos) {
+  auto const id_matrix = matrixs::RotateTransform(Vector3(0.0f, 0.0f, 0.0f));
+  ASSERT_TRUE(id_matrix.IsIdentity()) << id_matrix;
 }

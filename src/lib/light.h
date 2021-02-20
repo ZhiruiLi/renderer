@@ -23,11 +23,13 @@ inline Vector3 Reflect(Vector3 const &light, Vector3 const &norm) {
 }
 
 inline Vector3 Normal(Vertex const &v) {
-  return {v.normal().x(), v.normal().y(), v.normal().z()};
+  auto normal = v.normal() / v.normal().w();
+  return {normal.x(), normal.y(), normal.z()};
 }
 
-inline Vector3 Position(Vertex const &v) {
-  return {v.world_pos().x(), v.world_pos().y(), v.world_pos().z()};
+inline Vector3 Position(Vertex v) {
+  auto world_pos = v.world_pos() / v.world_pos().w();
+  return {world_pos.x(), world_pos.y(), world_pos.z()};
 }
 
 }  // namespace details
