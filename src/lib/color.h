@@ -193,7 +193,7 @@ class Color {
     return !(lhs == rhs);
   }
 
-  // 颜色加法，需要避免超过 1.0
+  // 颜色加法
   Color& operator+=(Color const& rhs) {
     for (int i = 0; i < 4; i++) {
       data_[i] += rhs[i];
@@ -207,7 +207,7 @@ class Color {
     return lhs;
   }
 
-  // 颜色减法，需要避免小于 0.0
+  // 颜色减法
   Color& operator-=(Color const& rhs) {
     for (int i = 0; i < 4; i++) {
       data_[i] -= rhs[i];

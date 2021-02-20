@@ -26,7 +26,6 @@ void SwapXY(Vector2 *p) {
 void PreInterpFix(Vertex *v) {
   v->color() *= v->pos().z();
   v->uv() *= v->pos().z();
-  v->normal() *= v->pos().z();
 }
 
 inline Vertex InterpVertex(Vertex v1, Vertex v2, float t) {
@@ -36,7 +35,7 @@ inline Vertex InterpVertex(Vertex v1, Vertex v2, float t) {
   auto const interp_wpos = Interp(v1.world_pos(), v2.world_pos(), t);
   auto const interp_color = Interp(v1.color(), v2.color(), t) / interp_pos.z();
   auto const interp_uv = Interp(v1.uv(), v2.uv(), t) / interp_pos.z();
-  auto const interp_norm = Interp(v1.normal(), v2.normal(), t) / interp_pos.z();
+  auto const interp_norm = Interp(v1.normal(), v2.normal(), t);
   return {interp_pos, interp_wpos, interp_color, interp_uv, interp_norm};
 }
 

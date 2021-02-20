@@ -22,16 +22,6 @@ inline Vector3 Reflect(Vector3 const &light, Vector3 const &norm) {
   return light - 2 * light * norm * norm;
 }
 
-inline Vector3 Normal(Vertex const &v) {
-  auto normal = v.normal() / v.normal().w();
-  return {normal.x(), normal.y(), normal.z()};
-}
-
-inline Vector3 Position(Vertex v) {
-  auto world_pos = v.world_pos() / v.world_pos().w();
-  return {world_pos.x(), world_pos.y(), world_pos.z()};
-}
-
 }  // namespace details
 
 class DirLight {
@@ -104,8 +94,8 @@ class Lights {
 
   Color IlluminateOne(Vertex const &vertex, Color const &color,
                       Vector3 const &camera_pos, DirLight const &light) const {
-    auto const normal = details::Normal(vertex);
-    auto const pos = details::Position(vertex);
+    auto const normal = vertex.normal().AsVector3();
+    auto const pos = vertex.world_pos().AsVector3();
     auto const c1 = color * light.IlluminateAmbient();
     auto const c2 = color * light.IlluminateDiffuse(normal);
     return c1 + c2;
@@ -116,8 +106,8 @@ class Lights {
     auto const &diffuse = material.Diffuse(vertex.uv());
     auto const &specular = material.Specular(vertex.uv());
     auto const shininess = material.shininess();
-    auto const norm = details::Normal(vertex);
-    auto const pos = details::Position(vertex);
+    auto const norm = vertex.normal().AsVector3();
+    auto const pos = vertex.world_pos().AsVector3();
     auto const c1 = diffuse * light.IlluminateAmbient();
     auto const c2 = diffuse * light.IlluminateDiffuse(norm);
     auto const c3 =
