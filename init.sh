@@ -23,7 +23,7 @@ __root="$(cd "$(dirname "${__dir}")" && pwd)" # <-- change this as it depends on
 
 arg1="${1:-}"
 
-git submodule update --init
+git submodule update --init --recursive
 mkdir build && cd build
 cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 ..
 
