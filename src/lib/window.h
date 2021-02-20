@@ -5,7 +5,7 @@
 
 #include <chrono>
 #include <functional>
-#include <string_view>
+#include <string>
 
 #include "frame_buffer.h"
 
@@ -17,7 +17,7 @@ class Window {
   using FloatSeconds = std::chrono::duration<float>;
   using TimePoint = std::chrono::time_point<std::chrono::system_clock>;
 
-  Window(std::string_view title, int width, int height);
+  Window(std::string const &title, int width, int height);
   ~Window();
 
   void Run();

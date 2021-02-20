@@ -11,7 +11,7 @@ namespace sren {
 
 void Window::Close() { glfwSetWindowShouldClose(glfw_window_, GL_TRUE); }
 
-Window::Window(std::string_view title, int width, int height) {
+Window::Window(std::string const& title, int width, int height) {
   // 初始化 GLFW
   if (!glfwInit()) {
     throw std::runtime_error("GLFW init fail");
