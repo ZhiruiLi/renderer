@@ -5,7 +5,7 @@
 
 #include "color.h"
 #include "data2d.h"
-#include "stb/stb_image.h"
+#include "stb_image.h"
 
 namespace sren {
 

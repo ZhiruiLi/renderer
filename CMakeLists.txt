@@ -14,7 +14,7 @@ if(NOT OPENGL_FOUND)
 endif(NOT OPENGL_FOUND)
 
 include_directories(thirdparty/glfw/include)
-include_directories(thirdparty/stb/include)
+include_directories(thirdparty/stb)
 include_directories(src)
 
 add_subdirectory(thirdparty/glfw)
