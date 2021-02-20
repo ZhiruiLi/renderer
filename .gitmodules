@@ -10,3 +10,6 @@
 [submodule "thirdparty/glew-cmake"]
 	path = thirdparty/glew-cmake
 	url = https://github.com/Perlmint/glew-cmake
+[submodule "thirdparty/imgui"]
+	path = thirdparty/imgui
+	url = https://github.com/ocornut/imgui

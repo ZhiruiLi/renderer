@@ -23,8 +23,25 @@ add_subdirectory(thirdparty/glew-cmake)
 include_directories(thirdparty/glfw/include)
 add_subdirectory(thirdparty/glfw)
 
-include_directories(thirdparty/stb)
+include_directories(thirdparty/imgui)
+include_directories(thirdparty/imgui/backends)
+add_library(
+  imgui STATIC
+  thirdparty/imgui/imconfig.h
+  thirdparty/imgui/imgui.h
+  thirdparty/imgui/imgui.cpp
+  thirdparty/imgui/imgui_tables.cpp
+  thirdparty/imgui/imgui_demo.cpp
+  thirdparty/imgui/imgui_widgets.cpp
+  thirdparty/imgui/imgui_draw.cpp
+  thirdparty/imgui/backends/imgui_impl_opengl3.h
+  thirdparty/imgui/backends/imgui_impl_opengl3.cpp
+  thirdparty/imgui/backends/imgui_impl_glfw.h
+  thirdparty/imgui/backends/imgui_impl_glfw.cpp
+  # thirdparty/imgui/imgui_internal.h
+ )
 
+include_directories(thirdparty/stb)
 include_directories(src)
 add_subdirectory(src/lib)
 add_subdirectory(src)

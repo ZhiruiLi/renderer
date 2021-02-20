@@ -1,6 +1,10 @@
 #define GL_SILENCE_DEPRECATION 1
 #include "window.h"
 
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
 #include <chrono>
 #include <iostream>
 
