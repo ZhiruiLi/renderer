@@ -106,6 +106,19 @@ void LoadData(std::string const &name, std::string const &suffix, Object *obj) {
             << ", spec-" << spec_ok << ", norm-" << norm_ok << std::endl;
 }
 
+void LoadColorModel(std::string const &name, Object *obj) {
+  auto const prefix = "../../asserts/" + name;
+  auto const obj_filename = prefix + ".obj";
+
+  Model model{};
+  auto const model_ok = LoadObjFile(obj_filename, &model);
+  for (auto &c : model.colors()) {
+    c = Color(1.0f, 0.0f, 0.0f, 0.5f);
+  }
+  obj->set_model(model);
+  std::cout << "load result: model-" << model_ok << std::endl;
+}
+
 int main(void) {
   Window window("Test", kWidth, kHeight);
   Scene scene{};
@@ -122,8 +135,9 @@ int main(void) {
   obj->transform().set_world_pos(kObjectPos);
 
   auto const alpha_obj = scene.add_alpha_object("MyObj1");
-  LoadData("cube/cube", "png", alpha_obj);
+  LoadColorModel("cube/cube", alpha_obj);
   alpha_obj->transform().set_world_pos(kObjectPos1);
+  alpha_obj->set_render_style(kRenderColor);
 
   window.set_main_loop([&](Window *window) {
     HandleKey(window, &scene);

@@ -70,7 +70,7 @@ void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
       fb->Set(x, y, z, color);
     }
     if (poly.render_style() & kRenderColor) {
-      auto color = lights.Illuminate(vert, left.color(), camera_pos);
+      auto color = lights.Illuminate(vert, vert.color(), camera_pos);
       fb->Set(x, y, z, color);
     }
   }
@@ -160,7 +160,7 @@ void Line(Vector4 p0, Vector4 p1, Color const &c, FrameBuffer *fb) {
 
 // 画三角形
 void Triangle(Polygon const &poly, Scene const &scene, FrameBuffer *fb) {
-  if (poly.render_style() & (kRenderWireframe | kRenderTexture)) {
+  if (poly.render_style() & (kRenderColor | kRenderTexture)) {
     std::array<Trapezoid, 2> traps{};
     int const count = trapezoids::CutTriangle(
         {poly.vertex(0), poly.vertex(1), poly.vertex(2)}, &traps);
