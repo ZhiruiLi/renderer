@@ -799,10 +799,6 @@ void init_texture(device_t *device) {
  */
 int main1(void) {
   device_t device;
-  int states[] = {RENDER_STATE_TEXTURE, RENDER_STATE_COLOR,
-                  RENDER_STATE_WIREFRAME};
-  int indicator = 0;
-  int kbhit = 0;
   float alpha = 1;
   float pos = 3.5;
 

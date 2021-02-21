@@ -17,12 +17,6 @@ namespace draw {
 
 namespace {
 
-void SwapXY(Vector2 *p) {
-  float const x = p->x();
-  p->set_x(p->y());
-  p->set_y(x);
-}
-
 void PreInterpFix(Vertex *v) {
   v->color() *= v->pos().z();
   v->uv() *= v->pos().z();

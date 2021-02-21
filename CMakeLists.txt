@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 project(renderer C CXX)
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_BUILD_TYPE Debug)
-# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3")
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall")
 
 if(MSVC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14")

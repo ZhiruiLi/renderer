@@ -38,9 +38,9 @@ class Polygon {
            (vertex(2).pos().AsVector3() - vertex(0).pos().AsVector3());
   }
 
-  PolygonState state_{};
-  std::array<FaceDataIndex, 3> face_indexs_{};
   Object *object_{};
+  std::array<FaceDataIndex, 3> face_indexs_{};
+  PolygonState state_{};
 };
 
 }  // namespace sren

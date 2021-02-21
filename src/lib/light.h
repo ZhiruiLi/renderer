@@ -105,7 +105,6 @@ class Lights {
   Color IlluminateOne(Vertex const &vertex, Color const &color,
                       Vector3 const &camera_pos, DirLight const &light) const {
     auto const normal = vertex.normal().AsVector3();
-    auto const pos = vertex.world_pos().AsVector3();
     auto const c1 = color * light.IlluminateAmbient();
     auto const c2 = color * light.IlluminateDiffuse(normal);
     return c1 + c2;
