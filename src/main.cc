@@ -43,7 +43,7 @@ void HandleKey(Window *window, Scene *scene) {
     window->Close();
   }
 
-  auto &obj = *scene->object(scene->nobjects() - 1);
+  auto &obj = *scene->object(0);
   auto world_pos = obj.transform().world_pos();
   auto rotation = obj.transform().rotation();
 
@@ -82,6 +82,22 @@ void HandleKey(Window *window, Scene *scene) {
 
   obj.transform().set_world_pos(world_pos);
   obj.transform().set_rotation(rotation);
+
+  auto &obj1 = *scene->alpha_object(0);
+  auto rotation1 = obj1.transform().rotation();
+  if (IsKeyActive(Key::kJ)) {
+    rotation1.set_y(rotation1.y() - 0.1);
+  }
+  if (IsKeyActive(Key::kL)) {
+    rotation1.set_y(rotation1.y() + 0.1);
+  }
+  if (IsKeyActive(Key::kI)) {
+    rotation1.set_x(rotation1.x() - 0.1);
+  }
+  if (IsKeyActive(Key::kK)) {
+    rotation1.set_x(rotation1.x() + 0.1);
+  }
+  obj1.transform().set_rotation(rotation1);
 }
 
 constexpr int kWidth = 800;
@@ -106,14 +122,20 @@ void LoadData(std::string const &name, std::string const &suffix, Object *obj) {
             << ", spec-" << spec_ok << ", norm-" << norm_ok << std::endl;
 }
 
-void LoadColorModel(std::string const &name, Object *obj) {
+void LoadColorModel(std::string const &name, std::vector<Color> const &cs,
+                    Object *obj) {
   auto const prefix = "../../asserts/" + name;
   auto const obj_filename = prefix + ".obj";
 
   Model model{};
   auto const model_ok = LoadObjFile(obj_filename, &model);
+  auto cit = cs.begin();
   for (auto &c : model.colors()) {
-    c = Color(1.0f, 0.0f, 0.0f, 0.5f);
+    c = *cit;
+    cit++;
+    if (cit == cs.end()) {
+      cit = cs.begin();
+    }
   }
   obj->set_model(model);
   std::cout << "load result: model-" << model_ok << std::endl;
@@ -135,7 +157,13 @@ int main(void) {
   obj->transform().set_world_pos(kObjectPos);
 
   auto const alpha_obj = scene.add_alpha_object("MyObj1");
-  LoadColorModel("cube/cube", alpha_obj);
+  LoadColorModel("cube/cube",
+                 {
+                     {1.0f, 0.0f, 0.0f, 0.5f},
+                     {0.0f, 1.0f, 0.0f, 0.5f},
+                     {0.0f, 0.0f, 1.0f, 0.5f},
+                 },
+                 alpha_obj);
   alpha_obj->transform().set_world_pos(kObjectPos1);
   alpha_obj->set_render_style(kRenderColor);
 
