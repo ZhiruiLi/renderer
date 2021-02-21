@@ -31,6 +31,7 @@ class DirLight {
            LightCoefficient const &coeff)
       : direction_(direction), color_(color), coefficient_(coeff) {
     UpdateColors();
+    UpdateLightNorm();
   }
 
   Color const &color() { return color_; }
@@ -45,7 +46,11 @@ class DirLight {
     UpdateColors();
   }
 
-  Vector3 &direction() { return direction_; }
+  void set_direction(Vector3 const &direction) {
+    direction_ = direction;
+    UpdateLightNorm();
+  }
+
   Vector3 const &direction() const { return direction_; }
 
   Color const &ambient() const { return ambient_; }
@@ -55,15 +60,13 @@ class DirLight {
   Color IlluminateAmbient() const { return ambient_; }
 
   Color IlluminateDiffuse(Vector3 const &normal) const {
-    Vector3 const light_dir = -direction_.Normalize();
-    float const diffuse_str = std::max(normal * light_dir, 0.0f);
+    float const diffuse_str = std::max(normal * light_norm_reverse_, 0.0f);
     return diffuse_ * diffuse_str;
   }
 
   Color IlluminateSpecular(Vector3 const &obj_pos, Vector3 const &normal,
                            float shininess, Vector3 const &camera_pos) const {
-    Vector3 const light_dir = direction_.Normalize();
-    Vector3 const reflect_dir = details::Reflect(light_dir, normal);
+    Vector3 const reflect_dir = details::Reflect(light_norm_, normal);
     Vector3 const view_dir = (camera_pos - obj_pos).Normalize();
     float const specular_str = std::max(view_dir * reflect_dir, 0.0f);
     float const specular_str1 = std::pow(specular_str, shininess);
@@ -77,7 +80,14 @@ class DirLight {
     specular_ = color_ * coefficient_.specular;
   }
 
+  void UpdateLightNorm() {
+    light_norm_ = direction_.Normalize();
+    light_norm_reverse_ = -light_norm_;
+  }
+
   Vector3 direction_{};
+  Vector3 light_norm_{};
+  Vector3 light_norm_reverse_{};
   Color ambient_{};
   Color diffuse_{};
   Color specular_{};

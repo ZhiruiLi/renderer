@@ -80,19 +80,6 @@ void HandleKey(Window *window, Scene *scene) {
     obj.transform().set_world_pos(world_pos);
     obj.transform().set_rotation(rotation);
   }
-  auto &light_dir = scene->lights().dir_lights().back().direction();
-  if (IsKeyActive(Key::kJ)) {
-    light_dir.set_y(light_dir.y() - 0.1);
-  }
-  if (IsKeyActive(Key::kL)) {
-    light_dir.set_y(light_dir.y() + 0.1);
-  }
-  if (IsKeyActive(Key::kI)) {
-    light_dir.set_x(light_dir.x() - 0.1);
-  }
-  if (IsKeyActive(Key::kK)) {
-    light_dir.set_x(light_dir.x() + 0.1);
-  }
 }
 
 constexpr int kWidth = 800;
