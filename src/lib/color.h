@@ -385,6 +385,12 @@ inline Color GetFromData2D(Data2D const& data, Vector2 const& uv) {
   return Color{};
 }
 
+inline Color Blend(Color const& c1, Color const& c2) {
+  auto const v1 = c1.a();
+  auto const v2 = 1.0f - v1;
+  return c1 * v1 + c2 * v2;
+}
+
 }  // namespace colors
 
 }  // namespace sren

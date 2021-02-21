@@ -17,10 +17,12 @@ class FrameBuffer {
 
   ~FrameBuffer() = default;
 
-  void Set(float x, float y, Color const &color);
-  void Set(float x, float y, float z, Color const &color);
+  void Set(int x, int y, Color const &color);
+  void Set(int x, int y, float z, Color const &color);
+  Color Get(int x, int y);
   void Clear();
   void Resize(int width, int height);
+  bool NeedRender(int x, int y, float z) const;
 
   int width() const { return width_; }
   int height() const { return height_; }
@@ -29,6 +31,11 @@ class FrameBuffer {
   std::uint8_t const *data() const { return data_.data(); }
 
  private:
+  bool InBound(int x, int y) const;
+
+  int data_index(int x, int y) const;
+  int z_buffer_index(int x, int y) const;
+
   int width_{};
   int height_{};
   std::vector<std::uint8_t> data_{};

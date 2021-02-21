@@ -20,4 +20,6 @@ Material const &Polygon::material() const { return object_->material(); }
 
 unsigned int Polygon::render_style() const { return object_->render_style(); }
 
+bool Polygon::is_alpha() const { return object_->is_alpha(); }
+
 }  // namespace sren

@@ -28,6 +28,7 @@ class Polygon {
   Vertex vertex(int i) const;
   Material const &material() const;
   unsigned int render_style() const;
+  bool is_alpha() const;
 
   Vector3 normal() const { return direction().Normalize(); }
 

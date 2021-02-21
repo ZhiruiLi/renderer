@@ -50,21 +50,28 @@ void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
                    FrameBuffer *fb) {
   auto left = CalcRenderPoint(trap.left.top, trap.left.bottom, y);
   auto right = CalcRenderPoint(trap.right.top, trap.right.bottom, y);
+  int const rightx = std::round(right.pos().x());
   PreInterpFix(&left);
   PreInterpFix(&right);
   auto const width = right.pos().x() - left.pos().x();
   auto const step = (right - left) / width;
-  for (float x = left.pos().x(); x < right.pos().x(); x++) {
+  for (int leftx = left.pos().x(); leftx < rightx; leftx++) {
     left += step;
     auto vert = left;
     vert.uv() /= left.pos().z();
+    int const x = vert.pos().x();
+    int const y = vert.pos().y();
+    float const z = vert.pos().z();
+    if (!fb->NeedRender(x, y, z)) {
+      continue;
+    }
     if (poly.render_style() & kRenderTexture) {
-      auto const color = lights.Illuminate(vert, poly.material(), camera_pos);
-      fb->Set(vert.pos().x(), vert.pos().y(), vert.pos().z(), color);
+      auto color = lights.Illuminate(vert, poly.material(), camera_pos);
+      fb->Set(x, y, z, color);
     }
     if (poly.render_style() & kRenderColor) {
-      auto const color = lights.Illuminate(vert, left.color(), camera_pos);
-      fb->Set(vert.pos().x(), vert.pos().y(), vert.pos().z(), color);
+      auto color = lights.Illuminate(vert, left.color(), camera_pos);
+      fb->Set(x, y, z, color);
     }
   }
 }
