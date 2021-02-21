@@ -34,8 +34,8 @@ class Color {
   using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
  private:
-  static value_type Normalize(uint32_t c);
-  static uint32_t Unnormalize(value_type c);
+  static value_type Normalize(uint32_t c) { return c / 255.0f; }
+  static uint32_t Unnormalize(value_type c) { return uint32_t(c * 255); }
   static uint32_t Shift(uint32_t c, uint32_t n) { return (c >> n) & 0xFF; }
   static uint32_t Unshift(uint32_t c, uint32_t n) { return (c & 0xFF) << n; }
 
