@@ -12,10 +12,9 @@ namespace sren {
 class Object;
 
 enum class PolygonState {
-  kUnknown = 0x0,
-  kActive = 0x1,
-  kClipped = 0x2,
-  kBackface = 0x4,
+  kActive = 0x0,
+  kClipped = 0x1,
+  kBackface = 0x3,
 };
 
 class Polygon {

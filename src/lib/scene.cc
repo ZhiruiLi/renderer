@@ -56,7 +56,9 @@ void Scene::RenderOneObject(Object *obj, FrameBuffer *fb) {
     FixZ(camera_.projection_matrix(), &trans_v);
   }
   for (auto &poly : obj->polygons()) {
-    BackFaceCuting(&poly);
+    if (!obj->is_alpha()) {
+      BackFaceCuting(&poly);
+    }
     if (poly.state() == PolygonState::kActive) {
       draw::Triangle(poly, *this, fb);
     }
@@ -66,7 +68,10 @@ void Scene::RenderOneObject(Object *obj, FrameBuffer *fb) {
 void Scene::Render(FrameBuffer *fb) {
   fb->Clear();
   for (auto &obj : objects_) {
-    RenderOneObject(&obj, fb);
+    RenderOneObject(obj.get(), fb);
+  }
+  for (auto &obj : alpha_objects_) {
+    RenderOneObject(obj.get(), fb);
   }
 }
 

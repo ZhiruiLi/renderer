@@ -18,17 +18,15 @@ namespace sren {
 class Object {
  public:
   Object() = default;
-  Object(int id, std::string name) : id_{id}, name_{std::move(name)} {}
+  Object(int id, std::string name, bool is_alpha)
+      : id_(id), name_(std::move(name)), is_alpha_(is_alpha) {}
 
-  int id() const { return id_; }
-  void set_id(int id) { id_ = id; }
-
-  std::string const &name() const { return name_; }
-  void set_name(std::string name) { name_ = std::move(name); }
   int state() const { return state_; };
   void set_state(int state) { state_ = state; }
-  int attribute() const { return attribute_; }
-  void set_attribute(int attribute) { attribute_ = attribute; }
+
+  int id() const { return id_; }
+  std::string const &name() const { return name_; }
+  bool is_alpha() const { return is_alpha_; }
 
   void ResetWorldVertexs() {
     vectors::CopyFrom3To4(model_.vertexs(), &world_vertexs_);
@@ -75,8 +73,8 @@ class Object {
  private:
   int id_{};
   std::string name_{};
+  bool is_alpha_{};
   int state_{};
-  int attribute_{};
 
   // 物体的位置旋转等信息
   Transform transform_{};
