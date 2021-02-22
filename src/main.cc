@@ -1,3 +1,4 @@
+#include <imgui.h>
 #include <stdint.h>
 
 #include <algorithm>
@@ -100,6 +101,19 @@ void HandleKey(Window *window, Scene *scene) {
   obj1.transform().set_rotation(rotation1);
 }
 
+void RenderGUI() {
+  static int counter = 0;
+
+  ImGui::Begin("Info");
+  ImGui::Text("This is some useful text.");
+  if (ImGui::Button("Button")) counter++;
+  ImGui::SameLine();
+  ImGui::Text("counter = %d", counter);
+  ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
+              1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+  ImGui::End();
+}
+
 constexpr int kWidth = 800;
 constexpr int kHeight = 600;
 constexpr float kAspect = float(kWidth) / float(kHeight);
@@ -169,6 +183,7 @@ int main(void) {
 
   window.set_main_loop([&](Window *window) {
     HandleKey(window, &scene);
+    RenderGUI();
     scene.Render(&window->frame_buffer());
   });
   window.Run();
