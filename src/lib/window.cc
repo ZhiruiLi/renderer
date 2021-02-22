@@ -115,7 +115,7 @@ void Window::Run() {
     int bheight{};
     glfwGetFramebufferSize(glfw_window_, &bwidth, &bheight);
     glViewport(0, 0, bwidth, bheight);
-    frame_buffer_.Resize(bwidth, bheight);
+    frame_buffer_.Resize(bwidth * 0.9, bheight * 0.9);
 
     // Start the Dear ImGui frame
     ImGui_ImplOpenGL3_NewFrame();
@@ -132,12 +132,18 @@ void Window::Run() {
 #if defined(GL_UNPACK_ROW_LENGTH) && !defined(__EMSCRIPTEN__)
     glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 #endif
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bwidth, bheight, 0, GL_RGBA,
-                 GL_UNSIGNED_BYTE, frame_buffer_.data());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, frame_buffer_.width(),
+                 frame_buffer_.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                 frame_buffer_.data());
 
     {
-      ImGui::Begin("");
-      ImGui::Image((void*)(intptr_t)image_texture_, ImVec2(bwidth, bheight));
+      ImGui::SetNextWindowPos(ImVec2(0, 0));
+      ImGui::SetNextWindowSize(ImVec2(bwidth, bheight));
+      constexpr auto win_flags =
+          ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBringToFrontOnFocus;
+      ImGui::Begin("", nullptr, win_flags);
+      ImGui::Image((void*)(intptr_t)image_texture_,
+                   ImVec2(frame_buffer_.width(), frame_buffer_.height()));
       ImGui::End();
     }
 

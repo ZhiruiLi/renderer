@@ -107,14 +107,12 @@ void HandleKey(Window *window, Scene *scene) {
 
 void RenderGUI() {
   static int counter = 0;
-
-  ImGui::Begin("Info");
-  ImGui::Text("This is some useful text.");
+  ImGui::Begin("Info", nullptr);
   if (ImGui::Button("Button")) counter++;
   ImGui::SameLine();
   ImGui::Text("counter = %d", counter);
-  ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
-              1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+  ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
+              ImGui::GetIO().Framerate);
   ImGui::End();
 }
 
@@ -174,20 +172,20 @@ int main(void) {
   // LoadData("diablo3/diablo3_pose", "tga", obj);
   obj->transform().set_world_pos(kObjectPos);
 
-  // auto const alpha_obj = scene.add_alpha_object("MyObj1");
-  // LoadColorModel("cube/cube",
-  //                {
-  //                    {1.0f, 0.0f, 0.0f, 0.5f},
-  //                    {0.0f, 1.0f, 0.0f, 0.5f},
-  //                    {0.0f, 0.0f, 1.0f, 0.5f},
-  //                },
-  //                alpha_obj);
-  // alpha_obj->transform().set_world_pos(kObjectPos1);
-  // alpha_obj->set_render_style(kRenderColor);
+  auto const alpha_obj = scene.add_alpha_object("MyObj1");
+  LoadColorModel("cube/cube",
+                 {
+                     {1.0f, 0.0f, 0.0f, 0.5f},
+                     {0.0f, 1.0f, 0.0f, 0.5f},
+                     {0.0f, 0.0f, 1.0f, 0.5f},
+                 },
+                 alpha_obj);
+  alpha_obj->transform().set_world_pos(kObjectPos1);
+  alpha_obj->set_render_style(kRenderColor);
 
   window.set_main_loop([&](Window *window) {
-    HandleKey(window, &scene);
     RenderGUI();
+    HandleKey(window, &scene);
     scene.Render(&window->frame_buffer());
   });
   window.Run();
