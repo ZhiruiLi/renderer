@@ -27,7 +27,7 @@ inline float SafeInverseSqrt(float f) {
 }
 
 template <class T>
-inline void Clamp(T lo, T hi, T *target) {
+inline void ClampInPlace(T lo, T hi, T *target) {
   if (*target < lo) {
     *target = lo;
   } else if (*target > hi) {

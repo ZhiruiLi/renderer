@@ -174,7 +174,7 @@ class Color {
 
   void Fix() {
     for (int i = 0; i < 4; i++) {
-      Clamp(0.0f, 1.0f, &data_[i]);
+      ClampInPlace(0.0f, 1.0f, &data_[i]);
     }
   }
 
