@@ -44,61 +44,65 @@ void HandleKey(Window *window, Scene *scene) {
     window->Close();
   }
 
-  auto &obj = *scene->object(0);
-  auto world_pos = obj.transform().world_pos();
-  auto rotation = obj.transform().rotation();
+  if (scene->nobjects() > 0) {
+    auto &obj = *scene->object(0);
+    auto world_pos = obj.transform().world_pos();
+    auto rotation = obj.transform().rotation();
 
-  if (IsKeyActive(Key::kRight)) {
-    world_pos.set_x(world_pos.x() - 0.1);
-  }
-  if (IsKeyActive(Key::kLeft)) {
-    world_pos.set_x(world_pos.x() + 0.1);
-  }
-  if (IsKeyActive(Key::kUp)) {
-    world_pos.set_y(world_pos.y() + 0.1);
-  }
-  if (IsKeyActive(Key::kDown)) {
-    world_pos.set_y(world_pos.y() - 0.1);
+    if (IsKeyActive(Key::kRight)) {
+      world_pos.set_x(world_pos.x() - 0.1);
+    }
+    if (IsKeyActive(Key::kLeft)) {
+      world_pos.set_x(world_pos.x() + 0.1);
+    }
+    if (IsKeyActive(Key::kUp)) {
+      world_pos.set_y(world_pos.y() + 0.1);
+    }
+    if (IsKeyActive(Key::kDown)) {
+      world_pos.set_y(world_pos.y() - 0.1);
+    }
+
+    if (IsKeyActive(Key::kQ)) {
+      world_pos.set_z(world_pos.z() + 0.1);
+    }
+    if (IsKeyActive(Key::kE)) {
+      world_pos.set_z(world_pos.z() - 0.1);
+    }
+
+    if (IsKeyActive(Key::kA)) {
+      rotation.set_y(rotation.y() - 0.1);
+    }
+    if (IsKeyActive(Key::kD)) {
+      rotation.set_y(rotation.y() + 0.1);
+    }
+    if (IsKeyActive(Key::kW)) {
+      rotation.set_x(rotation.x() - 0.1);
+    }
+    if (IsKeyActive(Key::kS)) {
+      rotation.set_x(rotation.x() + 0.1);
+    }
+
+    obj.transform().set_world_pos(world_pos);
+    obj.transform().set_rotation(rotation);
   }
 
-  if (IsKeyActive(Key::kQ)) {
-    world_pos.set_z(world_pos.z() + 0.1);
+  if (scene->nalpha_objects() > 0) {
+    auto &obj = *scene->alpha_object(0);
+    auto rotation = obj.transform().rotation();
+    if (IsKeyActive(Key::kJ)) {
+      rotation.set_y(rotation.y() - 0.1);
+    }
+    if (IsKeyActive(Key::kL)) {
+      rotation.set_y(rotation.y() + 0.1);
+    }
+    if (IsKeyActive(Key::kI)) {
+      rotation.set_x(rotation.x() - 0.1);
+    }
+    if (IsKeyActive(Key::kK)) {
+      rotation.set_x(rotation.x() + 0.1);
+    }
+    obj.transform().set_rotation(rotation);
   }
-  if (IsKeyActive(Key::kE)) {
-    world_pos.set_z(world_pos.z() - 0.1);
-  }
-
-  if (IsKeyActive(Key::kA)) {
-    rotation.set_y(rotation.y() - 0.1);
-  }
-  if (IsKeyActive(Key::kD)) {
-    rotation.set_y(rotation.y() + 0.1);
-  }
-  if (IsKeyActive(Key::kW)) {
-    rotation.set_x(rotation.x() - 0.1);
-  }
-  if (IsKeyActive(Key::kS)) {
-    rotation.set_x(rotation.x() + 0.1);
-  }
-
-  obj.transform().set_world_pos(world_pos);
-  obj.transform().set_rotation(rotation);
-
-  auto &obj1 = *scene->alpha_object(0);
-  auto rotation1 = obj1.transform().rotation();
-  if (IsKeyActive(Key::kJ)) {
-    rotation1.set_y(rotation1.y() - 0.1);
-  }
-  if (IsKeyActive(Key::kL)) {
-    rotation1.set_y(rotation1.y() + 0.1);
-  }
-  if (IsKeyActive(Key::kI)) {
-    rotation1.set_x(rotation1.x() - 0.1);
-  }
-  if (IsKeyActive(Key::kK)) {
-    rotation1.set_x(rotation1.x() + 0.1);
-  }
-  obj1.transform().set_rotation(rotation1);
 }
 
 void RenderGUI() {
@@ -166,20 +170,20 @@ int main(void) {
 
   auto const obj = scene.add_object("MyObj");
   LoadData("cube/cube", "png", obj);
-  // LoadData("african_head/african_head", "tga", &scene.objects().back());
-  // LoadData("diablo3/diablo3_pose", "tga", &scene.objects().back());
+  // LoadData("african_head/african_head", "tga", obj);
+  // LoadData("diablo3/diablo3_pose", "tga", obj);
   obj->transform().set_world_pos(kObjectPos);
 
-  auto const alpha_obj = scene.add_alpha_object("MyObj1");
-  LoadColorModel("cube/cube",
-                 {
-                     {1.0f, 0.0f, 0.0f, 0.5f},
-                     {0.0f, 1.0f, 0.0f, 0.5f},
-                     {0.0f, 0.0f, 1.0f, 0.5f},
-                 },
-                 alpha_obj);
-  alpha_obj->transform().set_world_pos(kObjectPos1);
-  alpha_obj->set_render_style(kRenderColor);
+  // auto const alpha_obj = scene.add_alpha_object("MyObj1");
+  // LoadColorModel("cube/cube",
+  //                {
+  //                    {1.0f, 0.0f, 0.0f, 0.5f},
+  //                    {0.0f, 1.0f, 0.0f, 0.5f},
+  //                    {0.0f, 0.0f, 1.0f, 0.5f},
+  //                },
+  //                alpha_obj);
+  // alpha_obj->transform().set_world_pos(kObjectPos1);
+  // alpha_obj->set_render_style(kRenderColor);
 
   window.set_main_loop([&](Window *window) {
     HandleKey(window, &scene);
