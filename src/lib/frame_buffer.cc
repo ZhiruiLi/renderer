@@ -70,4 +70,22 @@ bool FrameBuffer::InBound(int x, int y) const {
   return true;
 }
 
+void FrameBuffer::FlipVertically() {
+  for (int i = 0; i < width_; i++) {
+    for (int j = 0; j < height_ / 2; j++) {
+      auto const k = height_ - j - 1;
+      SwapAt(i, j, i, k);
+    }
+  }
+}
+
+void FrameBuffer::SwapAt(int x1, int y1, int x2, int y2) {
+  auto const idx1 = data_index(x1, y1);
+  auto const idx2 = data_index(x2, y2);
+  std::swap(data_[idx1], data_[idx2]);
+  std::swap(data_[idx1 + 1], data_[idx2 + 1]);
+  std::swap(data_[idx1 + 2], data_[idx2 + 2]);
+  std::swap(data_[idx1 + 3], data_[idx2 + 3]);
+}
+
 }  // namespace sren

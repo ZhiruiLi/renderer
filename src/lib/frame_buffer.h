@@ -23,6 +23,7 @@ class FrameBuffer {
   void Clear();
   void Resize(int width, int height);
   bool NeedRender(int x, int y, float z) const;
+  void FlipVertically();
 
   int width() const { return width_; }
   int height() const { return height_; }
@@ -32,6 +33,7 @@ class FrameBuffer {
 
  private:
   bool InBound(int x, int y) const;
+  void SwapAt(int x1, int y1, int x2, int y2);
 
   int data_index(int x, int y) const;
   int z_buffer_index(int x, int y) const;

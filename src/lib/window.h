@@ -39,6 +39,7 @@ class Window {
   LoopFunc main_loop_{};
   FrameBuffer frame_buffer_{};
   float delta_time_{};
+  GLuint image_texture_{};
   std::chrono::time_point<std::chrono::system_clock> current_time_{};
   std::chrono::time_point<std::chrono::system_clock> last_update_time_{};
 };
