@@ -23,7 +23,8 @@ void GlfwErrorCallback(int error, const char* description) {
 
 void Window::Close() { glfwSetWindowShouldClose(glfw_window_, GL_TRUE); }
 
-Window::Window(std::string const& title, int width, int height) {
+Window::Window(std::string const& title, int width, int height)
+    : width_(width), height_(height) {
   glfwSetErrorCallback(GlfwErrorCallback);
   // 初始化 GLFW
   if (!glfwInit()) {
@@ -83,6 +84,8 @@ Window::Window(std::string const& title, int width, int height) {
   // Setup Platform/Renderer backends
   ImGui_ImplGlfw_InitForOpenGL(glfw_window_, true);
   ImGui_ImplOpenGL3_Init(glsl_version);
+
+  frame_buffer_.Resize(width_, height_);
 }
 
 Window::~Window() { glfwTerminate(); }
@@ -108,14 +111,10 @@ void Window::Run() {
     // https://stackoverflow.com/questions/27678819/crazy-flashing-window-opengl-glfw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // 注意在 retina 屏幕下，由于存在缩放，所以像素和 window 大小并不是一对一的
-    // 例如 200% 缩放的情况下，对于一个屏幕上的一个单位点，需要渲染四个像素
-    // https://stackoverflow.com/questions/36672935/why-retina-screen-coordinate-value-is-twice-the-value-of-pixel-value
     int bwidth{};
     int bheight{};
     glfwGetFramebufferSize(glfw_window_, &bwidth, &bheight);
     glViewport(0, 0, bwidth, bheight);
-    frame_buffer_.Resize(bwidth * 0.9, bheight * 0.9);
 
     // Start the Dear ImGui frame
     ImGui_ImplOpenGL3_NewFrame();
@@ -138,7 +137,7 @@ void Window::Run() {
 
     {
       ImGui::SetNextWindowPos(ImVec2(0, 0));
-      ImGui::SetNextWindowSize(ImVec2(bwidth, bheight));
+      ImGui::SetNextWindowSize(ImVec2(width_, height_ + 20));
       constexpr auto win_flags =
           ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBringToFrontOnFocus;
       ImGui::Begin("Render Result", nullptr, win_flags);

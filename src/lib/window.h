@@ -35,6 +35,8 @@ class Window {
  private:
   static std::chrono::time_point<std::chrono::system_clock> now();
 
+  int width_{};
+  int height_{};
   GLFWwindow *glfw_window_{};
   LoopFunc main_loop_{};
   FrameBuffer frame_buffer_{};
