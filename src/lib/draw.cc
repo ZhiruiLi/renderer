@@ -63,10 +63,10 @@ void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
       auto color = lights.Illuminate(vert, poly.material(), camera_pos);
       if (poly.is_alpha()) {
         color.SetBlend(fb->Get(x, y));
-        color.Fix();
+        color.SetFix();
         fb->Set(x, y, color);
       } else {
-        color.Fix();
+        color.SetFix();
         fb->Set(x, y, z, color);
       }
     }
@@ -75,10 +75,10 @@ void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
       auto color = lights.Illuminate(vert, vert.color(), camera_pos);
       if (poly.is_alpha()) {
         color.SetBlend(fb->Get(x, y));
-        color.Fix();
+        color.SetFix();
         fb->Set(x, y, color);
       } else {
-        color.Fix();
+        color.SetFix();
         fb->Set(x, y, z, color);
       }
     }

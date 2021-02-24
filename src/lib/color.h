@@ -172,10 +172,16 @@ class Color {
            Unshift(a_hex(), 0);
   }
 
-  void Fix() {
+  void SetFix() {
     for (int i = 0; i < 4; i++) {
       ClampInPlace(0.0f, 1.0f, &data_[i]);
     }
+  }
+
+  Color Fix() const {
+    Color ret = *this;
+    ret.SetFix();
+    return ret;
   }
 
   // 颜色比较相等
