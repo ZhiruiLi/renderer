@@ -52,13 +52,13 @@ void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
   for (int leftx = left.pos().x(); leftx < rightx; leftx++) {
     left += step;
     auto vert = left;
-    vert.uv() /= left.pos().z();
     int const x = vert.pos().x();
     int const y = vert.pos().y();
     float const z = vert.pos().z();
     if (!fb->NeedRender(x, y, z)) {
       continue;
     }
+    vert.uv() /= z;
     if (poly.render_style() & kRenderTexture) {
       auto color = lights.Illuminate(vert, poly.material(), camera_pos);
       if (poly.is_alpha()) {
@@ -71,6 +71,7 @@ void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
       }
     }
     if (poly.render_style() & kRenderColor) {
+      vert.color() /= z;
       auto color = lights.Illuminate(vert, vert.color(), camera_pos);
       if (poly.is_alpha()) {
         color = colors::Blend(color, fb->Get(x, y));

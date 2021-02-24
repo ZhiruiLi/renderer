@@ -141,7 +141,7 @@ void Window::Run() {
       ImGui::SetNextWindowSize(ImVec2(bwidth, bheight));
       constexpr auto win_flags =
           ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBringToFrontOnFocus;
-      ImGui::Begin("", nullptr, win_flags);
+      ImGui::Begin("Render Result", nullptr, win_flags);
       ImGui::Image((void*)(intptr_t)image_texture_,
                    ImVec2(frame_buffer_.width(), frame_buffer_.height()));
       ImGui::End();

@@ -1,11 +1,8 @@
 #pragma once
 
-#include <array>
-
 #include "color.h"
 #include "frame_buffer.h"
 #include "polygon.h"
-#include "trapezoid.h"
 #include "vector.h"
 
 namespace sren {
