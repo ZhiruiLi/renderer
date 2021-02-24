@@ -46,11 +46,13 @@ void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
   auto right = CalcRenderPoint(trap.right.top, trap.right.bottom, y);
   PreInterpFix(&left);
   PreInterpFix(&right);
-  auto const width = right.pos().x() - left.pos().x();
+  int const leftx = left.pos().x();
+  int const rightx = right.pos().x();
+  auto const width = (rightx - leftx) + 1;
   auto const step = (right - left) / width;
-  for (; left.pos().x() < right.pos().x(); left += step) {
+  for (int x = leftx; x <= rightx; x++) {
     auto vert = left;
-    int const x = vert.pos().x();
+    left += step;
     int const y = vert.pos().y();
     float const z = vert.pos().z();
     if (!fb->NeedRender(x, y, z)) {
@@ -60,7 +62,7 @@ void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
     if (poly.render_style() & kRenderTexture) {
       auto color = lights.Illuminate(vert, poly.material(), camera_pos);
       if (poly.is_alpha()) {
-        color = colors::Blend(color, fb->Get(x, y));
+        color.SetBlend(fb->Get(x, y));
         color.Fix();
         fb->Set(x, y, color);
       } else {
@@ -72,7 +74,7 @@ void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
       vert.color() /= z;
       auto color = lights.Illuminate(vert, vert.color(), camera_pos);
       if (poly.is_alpha()) {
-        color = colors::Blend(color, fb->Get(x, y));
+        color.SetBlend(fb->Get(x, y));
         color.Fix();
         fb->Set(x, y, color);
       } else {

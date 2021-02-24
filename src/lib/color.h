@@ -269,6 +269,21 @@ class Color {
     return v;
   }
 
+  // 透明颜色混合
+  void SetBlend(Color const& rhs) {
+    auto const a1 = a();
+    auto const a2 = 1 - a1;
+    for (int i = 0; i < size(); i++) {
+      data_[i] = data_[i] * a1 + rhs[i] * a2;
+    }
+  }
+
+  Color Blend(Color const& rhs) const {
+    Color ret = *this;
+    ret.SetBlend(rhs);
+    return ret;
+  }
+
  private:
   std::array<value_type, 4> data_{};
 };
@@ -383,12 +398,6 @@ inline Color GetFromData2D(Data2D const& data, Vector2 const& uv) {
       return Color::RGBA(buff[0], buff[1], buff[2], buff[3]);
   }
   return Color{};
-}
-
-inline Color Blend(Color const& c1, Color const& c2) {
-  auto const v1 = c1.a();
-  auto const v2 = 1.0f - v1;
-  return c1 * v1 + c2 * v2;
 }
 
 }  // namespace colors
