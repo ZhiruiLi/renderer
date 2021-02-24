@@ -44,13 +44,11 @@ void RenderOneLine(Trapezoid const &trap, float y, Polygon const &poly,
                    FrameBuffer *fb) {
   auto left = CalcRenderPoint(trap.left.top, trap.left.bottom, y);
   auto right = CalcRenderPoint(trap.right.top, trap.right.bottom, y);
-  int const rightx = std::round(right.pos().x());
   PreInterpFix(&left);
   PreInterpFix(&right);
   auto const width = right.pos().x() - left.pos().x();
   auto const step = (right - left) / width;
-  for (int leftx = left.pos().x(); leftx < rightx; leftx++) {
-    left += step;
+  for (; left.pos().x() < right.pos().x(); left += step) {
     auto vert = left;
     int const x = vert.pos().x();
     int const y = vert.pos().y();
