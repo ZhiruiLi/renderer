@@ -109,7 +109,7 @@ void Window::Run() {
     // 包括：GL_COLOR_BUFFER_BIT，GL_DEPTH_BUFFER_BIT 和 GL_STENCIL_BUFFER_BIT
     // 这个操作还能防止屏幕闪烁，参考
     // https://stackoverflow.com/questions/27678819/crazy-flashing-window-opengl-glfw
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT);
 
     int bwidth{};
     int bheight{};
