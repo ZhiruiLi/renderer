@@ -17,9 +17,17 @@ if(NOT OPENGL_FOUND)
   message(ERROR "OPENGL not found!")
 endif(NOT OPENGL_FOUND)
 
+set(glew-cmake_BUILD_SHARED OFF)
+set(glew-cmake_BUILD_STATIC ON)
+set(ONLY_LIBS "Do not build executables" ON)
 include_directories(thirdparty/glew-cmake/include)
 add_subdirectory(thirdparty/glew-cmake)
 
+set(BUILD_SHARED_LIBS OFF)
+set(GLFW_BUILD_EXAMPLES OFF)
+set(GLFW_BUILD_TESTS OFF)
+set(GLFW_BUILD_DOCS OFF)
+set(GLFW_INSTALL OFF)
 include_directories(thirdparty/glfw/include)
 add_subdirectory(thirdparty/glfw)
 
