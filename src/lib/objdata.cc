@@ -58,8 +58,6 @@ bool LoadObjFile(std::string const &filename, Model *model) {
     }
   }
   in.close();
-  std::cerr << "# v# " << vertexs.size() << " f# " << face_indexs.size()
-            << " vt# " << uvs.size() << " vn# " << normals.size() << std::endl;
   model->vertexs() = std::move(vertexs);
   model->uvs() = std::move(uvs);
   model->normals() = std::move(normals);
