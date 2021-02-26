@@ -43,6 +43,9 @@ void FixZ(Matrix4x4 const &proj, Vector4 *v) {
 }  // namespace
 
 void Scene::RenderOneObject(Object *obj, FrameBuffer *fb) {
+  if (obj->state() != ObjectState::kActive) {
+    return;
+  }
   obj->ResetWorldVertexs();
   obj->ResetTransNormals();
   obj->ResetTransVertexs();

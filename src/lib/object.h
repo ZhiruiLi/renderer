@@ -15,14 +15,19 @@
 
 namespace sren {
 
+enum class ObjectState {
+  kActive = 0,
+  kDisable = 1,
+};
+
 class Object {
  public:
   Object() = default;
   Object(int id, std::string name, bool is_alpha)
       : id_(id), name_(std::move(name)), is_alpha_(is_alpha) {}
 
-  int state() const { return state_; };
-  void set_state(int state) { state_ = state; }
+  ObjectState state() const { return state_; };
+  void set_state(ObjectState state) { state_ = state; }
 
   int id() const { return id_; }
   std::string const &name() const { return name_; }
@@ -74,7 +79,7 @@ class Object {
   int id_{};
   std::string name_{};
   bool is_alpha_{};
-  int state_{};
+  ObjectState state_{};
 
   // 物体的位置旋转等信息
   Transform transform_{};

@@ -27,6 +27,8 @@
 
 using namespace sren;
 
+namespace {
+
 Vector3 const kObjectPos = {0, 0, 0};
 Vector3 const kObjectPos1 = {0, 0, 0.5};
 Vector3 const kCameraPos = {0, 0, 2};
@@ -37,6 +39,25 @@ LightCoefficient const kCoefficient = {
     1.0f,  // specular
 };
 
+bool gRenderSolid = true;
+bool gRenderTranslucency = false;
+
+struct ModelInfo {
+  std::string name;
+  std::string file_path;
+  std::string file_ext;
+};
+
+std::vector<ModelInfo> const kModelInfos{
+    {"cube", "cube/cube", "png"},
+    {"african", "african_head/african_head", "tga"},
+    {"diablo", "diablo3/diablo3_pose", "tga"},
+};
+
+int gModelIndex = 0;
+
+}  // namespace
+
 bool IsKeyActive(Key k) { return IsKeyPress(k) || IsKeyHold(k); }
 
 void HandleKey(Window *window, Scene *scene) {
@@ -44,8 +65,14 @@ void HandleKey(Window *window, Scene *scene) {
     window->Close();
   }
 
-  if (scene->nobjects() > 0) {
-    auto &obj = *scene->object(0);
+  for (int i = 0; i < scene->nobjects(); i++) {
+    auto &obj = *scene->object(i);
+    if (gRenderSolid && i == gModelIndex) {
+      obj.set_state(sren::ObjectState::kActive);
+    } else {
+      obj.set_state(sren::ObjectState::kDisable);
+    }
+
     auto world_pos = obj.transform().world_pos();
     auto rotation = obj.transform().rotation();
 
@@ -86,8 +113,13 @@ void HandleKey(Window *window, Scene *scene) {
     obj.transform().set_rotation(rotation);
   }
 
-  if (scene->nalpha_objects() > 0) {
-    auto &obj = *scene->alpha_object(0);
+  for (int i = 0; i < scene->nalpha_objects(); i++) {
+    auto &obj = *scene->alpha_object(i);
+    if (gRenderTranslucency) {
+      obj.set_state(sren::ObjectState::kActive);
+    } else {
+      obj.set_state(sren::ObjectState::kDisable);
+    }
     auto rotation = obj.transform().rotation();
     if (IsKeyActive(Key::kJ)) {
       rotation.set_y(rotation.y() - 0.1);
@@ -106,11 +138,15 @@ void HandleKey(Window *window, Scene *scene) {
 }
 
 void RenderGUI() {
-  static int counter = 0;
   ImGui::Begin("Info", nullptr);
-  if (ImGui::Button("Button")) counter++;
+  ImGui::Checkbox("Render Solid", &gRenderSolid);
   ImGui::SameLine();
-  ImGui::Text("counter = %d", counter);
+  ImGui::Checkbox("Render Translucency", &gRenderTranslucency);
+  ImGui::Text("Solid Model");
+  for (int i = 0; i < kModelInfos.size(); i++) {
+    ImGui::SameLine();
+    ImGui::RadioButton(kModelInfos[i].name.c_str(), &gModelIndex, i);
+  }
   ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
               ImGui::GetIO().Framerate);
   ImGui::End();
@@ -166,14 +202,14 @@ int main(void) {
   auto &dir_lights = scene.lights().dir_lights();
   dir_lights.emplace_back(kLightDir, colors::White(), kCoefficient);
 
-  auto const obj = scene.add_object("MyObj");
-  LoadData("cube/cube", "png", obj);
-  // LoadData("african_head/african_head", "tga", obj);
-  // LoadData("diablo3/diablo3_pose", "tga", obj);
-  obj->transform().set_world_pos(kObjectPos);
+  for (auto const &m : kModelInfos) {
+    auto const obj = scene.add_object(m.name);
+    LoadData(m.file_path, m.file_ext, obj);
+    obj->transform().set_world_pos(kObjectPos);
+  }
 
-  auto const alpha_obj = scene.add_alpha_object("MyObj1");
-  LoadColorModel("cube/cube",
+  auto const alpha_obj = scene.add_alpha_object("alpha");
+  LoadColorModel(kModelInfos[0].file_path,
                  {
                      {1.0f, 0.0f, 0.0f, 0.5f},
                      {0.0f, 1.0f, 0.0f, 0.5f},
