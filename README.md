@@ -6,8 +6,12 @@
 git clone --recurse-submodules -j4 https://github.com/ZhiruiLi/renderer.git
 cd renderer
 ./init.sh
+# Build
 cd build
 make -j10
+# Run
+cd src
+./renderer.app/Contents/MacOS/renderer
 ```
 
 ## Windows
